@@ -34,6 +34,5 @@ runs:
         touch ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db.tar.gz
         touch ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.files.tar.gz
         ln -sf ${{ inputs.custom-repo }}.db.tar.gz ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db
-        ln -sf ${{ inputs.custom-repo }}.files.tar.gz ${{ inputs.custom-repo }}.files
-        ls -l ${{ inputs.custom-repo }}
+        ln -sf ${{ inputs.custom-repo }}.files.tar.gz ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.files
       shell: bash
