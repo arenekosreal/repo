@@ -6,6 +6,9 @@ then
     ls -l /github/workspace/startdir
 fi
 
+pacman-key --init
+pacman -Syu --noconfirm
+
 cd /github/workspace/startdir
 export BUILDDIR=/build PKGDEST=/pkgdest SRCDEST=/srcdest
 
