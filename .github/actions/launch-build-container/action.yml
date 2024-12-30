@@ -1,0 +1,23 @@
+name: Launch build container
+description: Launch the container and start building
+inputs:
+  custom-repo:
+    description: The name of pacman repository to storage extra dependencies
+    required: false
+    default: repo
+  startdir:
+    description: Where is the PKGBUILD
+    required: false
+    default: startdir
+  pkgdest:
+    description: Where to storage built package(s)
+    required: false
+    default: pkgdest
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - -v ${{ inputs.startdir }}:/startdir
+    - -v ${{ inputs.pkgdest }}:/mnt/pkgdest
+    - -v ${{ inputs.custom-repo }}:/var/lib/repo

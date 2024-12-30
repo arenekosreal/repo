@@ -1,0 +1,38 @@
+name: Prepare environment
+description: Prepare environment for building PKGBUILDs
+inputs:
+  pkgbuild-repo:
+    description: The git repository contains PKGBUILD
+    required: true
+  custom-repo:
+    description: The pacman repository to storage dependency
+    required: false
+    default: repo
+outputs:
+  startdir:
+    description: Where is the PKGBUILD
+    value: startdir
+  pkgdest:
+    description: Where to storage newly built packages
+    value: pkgdest
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare directories
+      run: |
+        rm -rf startdir pkgdest repo
+        mkdir -p startdir pkgdest repo
+      shell: bash
+      
+    - name: Download pkgbuild
+      run: git clone ${{ inputs.pkgbuild-repo }} startdir
+      shell: bash
+
+    - name: Generate empty pacman repository for building with dependency
+      run: |
+        touch ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db.tar.gz
+        touch ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.files.tar.gz
+        ln -sf ${{ inputs.custom-repo }}.db.tar.gz ${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db
+        ln -sf ${{ inputs.custom-repo }}.files.tar.gz ${{ inputs.custom-repo }}.files
+      shell: bash

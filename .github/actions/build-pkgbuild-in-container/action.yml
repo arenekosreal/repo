@@ -1,0 +1,26 @@
+name: Build PKGBUILD in container
+description: Build Arch Linux PKGBUILD in container
+inputs:
+  pkgbuild-repo:
+    description: The git repository contains PKGBUILD
+    required: true
+  custom-repo:
+    description: The name of pacman repository to storage extra dependencies
+    required: false
+    default: repo
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare environment
+      uses: ./.github/actions/prepare-environment
+      id: environment
+      with:
+        pkgbuild-repo: ${{ inputs.pkgbuild-repo }}
+
+    - name: Launch builder
+      uses: ./.github/actions/launch-build-container
+      with:
+        custom-repo: ${{ inputs.custom-repo }}
+        startdir: ${{ steps.environment.startdir }}
+        pkgdest: ${{ steps.environment.pkgdest }}
