@@ -18,7 +18,7 @@ runs:
   using: docker
   image: Dockerfile
   args:
-    - --volume=./${{ inputs.startdir }}:/startdir
-    - --volume=./${{ inputs.pkgdest }}:/mnt/pkgdest
-    - --volume=./${{ inputs.custom-repo }}:/var/lib/repo
+    - --volume=${{ github.workspace }}/${{ inputs.startdir }}:/startdir
+    - --volume=${{ github.workspace }}/${{ inputs.pkgdest }}:/mnt/pkgdest
+    - --volume=${{ github.workspace }}/${{ inputs.custom-repo }}:/var/lib/repo
     - --build-arg=CUSTOM_REPO=${{ inputs.custom-repo }}
