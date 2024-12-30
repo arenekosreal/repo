@@ -1,11 +1,13 @@
 name: Create a new pacman repository
 description: Create a new pacman repository
 inputs:
-  path:
+  path-to-repo:
     description: The path to the repository
     required: true
 
 runs:
   using: docker
   image: docker://archlinux:base-devel
-  entrypoint: /usr/bin/repo-add ${{ inputs.path }}
+  args: 
+    - /usr/bin/repo-add 
+    - ${{ inputs.path-to-repo }}

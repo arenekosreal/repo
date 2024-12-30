@@ -21,4 +21,4 @@ runs:
     - name: Generate empty pacman repository for building with dependency
       uses: ./.github/actions/new-repo
       with:
-        path: repo/repo.db.tar.gz
+        path-to-repo: repo/repo.db.tar.gz
