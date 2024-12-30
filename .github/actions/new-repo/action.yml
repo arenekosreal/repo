@@ -8,6 +8,4 @@ inputs:
 runs:
   using: docker
   image: docker://archlinux:base-devel
-  entrypoint:
-    - /usr/bin/repo-add
-    - ${{ inputs.path }}
+  entrypoint: /usr/bin/repo-add ${{ inputs.path }}
