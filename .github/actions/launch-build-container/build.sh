@@ -7,7 +7,6 @@ then
 fi
 
 pacman-key --init
-pacman -Sy
 pacman -Syu --noconfirm
 
 cd /github/workspace/startdir

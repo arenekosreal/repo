@@ -20,7 +20,8 @@ runs:
 
     - name: Generate empty pacman repository for building with dependency
       run: |
-        touch repo/repo.{db,files}.tar.gz
+        tar -c --files-from /dev/null | gzip -c > repo.db.tar.gz
+        tar -c --files-from /dev/null | gzip -c > repo.files.tar.gz
         ln -sf repo.db.tar.gz repo/repo.db
         ln -sf repo.files.tar.gz repo/repo.files
       shell: bash
