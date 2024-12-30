@@ -21,3 +21,4 @@ runs:
     - -v ${{ inputs.startdir }}:/startdir
     - -v ${{ inputs.pkgdest }}:/mnt/pkgdest
     - -v ${{ inputs.custom-repo }}:/var/lib/repo
+    - --build-arg CUSTOM_REPO=${{ inputs.custom-repo }}
