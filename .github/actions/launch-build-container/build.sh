@@ -1,14 +1,14 @@
 #!/usr/bin/bash
 
-if [[ ! -f /startdir/PKGBUILD ]]
+if [[ ! -f /github/workspace/startdir/PKGBUILD ]]
 then
     echo "PKGBUILD is not found"
-    ls -l /startdir
+    ls -l /github/workspace/startdir
 fi
 
-cd /startdir
+cd /github/workspace/startdir
 
 sudo -u builder -E BUILDDIR=/build -E PKGDEST=/pkgdest -E SRCDEST=/srcdest \
     makepkg --syncdeps --noconfirm --nosign
 
-cp -a --no-preserve=ownership /pkgdest/. /mnt/pkgdest
+cp -a --no-preserve=ownership /pkgdest/. /github/workspace/pkgdest

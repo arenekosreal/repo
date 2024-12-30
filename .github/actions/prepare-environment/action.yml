@@ -4,39 +4,23 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
-  custom-repo:
-    description: The pacman repository to storage dependency
-    required: false
-    default: repo
-  storage-base:
-    description: Where custom-repo, startdir and pkgdest are storaged
-    required: false
-    default: ${{ github.workspace }}
-outputs:
-  startdir:
-    description: Where is the PKGBUILD
-    value: startdir
-  pkgdest:
-    description: Where to storage newly built packages
-    value: pkgdest
 
 runs:
   using: composite
   steps:
     - name: Prepare directories
       run: |
-        rm -rf ${{ inputs.storage-base }}/{startdir,pkgdest,repo}
-        mkdir -p ${{ inputs.storage-base }}/{startdir,pkgdest,repo}
+        rm -rf startdir pkgdest repo
+        mkdir -p startdir pkgdest repo
       shell: bash
       
     - name: Download pkgbuild
-      run: git clone ${{ inputs.pkgbuild-repo }} ${{ inputs.storage-base }}/startdir
+      run: git clone ${{ inputs.pkgbuild-repo }} startdir
       shell: bash
 
     - name: Generate empty pacman repository for building with dependency
       run: |
-        touch ${{ inputs.storage-base }}/${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db.tar.gz
-        touch ${{ inputs.storage-base }}/${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.files.tar.gz
-        ln -sf ${{ inputs.custom-repo }}.db.tar.gz ${{ inputs.storage-base }}/${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.db
-        ln -sf ${{ inputs.custom-repo }}.files.tar.gz ${{ inputs.storage-base }}/${{ inputs.custom-repo }}/${{ inputs.custom-repo }}.files
+        touch repo/repo.{db,files}.tar.gz
+        ln -sf repo.db.tar.gz repo/repo.db
+        ln -sf repo.files.tar.gz repo/repo.files
       shell: bash

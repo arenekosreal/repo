@@ -1,28 +1,6 @@
 name: Launch build container
 description: Launch the container and start building
-inputs:
-  custom-repo:
-    description: The name of pacman repository to storage extra dependencies
-    required: false
-    default: repo
-  startdir:
-    description: Where is the PKGBUILD
-    required: false
-    default: startdir
-  pkgdest:
-    description: Where to storage built package(s)
-    required: false
-    default: pkgdest
-  storage-base:
-    description: Where custom-repo, startdir and pkgdest are storaged
-    required: false
-    default: ${{ github.workspace }}
 
 runs:
   using: docker
   image: Dockerfile
-  args:
-    - --volume=${{ inputs.storage-base }}/${{ inputs.startdir }}:/startdir
-    - --volume=${{ inputs.storage-base }}/${{ inputs.pkgdest }}:/mnt/pkgdest
-    - --volume=${{ inputs.storage-base }}/${{ inputs.custom-repo }}:/var/lib/repo
-    - --build-arg=CUSTOM_REPO=${{ inputs.custom-repo }}
