@@ -7,8 +7,9 @@ then
 fi
 
 cd /github/workspace/startdir
+export BUILDDIR=/build PKGDEST=/pkgdest SRCDEST=/srcdest
 
-sudo -u builder -E BUILDDIR=/build -E PKGDEST=/pkgdest -E SRCDEST=/srcdest \
+sudo -u builder --preserve-env=BUILDDIR --preserve-env=PKGDEST --preserve-env=SRCDEST \
     makepkg --syncdeps --noconfirm --nosign
 
 cp -a --no-preserve=ownership /pkgdest/. /github/workspace/pkgdest
