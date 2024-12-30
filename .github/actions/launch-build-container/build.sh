@@ -6,6 +6,8 @@ then
     ls -l /startdir
 fi
 
+pacman -Syu --noconfirm
+
 cd /startdir
 
 sudo -u builder -E BUILDDIR=/build -E PKGDEST=/pkgdest -E SRCDEST=/srcdest \
