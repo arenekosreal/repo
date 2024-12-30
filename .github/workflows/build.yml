@@ -3,6 +3,7 @@ name: Build packages
 on:
   schedule:
     - cron: 1 */8 * * *
+  workflow_dispatch:   
 
 jobs:
   simple-packages:
