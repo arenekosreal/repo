@@ -4,6 +4,10 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
+  gpg-key:
+    description: Where to storage exported GnuPG key
+    required: false
+    default: gpg-key.asc
 outputs:
   artifact-name:
     description: The string which can be used as artifact name
@@ -30,4 +34,17 @@ runs:
     - name: Generate output
       id: gen-output
       run: echo artifact-name=${{ inputs.pkgbuild-repo }} | sed 's|=.*://|=|;s|.git$||;s|/| |g' >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Scan GnuPG keys in PKGBUILD
+      id: gpg-key
+      uses: ./.github/actions/scan-gpg-keys
+      with:
+        path-to-directory: startdir
+
+    - name: Obtain GnuPG keys
+      if: steps.gpg-key.outputs.gpg-key
+      run: |
+        gpg --recv-keys ${{ steps.gpg-key.outputs.gpg-key }}
+        gpg --export --armor ${{ steps.gpg-key.outputs.gpg-key }} -o ${{ inputs.gpg-key }}
       shell: bash

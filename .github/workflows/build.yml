@@ -33,7 +33,6 @@ jobs:
           - https://aur.archlinux.org/dendrite.git
           - https://aur.archlinux.org/dockerfile-language-server.git
           - https://aur.archlinux.org/dotnet-core-bin.git
-          - https://aur.archlinux.org/dotnet-install.git
           - https://aur.archlinux.org/downgrade.git
           - https://aur.archlinux.org/electron22-bin.git
           - https://aur.archlinux.org/fcitx5-pinyin-custom-pinyin-dictionary.git
@@ -97,7 +96,6 @@ jobs:
           - https://aur.archlinux.org/usbguard-notifier-git.git
           - https://aur.archlinux.org/vkdevicechooser.git
           - https://aur.archlinux.org/watt-toolkit-bin.git
-          - https://aur.archlinux.org/watt-toolkit-git.git
           - https://aur.archlinux.org/waylyrics.git
           - https://aur.archlinux.org/wine-wow64.git
           - https://aur.archlinux.org/xdg-ninja.git

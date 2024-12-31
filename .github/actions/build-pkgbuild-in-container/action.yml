@@ -13,7 +13,7 @@ inputs:
   gpg-key:
     description: The GnuPG public keys file under workspace which is for builder to validate sources
     required: false
-    default: ''
+    default: 'gpg-key.asc'
 
 outputs:
   artifact-name:
@@ -28,6 +28,7 @@ runs:
       uses: ./.github/actions/prepare-environment
       with:
         pkgbuild-repo: ${{ inputs.pkgbuild-repo }}
+        gpg-key: ${{ inputs.gpg-key }}
 
     - name: Launch builder
       uses: ./.github/actions/launch-build-container

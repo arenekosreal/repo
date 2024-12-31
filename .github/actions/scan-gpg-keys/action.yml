@@ -1,0 +1,15 @@
+name: Scan GnuPG keys in PKGBUILD from a directory
+description: Scan GnuPG keys in PKGBUILD from a directory
+inputs:
+  path-to-directory:
+    description: The path to the directory which contains PKGBUILD
+    required: true
+
+outputs:
+  gpg-key:
+    description: A string which is joined from GnuPG keys fingerprints with space
+
+runs:
+  using: docker
+  image: docker://archlinux:base-devel
+  entrypoint: scan.sh
