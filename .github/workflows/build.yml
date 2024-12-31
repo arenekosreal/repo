@@ -19,7 +19,6 @@ jobs:
           - https://aur.archlinux.org/dotnet-preview-bin.git
           - https://aur.archlinux.org/basedpyright.git
           - https://aur.archlinux.org/bcache-tools.git
-          - https://aur.archlinux.org/bfgminer-git.git
           - https://aur.archlinux.org/binder_linux-dkms.git
           - https://aur.archlinux.org/btrfs-assistant.git
           - https://aur.archlinux.org/btrfsmaintenance.git
