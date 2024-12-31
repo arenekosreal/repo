@@ -1,7 +1,7 @@
 name: Scan GnuPG keys in PKGBUILD from a directory
 description: Scan GnuPG keys in PKGBUILD from a directory
 inputs:
-  path-to-directory:
+  directory:
     description: The path to the directory which contains PKGBUILD
     required: true
 

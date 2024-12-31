@@ -40,7 +40,7 @@ runs:
       id: gpg-key
       uses: ./.github/actions/scan-gpg-keys
       with:
-        path-to-directory: startdir
+        directory: startdir
 
     - name: Obtain GnuPG keys
       if: steps.gpg-key.outputs.gpg-key
