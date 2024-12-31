@@ -29,5 +29,5 @@ runs:
 
     - name: Generate output
       id: gen-output
-      run: echo artifact-name=${{ inputs.pkgbuild-repo }} | sed 's|=.*://|=|;s|.git$||' >> $GITHUB_OUTPUT
+      run: echo artifact-name=${{ inputs.pkgbuild-repo }} | sed 's|=.*://|=|;s|.git$||;s|/| |g' >> $GITHUB_OUTPUT
       shell: bash
