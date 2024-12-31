@@ -22,3 +22,10 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           pkgbuild-repo: ${{ matrix.pkgbuild-repo }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkgbuild-repo }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
