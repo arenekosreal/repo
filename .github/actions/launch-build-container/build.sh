@@ -24,10 +24,10 @@ then
     done < <(echo "$INPUT_ENVIRONMENT")
 fi
 
-if [[ -f "/github/workspace/$INPUT_GPG_KEY" ]]
+if [[ -f "/github/workspace/$INPUT_VALIDPGPKEYS" ]]
 then
     echo "Importing inputed GnuPG keys..."
-    $SUDO gpg --import "/github/workspace/$INPUT_GPG_KEY"
+    $SUDO gpg --import "/github/workspace/$INPUT_VALIDPGPKEYS"
 fi
 
 pacman-key --init

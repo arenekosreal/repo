@@ -4,7 +4,7 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
-  gpg-key:
+  validpgpkeys:
     description: Where to storage exported GnuPG key
     required: false
     default: gpg-key.asc
@@ -43,8 +43,8 @@ runs:
         directory: startdir
 
     - name: Obtain GnuPG keys
-      if: steps.gpg-key.outputs.gpg-key
+      if: steps.gpg-key.outputs.validpgpkeys
       run: |
-        gpg --recv-keys ${{ steps.gpg-key.outputs.gpg-key }}
-        gpg --export --armor ${{ steps.gpg-key.outputs.gpg-key }} -o ${{ inputs.gpg-key }}
+        gpg --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+        gpg --export --armor ${{ steps.gpg-key.outputs.validpgpkeys }} -o ${{ inputs.validpgpkeys }}
       shell: bash

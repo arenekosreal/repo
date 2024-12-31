@@ -6,7 +6,7 @@ inputs:
     required: true
 
 outputs:
-  gpg-key:
+  validpgpkeys:
     description: A string which is joined from GnuPG keys fingerprints with space
 
 runs:
