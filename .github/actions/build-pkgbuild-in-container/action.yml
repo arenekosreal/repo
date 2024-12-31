@@ -1,7 +1,7 @@
 name: Build PKGBUILD in container
 description: Build Arch Linux PKGBUILD in container
 inputs:
-  pkgbuild-repo:
+  repo:
     description: The git repository contains PKGBUILD
     required: true
 
@@ -10,7 +10,7 @@ inputs:
     required: false
     default: ''
 
-  gpg-key:
+  validpgpkeys:
     description: The GnuPG public keys file under workspace which is for builder to validate sources
     required: false
     default: 'gpg-key.asc'
@@ -27,11 +27,11 @@ runs:
       id: gen-info
       uses: ./.github/actions/prepare-environment
       with:
-        pkgbuild-repo: ${{ inputs.pkgbuild-repo }}
-        gpg-key: ${{ inputs.gpg-key }}
+        repo: ${{ inputs.repo }}
+        validpgpkeys: ${{ inputs.validpgpkeys }}
 
     - name: Launch builder
       uses: ./.github/actions/launch-build-container
       with:
         environment: ${{ inputs.environment }}
-        gpg-key: ${{ inputs.gpg-key }}
+        validpgpkeys: ${{ inputs.validpgpkeys }}

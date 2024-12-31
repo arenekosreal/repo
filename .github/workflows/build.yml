@@ -107,7 +107,7 @@ jobs:
         id: build
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
-          pkgbuild-repo: ${{ matrix.pkgbuild-repo }}
+          repo: ${{ matrix.pkgbuild-repo }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
