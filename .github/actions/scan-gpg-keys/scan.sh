@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ ! -f "$INPUT_PATH_TO_DIRECTORY/PKGBUILD" ]]
+if [[ ! -f "/github/workspace/$INPUT_PATH_TO_DIRECTORY/PKGBUILD" ]]
 then
   echo "No PKGBUILD is found."
   exit 1
