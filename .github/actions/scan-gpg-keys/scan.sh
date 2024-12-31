@@ -11,4 +11,4 @@ fi
 cd "/github/workspace/$INPUT_DIRECTORY"
 
 echo -n ""
-makepkg --printsrcinfo | grep validpgpkeys | cut -d = -f 2 | xargs >> "$GITHUB_OUTPUT"
+sudo -u builder makepkg --printsrcinfo | grep validpgpkeys | cut -d = -f 2 | xargs >> "$GITHUB_OUTPUT"
