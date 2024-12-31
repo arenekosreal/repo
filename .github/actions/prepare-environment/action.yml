@@ -1,7 +1,7 @@
 name: Prepare environment
 description: Prepare environment for building PKGBUILDs
 inputs:
-  pkgbuild-repo:
+  repo:
     description: The git repository contains PKGBUILD
     required: true
   validpgpkeys:
@@ -23,7 +23,7 @@ runs:
       shell: bash
       
     - name: Download pkgbuild
-      run: git clone ${{ inputs.pkgbuild-repo }} startdir
+      run: git clone ${{ inputs.repo }} startdir
       shell: bash
 
     - name: Generate empty pacman repository for building with dependency
@@ -33,7 +33,7 @@ runs:
 
     - name: Generate output
       id: gen-output
-      run: echo artifact-name=${{ inputs.pkgbuild-repo }} | sed 's|=.*://|=|;s|.git$||;s|/| |g' >> $GITHUB_OUTPUT
+      run: echo artifact-name=${{ inputs.repo }} | sed 's|=.*://|=|;s|.git$||;s|/| |g' >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Scan GnuPG keys in PKGBUILD
