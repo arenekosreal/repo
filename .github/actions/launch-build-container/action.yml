@@ -1,5 +1,14 @@
 name: Launch build container
 description: Launch the container and start building
+inputs:
+  environment:
+    description: The KEY=VALUE pair which used in makepkg
+    required: false
+    default: ''
+  gpg-key:
+    description: The GnuPG public keys file under workspace which is for builder to validate sources
+    required: false
+    default: ''
 
 runs:
   using: docker

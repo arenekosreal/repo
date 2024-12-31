@@ -4,6 +4,17 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
+
+  environment:
+    description: The KEY=VALUE pair which used in makepkg
+    required: false
+    default: ''
+
+  gpg-key:
+    description: The GnuPG public keys file under workspace which is for builder to validate sources
+    required: false
+    default: ''
+
 outputs:
   artifact-name:
     description: The string which can be used as artifact name
@@ -20,3 +31,6 @@ runs:
 
     - name: Launch builder
       uses: ./.github/actions/launch-build-container
+      with:
+        environment: ${{ inputs.environment }}
+        gpg-key: ${{ inputs.gpg-key }}
