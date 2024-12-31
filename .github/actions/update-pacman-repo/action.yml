@@ -1,7 +1,7 @@
 name: Update a pacman repository
 description: Update or create a pacman repository
 inputs:
-  path-to-repo:
+  repo:
     description: The path to the repository
     required: true
   packages:
