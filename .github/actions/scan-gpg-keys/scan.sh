@@ -8,7 +8,8 @@ then
   exit 1
 fi
 
-cd "/github/workspace/$INPUT_DIRECTORY"
+cp -r "/github/workspace/$INPUT_DIRECTORY" /tmp/pkgbuild
+cd /tmp/pkgbuild
 
-echo -n ""
+echo -n "gpg-key="
 sudo -u builder makepkg --printsrcinfo | grep validpgpkeys | cut -d = -f 2 | xargs >> "$GITHUB_OUTPUT"
