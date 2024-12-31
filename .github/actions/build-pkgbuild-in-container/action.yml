@@ -4,11 +4,16 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
+outputs:
+  artifact-name:
+    description: The string which can be used as artifact name
+    value: ${{ steps.gen-info.outputs.artifact-name }}
 
 runs:
   using: composite
   steps:
     - name: Prepare environment
+      id: gen-info
       uses: ./.github/actions/prepare-environment
       with:
         pkgbuild-repo: ${{ inputs.pkgbuild-repo }}

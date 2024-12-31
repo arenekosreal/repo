@@ -4,6 +4,10 @@ inputs:
   pkgbuild-repo:
     description: The git repository contains PKGBUILD
     required: true
+outputs:
+  artifact-name:
+    description: The string which can be used as artifact name
+    value: ${{ steps.gen-output.outputs.artifact-name }}
 
 runs:
   using: composite
@@ -22,3 +26,8 @@ runs:
       uses: ./.github/actions/new-repo
       with:
         path-to-repo: repo/repo.db.tar.gz
+
+    - name: Generate output
+      id: gen-output
+      run: echo artifact-name=${{ inputs.pkgbuild-repo }} | sed 's|=.*://|=|;s|.git$||' >> $GITHUB_OUTPUT
+      shell: bash
