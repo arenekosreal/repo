@@ -11,5 +11,5 @@ outputs:
 
 runs:
   using: docker
-  image: docker://archlinux:base-devel
-  entrypoint: scan.sh
+  image: Dockerfile
+  entrypoint: /scan.sh

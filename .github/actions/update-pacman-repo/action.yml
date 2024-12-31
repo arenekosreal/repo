@@ -11,8 +11,5 @@ inputs:
 
 runs:
   using: docker
-  image: docker://archlinux:base-devel
-  args:
-    - /usr/bin/repo-add
-    - ${{ inputs.path-to-repo }}
-    - ${{ inputs.packages }}
+  image: Dockerfile
+  entrypoint: /update.sh
