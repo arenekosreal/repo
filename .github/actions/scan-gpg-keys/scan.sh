@@ -8,7 +8,7 @@ then
   exit 1
 fi
 
-cd "$INPUT_PATH_TO_DIRECTORY"
+cd "/github/workspace/$INPUT_PATH_TO_DIRECTORY"
 
 echo -n ""
 makepkg --printsrcinfo | grep validpgpkeys | cut -d = -f 2 | xargs >> "$GITHUB_OUTPUT"
