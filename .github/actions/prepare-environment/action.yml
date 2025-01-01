@@ -47,6 +47,7 @@ runs:
       run: |
         if ! gpg --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
         then
+          echo "Failed to receive GnuPG key using default keyserver, using ubuntu's server now..."
           gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
         fi
         gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
