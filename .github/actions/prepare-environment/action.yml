@@ -47,7 +47,10 @@ runs:
       run: |
         for keyserver in keyserver.ubuntu.com keys.penpgp.org
         do
-          gpg --keyserver $keyserver --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }} && break
+         if gpg --keyserver $keyserver --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+         then
+           break
+         fi
         done
         gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
       shell: bash
