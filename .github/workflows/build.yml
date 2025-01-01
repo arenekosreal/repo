@@ -85,7 +85,6 @@ jobs:
           - https://aur.archlinux.org/sing-geoip.git
           - https://aur.archlinux.org/sing-geosite.git
           - https://aur.archlinux.org/spicetify-extensions-rxri-git.git
-          - https://aur.archlinux.org/spotify.git
           - https://aur.archlinux.org/stable-diffusion.cpp-vulkan-git.git
           - https://aur.archlinux.org/systemd-boot-pacman-hook.git
           - https://aur.archlinux.org/systemd-cron.git
