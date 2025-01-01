@@ -80,7 +80,6 @@ jobs:
           - https://aur.archlinux.org/qcm.git
           - https://aur.archlinux.org/rclone-aliyundrive-git.git
           - https://aur.archlinux.org/realitlscanner.git
-          - https://aur.archlinux.org/ruffle-nightly.git
           - https://aur.archlinux.org/sing-box.git
           - https://aur.archlinux.org/sing-geoip.git
           - https://aur.archlinux.org/sing-geosite.git
