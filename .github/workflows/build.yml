@@ -9,7 +9,6 @@ jobs:
   simple-packages:
     name: Build packages which do not have any unofficial-repo dependency
     strategy:
-      fail-fast: false
       matrix:
         pkgbuild-repo:
           - https://aur.archlinux.org/ares-decrypt.git
