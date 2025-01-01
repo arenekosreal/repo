@@ -107,6 +107,25 @@ jobs:
         with:
           repo: ${{ matrix.pkgbuild-repo }}
 
+      - name: Ensure filename suitable for uploading
+        run: |
+          find pkgdest -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | while read -r f
+          do
+            name="$(basename "$f")"
+            validname="$name"
+            for char in '\:' '\"' '\<' '\>' '\|' '\*' '\?' "$(printf '\r')" "$(printf '\n')"
+            do
+              validname=${validname//$char/#}
+            done
+            if [[ "$name" != "$validname" ]]
+            then 
+              echo "Rewriting $name to $validname..."
+              echo "$name" > "pkgdest/$validname.original.txt"
+              mv "pkgdest/$name" "pkgdest/$validname"
+            fi          
+          done
+        shell: bash
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
