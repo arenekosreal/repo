@@ -45,6 +45,9 @@ runs:
     - name: Obtain GnuPG keys
       if: steps.gpg-key.outputs.validpgpkeys
       run: |
-        gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
-        gpg --keyserver keyserver.ubuntu.com --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
+        for keyserver in keyserver.ubuntu.com keys.penpgp.org
+        do
+          gpg --keyserver $keyserver --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }} && break
+        done
+        gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
       shell: bash
