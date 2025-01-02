@@ -46,5 +46,5 @@ runs:
       if: steps.gpg-key.outputs.validpgpkeys
       run: |
         gpg --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }} || gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
-        gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
+        gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }} || gpg --keyserver keyserver.ubuntu.com --export --armor -o gpg-key.asc ${{ steps.gpg-key,outputs.validpgpkeys }}
       shell: bash
