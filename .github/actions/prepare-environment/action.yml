@@ -44,10 +44,16 @@ runs:
 
     - name: Obtain GnuPG keys
       if: steps.gpg-key.outputs.validpgpkeys
-      run: gpg --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }} || gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+      run: |
+        gpg --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+        if ! gpg --list-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+        then 
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+          gpg --list-keys ${{ steps.gpg-key.outputs.validpgpkeys }}
+        fi
       shell: bash
 
     - name: Export GnuPG keys
       if: steps.gpg-key.outputs.validpgpkeys
-      run: gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }} || gpg --keyserver keyserver.ubuntu.com --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
+      run: gpg --export --armor -o ${{ inputs.validpgpkeys }} ${{ steps.gpg-key.outputs.validpgpkeys }}
       shell: bash
