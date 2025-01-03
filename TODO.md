@@ -13,9 +13,6 @@
 - https://aur.archlinux.org/fooyin.git
   Reason: Need extra dependencies
   
-- https://aur.archlinux.org/linux-pf.git
-  Reason: Need custom environment
-  
 - https://aur.archlinux.org/mongodb.git
   Reason: Too large to be built, can be built on OBS
   

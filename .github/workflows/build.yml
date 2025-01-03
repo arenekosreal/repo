@@ -95,6 +95,7 @@ jobs:
           - https://aur.archlinux.org/waylyrics.git
           - https://aur.archlinux.org/wine-wow64.git
           - https://aur.archlinux.org/xdg-ninja.git
+          - https://aur.archlinux.org/linux-pf.git
     runs-on: ubuntu-latest          
     steps:
       - name: Checkout repository
