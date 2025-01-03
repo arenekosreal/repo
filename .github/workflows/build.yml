@@ -145,6 +145,8 @@ jobs:
       - name: Run builder
         id: build
         uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/linux-pf.git
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
