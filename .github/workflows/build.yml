@@ -95,7 +95,6 @@ jobs:
           #- https://aur.archlinux.org/waylyrics.git
           #- https://aur.archlinux.org/wine-wow64.git
           #- https://aur.archlinux.org/xdg-ninja.git
-          - https://aur.archlinux.org/linux-pf.git
     runs-on: ubuntu-latest          
     steps:
       - name: Checkout repository
@@ -125,6 +124,27 @@ jobs:
             fi          
           done
         shell: bash
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
+
+  linux-pf:
+    name: Build linux-pf(https://aur.archlinux.org/linux-pf.git)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Free space
+        uses: jlumbroso/free-disk-space@v1
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
