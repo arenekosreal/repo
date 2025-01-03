@@ -94,7 +94,7 @@ jobs:
           #- https://aur.archlinux.org/watt-toolkit-bin.git
           #- https://aur.archlinux.org/waylyrics.git
           #- https://aur.archlinux.org/wine-wow64.git
-          #- https://aur.archlinux.org/xdg-ninja.git
+          - https://aur.archlinux.org/xdg-ninja.git
     runs-on: ubuntu-latest          
     steps:
       - name: Checkout repository
