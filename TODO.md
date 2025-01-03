@@ -1,6 +1,3 @@
-- https://aur.archlinux.org/ayugram-desktop.git
-  Reason: Use too much space
-  
 - https://aur.archlinux.org/bfgminer-git.git
   Reason: Fail for unknown reason
   
