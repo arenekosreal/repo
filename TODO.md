@@ -9,12 +9,9 @@
   
 - https://aur.archlinux.org/ruffle-nightly.git
   Reason: chromium extension failed to sign
-  
-- https://aur.archlinux.org/spicetify-theme-nord-git.git
-  Reason: Need extra dependencies
-  
+
 - https://aur.archlinux.org/spicetify-themes-git.git
-  Reason: Need extea dependencies (and patch)
+  Reason: Need extra dependencies (and patch)
   
 - https://aur.archlinux.org/spotify.git
   Reason: Failed to download source deb
