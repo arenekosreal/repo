@@ -4,9 +4,6 @@
 - firefox-xdg (open build service)
   Reason: Too large to be built, even on OBS. Have to build and upload it manually.
   
-- https://aur.archlinux.org/fooyin.git
-  Reason: Need extra dependencies
-  
 - https://aur.archlinux.org/mongodb.git
   Reason: Too large to be built, can be built on OBS
   
