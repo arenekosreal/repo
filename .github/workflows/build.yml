@@ -185,3 +185,43 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
+  libvgm-git:
+    name: Build https://aur.archlinux.org/libvgm-git.git
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/libvgm-git.git
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
+
+  fooyin:
+    name: Build https://aur.archlinux.org/fooyin.git
+    runs-on: ubuntu-latest
+    needs:
+      - libvgm-git
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ jobs.libvgm-git.steps.build.outputs.artifact-name }}
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/fooyin.git
+          packages: *.pkg.tar.*
