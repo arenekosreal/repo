@@ -28,9 +28,6 @@
 - https://aur.archlinux.org/spotify.git
   Reason: Failed to download source deb
   
-- https://aur.archlinux.org/spotube.git
-  Reason: Need custom environment
-  
 - https://aur.archlinux.org/thrive.git
   Reason: Need extra dependencies dotnet 9
   

@@ -162,3 +162,26 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
+  spotube:
+    name: Build https://aur.archlinux.org/spotube.git with secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/spotube.git
+          environment: |
+            MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
+            MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
+            MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
