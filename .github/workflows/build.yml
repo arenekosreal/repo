@@ -317,70 +317,70 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
-  spicetify-cli:
-    name: Build https://aur.archlinux.org/spicetify-cli.git
-    runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/spicetify-cli.git
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
-
-  spicetify-theme-nord-git:
-    name: Build https://aur.archlinux.org/spicetify-theme-nord-git.git
-    runs-on: ubuntu-latest
-    needs:
-      - spicetify-cli
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/spicetify-theme-nord-git.git
-          packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
-
-  spicetify-themes-git:
-    name: Build https://aur.archlinux.org/spicetify-themes-git.git
-    runs-on: ubuntu-latest
-    needs:
-      - spicetify-cli
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/spicetify-themes-git.git
-          packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
+  # spicetify-cli:
+  #   name: Build https://aur.archlinux.org/spicetify-cli.git
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run builder
+  #       id: build
+  #       uses: ./.github/actions/build-pkgbuild-in-container
+  #       with:
+  #         repo: https://aur.archlinux.org/spicetify-cli.git
+  #
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ steps.build.outputs.artifact-name }}
+  #         path: pkgdest/*.pkg.tar.*
+  #         if-no-files-found: error
+  #
+  # spicetify-theme-nord-git:
+  #   name: Build https://aur.archlinux.org/spicetify-theme-nord-git.git
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - spicetify-cli
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run builder
+  #       id: build
+  #       uses: ./.github/actions/build-pkgbuild-in-container
+  #       with:
+  #         repo: https://aur.archlinux.org/spicetify-theme-nord-git.git
+  #         packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
+  #
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ steps.build.outputs.artifact-name }}
+  #         path: pkgdest/*.pkg.tar.*
+  #         if-no-files-found: error
+  #
+  # spicetify-themes-git:
+  #   name: Build https://aur.archlinux.org/spicetify-themes-git.git
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - spicetify-cli
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run builder
+  #       id: build
+  #       uses: ./.github/actions/build-pkgbuild-in-container
+  #       with:
+  #         repo: https://aur.archlinux.org/spicetify-themes-git.git
+  #         packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
+  #
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ steps.build.outputs.artifact-name }}
+  #         path: pkgdest/*.pkg.tar.*
+  #         if-no-files-found: error
