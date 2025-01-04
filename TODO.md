@@ -7,9 +7,6 @@
 - https://aur.archlinux.org/mongodb.git
   Reason: Too large to be built, can be built on OBS
   
-- https://aur.archlinux.org/mongosh.git
-  Reason: Need extra dependencies
-  
 - https://aur.archlinux.org/osu-lazer-bin.git
   Reason: Need extra dependencies
   
