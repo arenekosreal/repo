@@ -219,8 +219,10 @@ jobs:
         with:
           name: ${{ needs.libvgm-git.steps.build.outputs.artifact-name }}
 
-      - name: List directory
-        run: ls -lR .
+      - name: Move dependencies
+        run: |
+          cp -v ${{ needs.libvgm-git.steps.build.outputs.artifact-name }}/*.pkg.tar.* .
+          ls -lR .
 
       - name: Run builder
         id: build
