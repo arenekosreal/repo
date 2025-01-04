@@ -217,7 +217,7 @@ jobs:
       - name: Get dependencies
         uses: actions/download-artifact@v4
         with:
-          name: ${{ jobs.libvgm-git.steps.build.outputs.artifact-name }}
+          name: ${{ needs.libvgm-git.steps.build.outputs.artifact-name }}
 
       - name: Run builder
         id: build
