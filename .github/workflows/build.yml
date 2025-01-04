@@ -188,6 +188,10 @@ jobs:
   libvgm-git:
     name: Build https://aur.archlinux.org/libvgm-git.git
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name:
+        description: Generated string for obtaining/storaging artifacts
+        value: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -217,11 +221,11 @@ jobs:
       - name: Get dependencies
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.libvgm-git.steps.build.outputs.artifact-name }}
+          name: ${{ needs.libvgm-git.outputs.artifact-name }}
 
       - name: Move dependencies
         run: |
-          cp -v ${{ needs.libvgm-git.steps.build.outputs.artifact-name }}/*.pkg.tar.* .
+          cp -v ${{ needs.libvgm-git.outputs.artifact-name }}/*.pkg.tar.* .
           ls -lR .
 
       - name: Run builder
