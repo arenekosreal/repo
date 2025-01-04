@@ -8,6 +8,10 @@ inputs:
     description: Where to storage exported GnuPG key
     required: false
     default: gpg-key.asc
+  packages:
+    description: The path to packages
+    required: false
+    default: ''
 outputs:
   artifact-name:
     description: The string which can be used as artifact name
@@ -30,6 +34,7 @@ runs:
       uses: ./.github/actions/update-pacman-repo
       with:
         repo: repo/repo.db.tar.gz
+        packages: ${{ inputs.packages }}
 
     - name: Generate output
       id: gen-output
