@@ -10,6 +10,7 @@ else
   echo "Adding packages to existing repo"
   echo "$INPUT_PACKAGES" | while read -r package
   do
+    echo "Adding $package..."
     /usr/bin/repo-add "$INPUT_REPO" $(find . -maxdepth 0 -mindepth 0 -type f -name "$package")
   done
 fi
