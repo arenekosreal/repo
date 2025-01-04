@@ -1,9 +1,6 @@
 - https://aur.archlinux.org/bfgminer-git.git
   Reason: Fail for unknown reason
   
-- https://aur.archlinux.org/cinny.git
-  Reason: Need custom environment
-  
 - firefox-xdg (open build service)
   Reason: Too large to be built, even on OBS. Have to build and upload it manually.
   
