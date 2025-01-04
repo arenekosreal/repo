@@ -141,24 +141,24 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
-  cinny:
-    name: Build https://aur.archlinux.org/cinny.git with environment cinnyBase=/cinny
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/cinny.git
-          environment: |
-            cinnyBase=/cinny
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
+  # cinny:
+  #   name: Build https://aur.archlinux.org/cinny.git with environment cinnyBase=/cinny
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run builder
+  #       id: build
+  #       uses: ./.github/actions/build-pkgbuild-in-container
+  #       with:
+  #         repo: https://aur.archlinux.org/cinny.git
+  #         environment: |
+  #           cinnyBase=/cinny
+  #
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ steps.build.outputs.artifact-name }}
+  #         path: pkgdest/*.pkg.tar.*
+  #         if-no-files-found: error
