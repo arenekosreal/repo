@@ -222,6 +222,13 @@ jobs:
   #       with:
   #         repo: https://aur.archlinux.org/fooyin.git
   #         packages: ${{ needs.libvgm-git.outputs.artifact-name }}
+  #     
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ steps.build.outputs.artifact-name }}
+  #         path: pkgdest/*.pkg.tar.*
+  #         if-no-files-found: error
   libmongocrypt:
     name: Build https://aur.archlinux.org/libmongocrypt.git
     runs-on: ubuntu-latest
