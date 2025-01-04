@@ -152,7 +152,7 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/cinny.git
-          env: |
+          environment: |
             cinnyBase=/cinny
 
       - name: Upload artifacts
