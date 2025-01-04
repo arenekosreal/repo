@@ -224,7 +224,7 @@ jobs:
       - name: Move dependencies
         run: |
           ls -lR .
-          find '${{ needs.libvgm-git.outputs.artifact-name }}' -maxdepth 0 -mindepth 0 -type f -name '*.pkg.tar.*' -exec cp -v {} . \;
+          find -maxdepth 0 -mindepth 0 -type f -name '*.pkg.tar.*' -exec cp -v {} . \;
 
       - name: Run builder
         id: build
