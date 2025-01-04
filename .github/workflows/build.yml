@@ -224,4 +224,4 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/fooyin.git
-          packages: *.pkg.tar.*
+          packages: '*.pkg.tar.*'
