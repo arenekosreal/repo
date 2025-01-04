@@ -189,9 +189,7 @@ jobs:
     name: Build https://aur.archlinux.org/libvgm-git.git
     runs-on: ubuntu-latest
     outputs:
-      artifact-name:
-        description: Generated string for obtaining/storaging artifacts
-        value: ${{ steps.build.outputs.artifact-name }}
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
