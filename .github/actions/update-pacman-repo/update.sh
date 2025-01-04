@@ -8,5 +8,8 @@ then
   /usr/bin/repo-add "$INPUT_REPO"
 else
   echo "Adding packages to existing repo"
-  /usr/bin/repo-add "$INPUT_REPO" $INPUT_PACKAGES
+  echo "$INPUT_PACKAGES" | while read -r package
+  do
+    /usr/bin/repo-add "$INPUT_REPO" $(find . -maxdepth 0 -mindepth 0 -type f -name "$package")
+  done
 fi
