@@ -149,6 +149,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run builder
+        id: build
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/cinny.git
