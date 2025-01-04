@@ -9,7 +9,7 @@ inputs:
     required: false
     default: gpg-key.asc
   packages:
-    description: The path to packages
+    description: The artifacts to packages
     required: false
     default: ''
 outputs:
@@ -30,11 +30,18 @@ runs:
       run: git clone ${{ inputs.repo }} startdir
       shell: bash
 
-    - name: Generate empty pacman repository for building with dependency
+    - name: Download dependencies
+      if: inputs.packages
+      uses: actions/download-artifact@v4
+      with:
+        path: repo
+        pattern: ${{ inputs.packages }}
+        merge-multiple: true
+
+    - name: Generate pacman repository for building with dependency
       uses: ./.github/actions/update-pacman-repo
       with:
         repo: repo/repo.db.tar.gz
-        packages: ${{ inputs.packages }}
 
     - name: Generate output
       id: gen-output

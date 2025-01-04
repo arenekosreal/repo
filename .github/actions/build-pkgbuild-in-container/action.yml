@@ -16,7 +16,7 @@ inputs:
     default: 'gpg-key.asc'
 
   packages:
-    description: The path to the unofficial packages which is required to be installed
+    description: The artifacts to the unofficial packages which is required to be installed
     required: false
     default: '' 
 

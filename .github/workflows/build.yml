@@ -216,19 +216,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get dependencies
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.libvgm-git.outputs.artifact-name }}
-
-      - name: Move dependencies
-        run: |
-          ls -lR .
-          find -maxdepth 0 -mindepth 0 -type f -name '*.pkg.tar.*' -exec cp -v {} . \;
-
       - name: Run builder
         id: build
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/fooyin.git
-          packages: '*.pkg.tar.*'
+          packages: ${{ needs.libvgm-git.outputs.artifact-name }}

@@ -4,10 +4,6 @@ inputs:
   repo:
     description: The path to the repository
     required: true
-  packages:
-    description: The paths to packages
-    required: false
-    default: ''
 
 runs:
   using: docker
