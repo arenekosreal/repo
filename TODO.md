@@ -18,7 +18,3 @@
   
 - ungoogled-chromium-xdg (open build service)
   Reason: Too large to be built, can be built on OBS
-  
-- https://aur.archlinux.org/waydroid.git
-  Reason: Need extra dependencies
-  
