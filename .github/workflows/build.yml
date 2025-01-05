@@ -571,6 +571,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: open-build-service ${{ matrix.package }}
+          name: open-build-service ${{ steps.parse-matrix.outputs.package }}
           path: binaries/*.pkg.tar.*
           if-no-files-found: error
