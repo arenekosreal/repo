@@ -31,10 +31,10 @@ runs:
       shell: bash
     - name: Get binaries
       run: |
-        osc getbinaries \
-          "${{ inputs.project }}" \
-          "${{ inputs.package }}" \
-          "${{ inputs.repository }}" \
+        osc getbinaries \\
+          "${{ inputs.project }}" \\
+          "${{ inputs.package }}" \\
+          "${{ inputs.repository }}" \\
           "${{ inputs.arch && inputs.arch || $(uname -m) }}"
       shell: bash
 
