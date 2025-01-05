@@ -427,11 +427,34 @@ jobs:
           path: pkgdest/*.pkg.tar.*
           if-no-files-found: error
 
+  dotnet-install:
+    name: Build https://aur.archlinux.org/dotnet-install.git
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/dotnet-install.git
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
+
   watt-toolkit-git:
     name: Build https://aur.archlinux.org/watt-toolkit-git.git
     runs-on: ubuntu-latest
     needs:
       - dotnet-core-bin
+      - dotnet-install
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -441,7 +464,7 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/watt-toolkit-git.git
-          packages: ${{ needs.dotnet-core-bin.outputs.artifact-name }}
+          packages: aur.archlinux.org dotnet-*
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
