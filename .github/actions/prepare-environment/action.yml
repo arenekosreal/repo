@@ -31,7 +31,18 @@ runs:
       shell: bash
       
     - name: Download pkgbuild
-      run: git clone ${{ inputs.repo }} startdir
+      run: |
+        git clone ${{ inputs.repo }} startdir
+        if [[ -d "${{ steps.gen-output.outputs.artifact-name }}" ]]
+        then
+          find "${{ steps.gen-output.outputs.artifact-name }}" \
+            -maxdepth 1 -mindepth 1 -type f \
+            -name '*.patch' -o -name '*.diff' | while read -r p
+          do
+            echo "Applying $p..."
+            patch -Np1 -d startdir -i "../$p"
+          done
+        fi
       shell: bash
 
     - name: Download dependencies
