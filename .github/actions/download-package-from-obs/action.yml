@@ -31,11 +31,16 @@ runs:
       shell: bash
     - name: Get binaries
       run: |
+        arch="${{ inputs.arch }}"
+        if [[ -z "$arch" ]]
+        then
+          arch="$(uname -m)"
+        fi
         osc getbinaries \\
           "${{ inputs.project }}" \\
           "${{ inputs.package }}" \\
           "${{ inputs.repository }}" \\
-          "${{ inputs.arch && inputs.arch || \$(uname -m) }}"
+          "$arch"
       shell: bash
 
     - name: Ensure filename suitable for uploading
