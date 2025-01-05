@@ -564,6 +564,8 @@ jobs:
           project: ${{ steps.parse-matrix.outputs.project }}
           package: ${{ steps.parse-matrix.outputs.package }}
           repository: Arch
+          username: ${{ secrets.OBS_USERNAME }}
+          password: ${{ secrets.OBS_PASSWORD }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

@@ -13,6 +13,19 @@ inputs:
     description: The repository of target
     required: true
 
+  username:
+    description: The username of OBS account
+    required: true
+
+  password:
+    description: The password of OBS account
+    required: true
+
+  api:
+    description: The api address of OBS instance
+    required: false
+    default: https://api.opensuse.org
+
   arch:
     description: The architecture of target package
     required: false
@@ -29,6 +42,15 @@ runs:
           sudo apt-get install -y osc
         fi
       shell: bash
+
+    - name: Login
+      run: |
+        XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+        mkdir -p "$XDG_CONFIG_HOME/osc"
+        echo [general]\napiurl=${{ inputs.api }} > "$XDG_CONFIG_HOME/osc/oscrc"
+        echo [${{ inputs.api }}]\nuser = ${{ inputs.username }}\npass = ${{ inputs.password }} >> "$XDG_CONFIG_HOME/osc/oscrc"
+      shell: bash
+
     - name: Get binaries
       run: |
         arch="${{ inputs.arch }}"
