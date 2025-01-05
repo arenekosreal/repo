@@ -186,8 +186,6 @@ jobs:
   # libvgm-git:
   #   name: Build https://aur.archlinux.org/libvgm-git.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -219,7 +217,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/fooyin.git
-  #         packages: ${{ needs.libvgm-git.outputs.artifact-name }}
   #     
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -230,8 +227,6 @@ jobs:
   # libmongocrypt:
   #   name: Build https://aur.archlinux.org/libmongocrypt.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -263,7 +258,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/mongosh.git
-  #         packages: ${{ needs.libmongocrypt.outputs.artifact-name }}
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -274,8 +268,6 @@ jobs:
   # osu-mime:
   #   name: Build https://aur.archlinux.org/osu-mime.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -307,7 +299,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/osu-lazer-bin.git
-  #         packages: ${{ needs.osu-mime.outputs.artifact-name }}
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -315,11 +306,10 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
+  #
   # spicetify-cli:
   #   name: Build https://aur.archlinux.org/spicetify-cli.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -351,7 +341,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/spicetify-theme-nord-git.git
-  #         packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -374,7 +363,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/spicetify-themes-git.git
-  #         packages: ${{ needs.spicetify-cli.outputs.artifact-name }}
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -385,8 +373,6 @@ jobs:
   # dotnet-core-bin:
   #   name: Build https://aur.archlinux.org/dotnet-core-bin.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -418,7 +404,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/thrive.git
-  #         packages: ${{ needs.dotnet-core-bin.outputs.artifact-name }}
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -430,8 +415,6 @@ jobs:
   # dotnet-install:
   #   name: Build https://aur.archlinux.org/dotnet-install.git
   #   runs-on: ubuntu-latest
-  #   outputs:
-  #     artifact-name: ${{ steps.build.outputs.artifact-name }}
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
@@ -464,7 +447,6 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/watt-toolkit-git.git
-  #         packages: aur.archlinux.org dotnet-*
   #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
@@ -475,8 +457,6 @@ jobs:
   libglibutil:
     name: Build https://aur.archlinux.org/libglibutil.git
     runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -497,8 +477,6 @@ jobs:
   libgbinder:
     name: Build https://aur.archlinux.org/libgbinder.git
     runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
     needs:
       - libglibutil
     steps:
@@ -510,7 +488,6 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libgbinder.git
-          packages: ${{ needs.libglibutil.outputs.artifact-name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -522,8 +499,6 @@ jobs:
   python-gbinder:
     name: Build https://aur.archlinux.org/python-gbinder.git
     runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
     needs:
       - libgbinder
     steps:
@@ -535,7 +510,6 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/python-gbinder.git
-          packages: ${{ needs.libgbinder.outputs.artifact-name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -558,7 +532,6 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/waydroid.git
-          packages: ${{ needs.python-gbinder.outputs.artifact-name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

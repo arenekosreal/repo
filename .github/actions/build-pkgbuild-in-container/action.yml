@@ -15,11 +15,6 @@ inputs:
     required: false
     default: 'gpg-key.asc'
 
-  packages:
-    description: The artifacts to the unofficial packages which is required to be installed
-    required: false
-    default: '' 
-
 outputs:
   artifact-name:
     description: The string which can be used as artifact name
@@ -34,7 +29,6 @@ runs:
       with:
         repo: ${{ inputs.repo }}
         validpgpkeys: ${{ inputs.validpgpkeys }}
-        packages: ${{ inputs.packages }}
 
     - name: Launch builder
       uses: ./.github/actions/launch-build-container

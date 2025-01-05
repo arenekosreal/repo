@@ -8,10 +8,6 @@ inputs:
     description: Where to storage exported GnuPG key
     required: false
     default: gpg-key.asc
-  packages:
-    description: The artifacts to packages
-    required: false
-    default: ''
 outputs:
   artifact-name:
     description: The string which can be used as artifact name
@@ -31,11 +27,9 @@ runs:
       shell: bash
 
     - name: Download dependencies
-      if: inputs.packages
       uses: actions/download-artifact@v4
       with:
         path: repo
-        pattern: ${{ inputs.packages }}
         merge-multiple: true
 
     - name: Generate pacman repository for building with dependency
