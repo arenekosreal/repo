@@ -545,20 +545,22 @@ jobs:
     strategy:
       matrix:
         package:
-          - project: home:ZhangHua:ungoogled-chromium-xdg
-            package: ungoogled-chromium-xdg
-
-          - project: home:ZhangHua
-            package: mongodb
+          - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
+          - home:ZhangHua/mongodb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Parse matrix
+        run: |
+          echo "project=${{ matrix.package }}" | cut -d / -f 1 >> "$GITHUB_OUTPUT"
+          echo "package=${{ matrix.package }}" | cut -d / -f 2 >> "$GITHUB_OUTPUT"
+
       - name: Get package
         uses: ./.github/actions/download-package-from-obs
         with:
-          project: ${{ matrix.project }}
-          package: ${{ matrix.package }}
+          project: ${{ steps.parse-matrix.outputs.project }}
+          package: ${{ steps.parse-matrix.outputs.package }}
           repository: Arch
 
       - name: Upload artifacts
