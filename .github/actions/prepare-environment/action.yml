@@ -21,7 +21,7 @@ runs:
       run: |
         echo -n artifact-name= >> "$GITHUB_OUTPUT"
         repo="${{ inputs.repo }}"
-        echo "${repo##*/}" | sed 's/.git//$' >> "$GITHUB_OUTPUT"
+        echo "${repo##*/}" | sed 's/.git$//' >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Prepare directories
