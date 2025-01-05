@@ -65,10 +65,10 @@ runs:
         then
           arch="$(uname -m)"
         fi
-        osc getbinaries \\
-          "${{ inputs.project }}" \\
-          "${{ inputs.package }}" \\
-          "${{ inputs.repository }}" \\
+        osc getbinaries \
+          "${{ inputs.project }}" \
+          "${{ inputs.package }}" \
+          "${{ inputs.repository }}" \
           "$arch"
       shell: bash
 
