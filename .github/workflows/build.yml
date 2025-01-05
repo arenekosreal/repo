@@ -539,22 +539,3 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
-  ruffle-nightly:
-    name: Build https://aur.archlinux.org/ruffle-nightly.git
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/ruffle-nightly.git
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
