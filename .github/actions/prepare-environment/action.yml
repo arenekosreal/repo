@@ -16,6 +16,14 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Generate output
+      id: gen-output
+      run: |
+        echo -n artifact-name= >> "$GITHUB_OUTPUT"
+        repo="${{ inputs.repo }}"
+        echo "${repo##*/}" | sed 's/.git//' >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: Prepare directories
       run: |
         rm -rf startdir pkgdest repo
@@ -36,11 +44,6 @@ runs:
       uses: ./.github/actions/update-pacman-repo
       with:
         repo: repo/repo.db.tar.gz
-
-    - name: Generate output
-      id: gen-output
-      run: echo artifact-name=${{ inputs.repo }} | sed 's|=.*://|=|;s|.git$||;s|/| |g' >> $GITHUB_OUTPUT
-      shell: bash
 
     - name: Scan GnuPG keys in PKGBUILD
       id: gpg-key
