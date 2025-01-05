@@ -553,8 +553,10 @@ jobs:
 
       - name: Parse matrix
         run: |
-          echo "project=${{ matrix.package }}" | cut -d / -f 1 >> "$GITHUB_OUTPUT"
-          echo "package=${{ matrix.package }}" | cut -d / -f 2 >> "$GITHUB_OUTPUT"
+          echo -n project= >> "$GITHUB_OUTPUT"
+          echo "${{ matrix.package }}" | cut -d / -f 1 >> "$GITHUB_OUTPUT"
+          echo -n package= >> "$GITHUB_OUTPUT" 
+          echo "${{ matrix.package }}" | cut -d / -f 2 >> "$GITHUB_OUTPUT"
 
       - name: Get package
         uses: ./.github/actions/download-package-from-obs
