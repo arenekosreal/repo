@@ -1,0 +1,58 @@
+name: Download package from OBS
+description: Download package from OBS
+inputs:
+  project:
+    description: The OBS repository to download package
+    required: true
+
+  package:
+    description: The package in the repository
+    required: true
+
+  repository:
+    description: The repository of target
+    required: true
+
+  arch:
+    description: The architecture of target package
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Install osc
+      run: |
+        if ! command -v osc > /dev/null
+        then
+          sudo apt-get update -y
+          sudo apt-get install -y osc
+        fi
+      shell: bash
+    - name: Get binaries
+      run: |
+        osc getbinaries \
+          "${{ inputs.project }}" \
+          "${{ inputs.package }}" \
+          "${{ inputs.repository }}" \
+          "${{ inputs.arch && inputs.arch || $(uname -m) }}"
+      shell: bash
+
+    - name: Ensure filename suitable for uploading
+      run: |
+        find binaries -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | while read -r f
+        do
+          name="$(basename "$f")"
+          validname="$name"
+          for char in '\:' '\"' '\<' '\>' '\|' '\*' '\?' "$(printf '\r')" "$(printf '\n')"
+          do
+            validname=${validname//$char/#}
+          done
+          if [[ "$name" != "$validname" ]]
+          then 
+            echo "Rewriting $name to $validname..."
+            echo "$name" > "binaries/$validname.original.txt"
+            mv "binaries/$name" "binaries/$validname"
+          fi          
+        done
+      shell: bash
