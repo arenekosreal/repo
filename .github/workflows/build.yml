@@ -15,7 +15,6 @@ jobs:
   #         - https://aur.archlinux.org/aria2cd.git
   #         - https://aur.archlinux.org/ariang-git.git
   #         - https://aur.archlinux.org/ariang-native-git.git
-  #         - https://aur.archlinux.org/dotnet-preview-bin.git
   #         - https://aur.archlinux.org/basedpyright.git
   #         - https://aur.archlinux.org/bcache-tools.git
   #         - https://aur.archlinux.org/binder_linux-dkms.git
@@ -30,7 +29,6 @@ jobs:
   #         - https://aur.archlinux.org/csharp-ls.git
   #         - https://aur.archlinux.org/dendrite.git
   #         - https://aur.archlinux.org/dockerfile-language-server.git
-  #         - https://aur.archlinux.org/dotnet-core-bin.git
   #         - https://aur.archlinux.org/downgrade.git
   #         - https://aur.archlinux.org/electron22-bin.git
   #         - https://aur.archlinux.org/fcitx5-pinyin-custom-pinyin-dictionary.git
@@ -384,3 +382,70 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
+  dotnet-core-bin:
+    name: Build https://aur.archlinux.org/dotnet-core-bin.git
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/dotnet-core-bin.git
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
+
+  thrive:
+    name: Build https://aur.archlinux.org/thrive.git
+    runs-on: ubuntu-latest
+    needs:
+      - dotnet-core-bin
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/thrive.git
+          packages: ${{ needs.dotnet-core-bin.outputs.artifact-name }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
+
+  watt-toolkit-git:
+    name: Build https://aur.archlinux.org/watt-toolkit-git.git
+    runs-on: ubuntu-latest
+    needs:
+      - dotnet-core-bin
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run builder
+        id: build
+        uses: ./.github/actions/build-pkgbuild-in-container
+        with:
+          repo: https://aur.archlinux.org/watt-toolkit-git.git
+          packages: ${{ needs.dotnet-core-bin.outputs.artifact-name }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest/*.pkg.tar.*
+          if-no-files-found: error
