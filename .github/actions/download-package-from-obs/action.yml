@@ -47,8 +47,15 @@ runs:
       run: |
         XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
         mkdir -p "$XDG_CONFIG_HOME/osc"
-        echo [general]\napiurl=${{ inputs.api }} > "$XDG_CONFIG_HOME/osc/oscrc"
-        echo [${{ inputs.api }}]\nuser = ${{ inputs.username }}\npass = ${{ inputs.password }} >> "$XDG_CONFIG_HOME/osc/oscrc"
+        echo [general] > "$XDG_CONFIG_HOME/osc/oscrc"
+        echo apiurl=${{ inputs.api }} >> "$XDG_CONFIG_HOME/osc/oscrc"
+        echo [${{ inputs.api }}] >> "$XDG_CONFIG_HOME/osc/oscrc"
+        echo user = ${{ inputs.username }} >> "$XDG_CONFIG_HOME/osc/oscrc"
+        echo pass = ${{ inputs.password }} >> "$XDG_CONFIG_HOME/osc/oscrc"
+      shell: bash
+
+    - name: Display oscrc
+      run: cat ${XDG_CONFIG_HOME:-$HOME/.config}/osc/oscrc
       shell: bash
 
     - name: Get binaries
