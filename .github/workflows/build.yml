@@ -217,7 +217,7 @@ jobs:
   #       uses: ./.github/actions/build-pkgbuild-in-container
   #       with:
   #         repo: https://aur.archlinux.org/fooyin.git
-  #     
+  #
   #     - name: Upload artifacts
   #       uses: actions/upload-artifact@v4
   #       with:
@@ -539,38 +539,38 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
-  obs-packages:
-    name: Get packages built on Open Build Service
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
-          - home:ZhangHua/mongodb
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Parse matrix
-        id: parse-matrix
-        run: |
-          echo -n project= >> "$GITHUB_OUTPUT"
-          echo "${{ matrix.package }}" | cut -d / -f 1 >> "$GITHUB_OUTPUT"
-          echo -n package= >> "$GITHUB_OUTPUT" 
-          echo "${{ matrix.package }}" | cut -d / -f 2 >> "$GITHUB_OUTPUT"
-
-      - name: Get package
-        uses: ./.github/actions/download-package-from-obs
-        with:
-          project: ${{ steps.parse-matrix.outputs.project }}
-          package: ${{ steps.parse-matrix.outputs.package }}
-          repository: Arch
-          username: ${{ secrets.OBS_USERNAME }}
-          password: ${{ secrets.OBS_PASSWORD }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: open-build-service ${{ steps.parse-matrix.outputs.package }}
-          path: binaries/*.pkg.tar.*
-          if-no-files-found: error
+  # obs-packages:
+  #   name: Get packages built on Open Build Service
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       package:
+  #         - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
+  #         - home:ZhangHua/mongodb
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Parse matrix
+  #       id: parse-matrix
+  #       run: |
+  #         echo -n project= >> "$GITHUB_OUTPUT"
+  #         echo "${{ matrix.package }}" | cut -d / -f 1 >> "$GITHUB_OUTPUT"
+  #         echo -n package= >> "$GITHUB_OUTPUT"
+  #         echo "${{ matrix.package }}" | cut -d / -f 2 >> "$GITHUB_OUTPUT"
+  #
+  #     - name: Get package
+  #       uses: ./.github/actions/download-package-from-obs
+  #       with:
+  #         project: ${{ steps.parse-matrix.outputs.project }}
+  #         package: ${{ steps.parse-matrix.outputs.package }}
+  #         repository: Arch
+  #         username: ${{ secrets.OBS_USERNAME }}
+  #         password: ${{ secrets.OBS_PASSWORD }}
+  #
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: open-build-service ${{ steps.parse-matrix.outputs.package }}
+  #         path: binaries/*.pkg.tar.*
+  #         if-no-files-found: error
