@@ -33,10 +33,9 @@ runs:
     - name: Download pkgbuild
       run: |
         git clone ${{ inputs.repo }} startdir
-        ls -lR .
-        if [[ -d "${{ steps.gen-output.outputs.artifact-name }}" ]]
+        if [[ -d "patches/${{ steps.gen-output.outputs.artifact-name }}" ]]
         then
-          find "${{ steps.gen-output.outputs.artifact-name }}" \
+          find "patches/${{ steps.gen-output.outputs.artifact-name }}" \
             -maxdepth 1 -mindepth 1 -type f \
             -name '*.patch' -o -name '*.diff' | while read -r p
           do
