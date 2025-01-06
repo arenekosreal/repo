@@ -1,0 +1,14 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 94e5cac..ee25c11 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -115,7 +115,8 @@ build() {
+ 
+     userdatadir="$(mktemp -d chromium-pack-XXXXXX)"
+     chromium --user-data-dir="$userdatadir" --pack-extension="extension-chromium" \
+-        --pack-extension-key="$srcdir/chromium-extension-ruffle.key"
++        --pack-extension-key="$srcdir/chromium-extension-ruffle.key" \
++        --no-sandbox
+ }
+ 
+ check() {
