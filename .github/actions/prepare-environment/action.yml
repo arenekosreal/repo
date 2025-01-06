@@ -31,8 +31,11 @@ runs:
       shell: bash
       
     - name: Download pkgbuild
+      run: git clone ${{ inputs.repo }} startdir
+      shell: bash
+
+    - name: Apply patch
       run: |
-        git clone ${{ inputs.repo }} startdir
         if [[ -d "patches/${{ steps.gen-output.outputs.artifact-name }}" ]]
         then
           find "patches/${{ steps.gen-output.outputs.artifact-name }}" \
