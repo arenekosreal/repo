@@ -104,6 +104,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: ${{ matrix.pkgbuild-repo }}
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -132,6 +134,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: ${{ matrix.pkgbuild-repo }}
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -154,6 +158,7 @@ jobs:
           repo: https://aur.archlinux.org/cinny.git
           environment: |
             cinnyBase=/cinny
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -178,6 +183,7 @@ jobs:
             MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
             MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
             MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -198,6 +204,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libvgm-git.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -220,6 +228,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/fooyin.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -240,6 +250,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libmongocrypt.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -262,6 +274,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/mongosh.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -282,6 +296,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/osu-mime.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -304,6 +320,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/osu-lazer-bin.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -324,6 +342,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/spicetify-cli.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -346,6 +366,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/spicetify-theme-nord-git.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -368,6 +390,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/spicetify-themes-git.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -388,6 +412,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/dotnet-core-bin.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -410,6 +436,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/thrive.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -430,6 +458,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/dotnet-install.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -453,6 +483,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/watt-toolkit-git.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -473,6 +505,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libglibutil.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -495,6 +529,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libgbinder.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -517,6 +553,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/python-gbinder.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -539,6 +577,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/waydroid.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -596,6 +636,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libbase58.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -618,6 +660,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/libblkmaker.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -640,6 +684,8 @@ jobs:
         uses: ./.github/actions/build-pkgbuild-in-container
         with:
           repo: https://aur.archlinux.org/bfgminer-git.git
+          environment: |
+            PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
