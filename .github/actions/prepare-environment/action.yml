@@ -48,6 +48,12 @@ runs:
         fi
       shell: bash
 
+    - name: Download spotify sources manually
+      if: inputs.repo == 'https://aur.archlinux.org/spotify.git'
+      uses: ./.github/actions/download-sources-in-pkgbuild
+      with:
+        directory: startdir
+
     - name: Download dependencies
       uses: actions/download-artifact@v4
       with:
