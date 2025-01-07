@@ -719,20 +719,19 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          path: repo-raw
+          path: repo
           merge-multiple: true
 
       - name: Restore encoded filename
         uses: ./.github/actions/restore-package-name
         with:
-          path: repo-raw
+          path: repo
 
       - name: Remove uneeded files
         run: |
-          mkdir -p repo
-          find repo-raw -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | grep -E '.*.pkg.tar.[^\.]+$' | while read -r f
+          find repo -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | grep -E '.+\.pkg\.tar\.[^\.]+\..+' | while read -r f
           do
-            echo "Keeping $f..."
-            cp -v "$f" repo/
+            echo "Removing $f..."
+            rm "$f"
           done
           ls -lR repo

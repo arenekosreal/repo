@@ -65,6 +65,15 @@ runs:
       with:
         path: repo
 
+    - name: Remove invalid package files
+      run: |
+        find repo -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | grep -E '.+\.pkg\.tar\.[^\.]+\..+' | while read -r f
+        do
+          echo "Removing $f..."
+          rm "$f"
+        done
+      shell: bash
+
     - name: Generate pacman repository for building with dependency
       uses: ./.github/actions/update-pacman-repo
       with:
