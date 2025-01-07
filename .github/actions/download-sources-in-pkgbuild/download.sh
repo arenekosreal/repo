@@ -18,8 +18,8 @@ sudo -u builder makepkg --printsrcinfo | grep source | cut -d = -f 2 | sed 's/^[
 do
   if [[ "${line//::/}" != "$line" ]]
   then
-    line_array=()
-    IFS="::" read -ra line_array <<< "$line"
+    declare -a line_array
+    read -a -r line_array <<< "${line//::/ }"
     name="${line_array[0]}"
     url="${line_array[1]}"
     if [[ -n "$url" ]]
