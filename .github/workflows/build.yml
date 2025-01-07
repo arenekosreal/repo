@@ -94,6 +94,7 @@ jobs:
   #         - https://aur.archlinux.org/waylyrics.git
   #         - https://aur.archlinux.org/wine-wow64.git
   #         - https://aur.archlinux.org/xdg-ninja.git
+  #         - https://aur.archlinux.org/spotify.git
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Checkout repository
@@ -637,22 +638,3 @@ jobs:
   #         name: ${{ steps.build.outputs.artifact-name }}
   #         path: pkgdest/*.pkg.tar.*
   #         if-no-files-found: error
-  spotify:
-    name: Build https://aur.archlinux.org/spotify.git
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run builder
-        id: build
-        uses: ./.github/actions/build-pkgbuild-in-container
-        with:
-          repo: https://aur.archlinux.org/spotify.git
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest/*.pkg.tar.*
-          if-no-files-found: error
