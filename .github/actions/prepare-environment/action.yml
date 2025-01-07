@@ -60,6 +60,11 @@ runs:
         path: repo
         merge-multiple: true
 
+    - name: Restore encoded filename
+      uses: ./.github/actions/restore-package-name
+      with:
+        path: repo
+
     - name: Generate pacman repository for building with dependency
       uses: ./.github/actions/update-pacman-repo
       with:

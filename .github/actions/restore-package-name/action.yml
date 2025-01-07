@@ -1,0 +1,21 @@
+name: Restore package name
+description: Restore encoded package name for uploading as artifacts
+inputs:
+  path:
+    description: The path contains packages
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Restore file name
+      run: |
+        find "${{ inputs.path }}" -maxdepth 1 -mindepth 1 -type f -name '*.original.txt' | while read -r f
+        do
+          name="$(basename -s .original.txt "$f")"
+          original="$(< "$f")"
+          echo "Recovering $original from $name..."
+          mv "$name" "${{ inputs.path }}/$original"
+          rm "$f"
+        done
+      shell: bash
