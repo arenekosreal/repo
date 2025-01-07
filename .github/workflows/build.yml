@@ -549,6 +549,7 @@ jobs:
 
   obs-packages:
     name: Get packages built on Open Build Service
+    # https://github.com/actions/runner-images/issues/10636#issuecomment-2574558221
     runs-on: ubuntu-22.04
     strategy:
       matrix:
