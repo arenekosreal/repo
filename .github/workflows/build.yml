@@ -47,7 +47,6 @@ jobs:
           - https://aur.archlinux.org/jamesdsp.git
           - https://aur.archlinux.org/kde-thumbnailer-apk.git
           - https://aur.archlinux.org/ksmbd-tools.git
-          - https://aur.archlinux.org/libmongocrypt.git
           - https://aur.archlinux.org/lyrica.git
           - https://aur.archlinux.org/matrix-sliding-sync.git
           - https://aur.archlinux.org/mongodb-tools.git
