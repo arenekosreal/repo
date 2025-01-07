@@ -19,7 +19,7 @@ do
   if [[ "${line//::/}" != "$line" ]]
   then
     declare -a line_array
-    read -a -r line_array <<< "${line//::/ }"
+    read -r -a line_array <<< "${line//::/ }"
     name="${line_array[0]}"
     url="${line_array[1]}"
     if [[ -n "$url" ]]
