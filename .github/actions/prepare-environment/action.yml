@@ -67,11 +67,9 @@ runs:
 
     - name: Remove invalid package files
       run: |
-        find repo -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' | grep -E '.+\.pkg\.tar\.[^\.]+\..+' || true | while read -r f
-        do
-          echo "Removing $f..."
-          rm "$f"
-        done
+        find repo -maxdepth 1 -mindepth 1 -type f \
+          -name '*.pkg.tar.*' ! -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' \
+          -delete
       shell: bash
 
     - name: Generate pacman repository for building with dependency
