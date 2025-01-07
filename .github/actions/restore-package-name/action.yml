@@ -15,7 +15,7 @@ runs:
           name="$(basename -s .original.txt "$f")"
           original="$(< "$f")"
           echo "Recovering $original from $name..."
-          mv "$name" "${{ inputs.path }}/$original"
+          mv "${{ inputs.path }}/$name" "${{ inputs.path }}/$original"
           rm "$f"
         done
       shell: bash
