@@ -15,7 +15,7 @@ jobs:
         
       - name: Download release
         id: download-release
-        uses: nguyenngoclongdev/release-downloader@v1
+        uses: nguyenngoclongdev/release-downloader@v0.0.1
         with:
           latest: ${{ github.event.release && 'false' || 'true' }}
           releaseId: ${{ github.event.release.id }}
