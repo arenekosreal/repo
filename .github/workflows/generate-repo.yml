@@ -16,7 +16,7 @@ jobs:
       - name: Download release
         id: download-release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           tagName="$(gh release list --exclude-pre-releases --jq '.[] | select(.isDraft) | .tagName' --limit 1 --json tagName,isDraft)"
           echo "Found release tag $tagName"
@@ -32,7 +32,7 @@ jobs:
 
       - name: Update release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "${{ steps.download-release.outputs.tag_name }}" \
             *.db \
