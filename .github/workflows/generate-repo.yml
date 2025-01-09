@@ -1,0 +1,40 @@
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  generate-repo:
+    if: github.event.release.draft || github.event.workflow_dispatch
+    runs-on: ubuntu-latest
+    name: Generate pacman repository
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Download release
+        id: download-release
+        uses: nguyenngoclongdev/release-downloader@v1
+        with:
+          latest: ${{ github.event.release && 'false' || 'true' }}
+          releaseId: ${{ github.event.release.id }}
+          tarBall: false
+          zipBall: false
+          fileName: '*.pkg.tar.*'
+          out-file-path: repo
+
+      - name: Generate repository
+        uses: ./.github/actions/update-pacman-repo
+        with:
+          repo: repo
+
+      - name: Generate release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          tag_name: ${{ steps.download-release.outputs.tag_name }}
+          files: |
+            repo/*.pkg.tar.*
+            repo/*.db.tar.*
+            repo/*.db
