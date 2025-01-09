@@ -19,8 +19,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           tagName="$(gh release list --exclude-pre-releases --jq '.[] | select(.isDraft) | .tagName' --limit 1 --json tagName,isDraft)"
-          rm -rf repo
-          gh release download "$tagName" --dir repo
+          echo "Found release tag $tagName"
+          rm -rf "$tagName"
+          gh release download "$tagName" --dir "$tagName"
+          echo "Downloaded release tag $tagName"
           echo tag_name="$tagName" >> "$GITHUB_OUTPUT"
 
       - name: Generate repository
