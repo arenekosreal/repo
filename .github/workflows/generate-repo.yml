@@ -6,7 +6,7 @@ on:
 
 jobs:
   generate-repo:
-    if: github.event.release.draft || github.event.workflow_dispatch
+    if: github.event.release.draft || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     name: Generate pacman repository
     steps:
