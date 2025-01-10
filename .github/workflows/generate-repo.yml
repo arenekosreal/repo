@@ -24,6 +24,11 @@ jobs:
         run: |
           gh release list
           tagName="$(gh release list --exclude-pre-releases --jq '.[] | select(.isDraft) | .tagName' --limit 1 --json tagName,isDraft)"
+          if [[ -z "$tagName" ]]
+          then
+            echo "Unable to find a release tag."
+            exit 1
+          fi
           echo "Found release tag $tagName"
           rm -rf "$tagName"
           gh release download "$tagName" --dir "$tagName"
@@ -41,6 +46,7 @@ jobs:
         run: |
           gh release upload "${{ steps.download-release.outputs.tag_name }}" \
             repo/repo.db.tar.gz \
-            repo/repo.files.tar.gz
+            repo/repo.files.tar.gz \
+            --clobber
           gh release edit "${{ steps.download-release.outputs.tag_name }}" \
             --draft=false
