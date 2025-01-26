@@ -235,7 +235,7 @@ jobs:
       - libgbinder
     uses: ./.github/workflows/build-single-package.yml
     with:
-      git-repoository: https://aur.archlinux.org/python-gbinder.git
+      git-repository: https://aur.archlinux.org/python-gbinder.git
       bump-pkgrel: ${{ inputs.bump-pkgrel }}
 
   waydroid:
