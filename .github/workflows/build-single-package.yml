@@ -74,28 +74,18 @@ jobs:
           directory: startdir
           name: arch
 
+      - name: Get target arch
+        id: get-target-arch
+        uses: ./.github/actions/get-target-arch
+
       - name: Generate meta info
         id: gen-meta-info
         run: |
-          case "${{ runner.arch }}" in
-            X64)
-              arch=x86_64
-              ;;
-            ARM64)
-              arch=aarch64
-              ;;
-            X86)
-              arch=i386
-              ;;
-            ARM)
-              arch=armv7
-              ;;
-          esac
           printf "artifact-name=%s %s-%d %s\n" \
             "${{ steps.pkgbase.outputs.value }}" \
             "${{ steps.pkgver.outputs.value }}" \
             "${{ steps.pkgrel.outputs.value }}" \
-            "$arch" >> "$GITHUB_OUTPUT"
+            "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
 
           case "${{ steps.pkgbase.outputs.value }}" in
             *-git)
@@ -135,7 +125,7 @@ jobs:
           found=false
           for a in "${archs[@]}"
           do
-            if [[ "$a" == "any" ]] || [[ "$a" == "$arch" ]]
+            if [[ "$a" == "any" ]] || [[ "$a" == "${{ steps.get-target-arch.outputs.target-arch }}" ]]
             then
               echo "ignore-arch=''" >> "$GITHUB_OUTPUT"
               found=true
