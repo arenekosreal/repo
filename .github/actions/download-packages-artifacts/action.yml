@@ -1,0 +1,38 @@
+name: Download packages artifacts
+description: Download packages artifacts
+
+inputs:
+  directory:
+    description: The directory to storage downloaded packages.
+    required: true
+
+outputs:
+  packages:
+    description: Newline splitted string with packages names downloaded.
+    value: ${{ steps.escape.outputs.packages }}
+
+runs:
+  using: composite
+  steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ${{ inputs.directory }}
+        merge-multiple: true
+
+    - name: Recover escaped files names
+      id: escape
+      run: |
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*.original.txt' | while read -r f
+        do
+          name="$(basename -s .original.txt "$f" )"
+          original="$(< "$f")"
+          echo "Recovering $original from $name..."
+          mv "${{ inputs.directory }}/$name" "${{ inputs.directory }}/$original"
+          rm "$f"
+        done
+        EOF="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
+        echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' -printf "%f\n" >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+      shell: bash

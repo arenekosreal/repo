@@ -1,0 +1,27 @@
+name: Get target arch
+description: Get target arch based on runner.arch
+
+outputs:
+  target-arch:
+    description: Target arch
+    value: ${{ steps.detect-target.outputs.arch }}
+
+runs:
+  using: composite
+  steps:
+    - name: Detect target
+      id: detect-target
+      run: |
+        case "${{ runner.arch }}" in
+          X64)
+            echo "arch=x86_64" >> "$GITHUB_OUTPUT"
+            ;;
+          ARM64)
+            echo "arch=aarch64" >> "$GITHUB_OUTPUT"
+            ;;
+          *)
+            echo "::error::Unsupported runner arch ${{ runner.arch }}"
+            exit 1
+            ;;
+        esac
+      shell: bash

@@ -1,0 +1,50 @@
+name: Upload packages as artifacts.
+description: Upload built packages as artifacts.
+inputs:
+  directory:
+    description: The directory contains packages.
+    required: true
+
+  name:
+    description: The name of artifact
+    required: true
+  
+outputs:
+  packages:
+    description: Newline splitted string with escaped packages names uploaded.
+    value: ${{ steps.escape.outputs.packages }}
+
+runs:
+  using: composite
+  steps:
+    - name: Escape packages names
+      id: escape
+      run: |
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' | while read -r f
+        do
+          name="$(basename "$f")"
+          validname="$name"
+          for char in '\:' '\"' '\<' '\>' '\|' '\*' '\?' "$(printf '\r')" "$(printf '\n')"
+          do
+            validname=${validname//$char/#}
+          done
+          if [[ "$name" != "$validname" ]]
+          then 
+            echo "Rewriting $name to $validname..."
+            echo "$name" > "pkgdest/$validname.original.txt"
+            mv "pkgdest/$name" "pkgdest/$validname"
+          fi          
+        done
+
+        EOF="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
+        echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' -printf "%f\n" >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.directory }}/*.pkg.tar.*
+        if-no-files-found: error

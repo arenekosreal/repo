@@ -1,0 +1,16 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 01ef928..426f30d 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -33,6 +33,11 @@ prepare() {
+ 		scripts/config --set-val X86_64_ISA_LEVEL ${KBUILD_X86_64_ISA_LEVEL}
+ 	fi
+ 
++    ./scripts/config --enable CONFIG_ANDROID
++    ./scripts/config --enable CONFIG_ANDROID_BINDER_IPC
++    ./scripts/config --enable CONFIG_ANDROID_BINDERFS
++    ./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
++
+ 	make olddefconfig
+ 	diff -u ../config .config || :
+ 

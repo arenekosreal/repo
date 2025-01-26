@@ -1,0 +1,117 @@
+name: Download binaries from OBS
+description: Download binaries from Open Build Service
+
+inputs:
+  username:
+    description: The username to authorize OBS apis.
+    required: true
+
+  password:
+    description: The password to authorize OBS apis.
+    required: true
+
+  regex:
+    description: The regex expression to filter binaries files names.
+    required: false
+    default: '.+'
+
+  repository:
+    description: The repository of project which contains target binaries.
+    required: false
+    default: ''
+
+  architecture:
+    description: The architecture of target binaries.
+    required: false
+    default: ''
+
+  project:
+    description: The project of package which contains target binaries.
+    required: false
+    default: ''
+
+  download-directory:
+    description: The directory relative to github.workspace to storage packages.
+    required: false
+    default: .
+
+  api:
+    description: The url of OBS instance's api
+    required: false
+    default: https://api.opensuse.org
+
+outputs:
+  files:
+    description: The files to be downloaded.
+    value: ${{ steps.download.outputs.files }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install xq(python version)
+      run: |
+        if ! command -v xq-python > /dev/null
+        then
+          sudo apt-get update -y
+          sudo apt-get install yq
+        fi
+      shell: bash
+
+    - name: Download files
+      id: download
+      run: |
+        # Get entry's name in directory.
+        function _get_entry_name() {
+          length=$(echo "$1" | xq-python -r '.directory.entry | length')
+          if [[ "$length" -gt 1 ]]
+          then
+            echo "$1" | xq-python -r '.directory.entry[]."@name"'
+          elif [[ "$length" -gt 0 ]]
+          then
+            echo "$1" | xq-python -r '.directory.entry."@name"'
+          fi
+        }
+        CURL="curl -L -u '${{ inputs.username }}:${{ inputs.password }}'"
+        CURL_API="$CURL -H 'Accept: application/xml; charset=utf-8'"
+        API="${{ inputs.api }}/published"
+        if [[ -z "${{ inputs.project }}" ]]
+        then
+          echo "Using home:${{ inputs.username }} as target project."
+          API+="/home:${{ inputs.username }}"
+        else
+          echo "Using ${{ inputs.project }} as target project."
+          API+="/${{ inputs.project }}"
+        fi
+        
+        if [[ -z "${{ inputs.repository }}" ]]
+        then
+          echo "Using first repository in $API as target repository."
+          API+="/$(_get_entry_name "$($CURL_API "$API")" | head -n 1)"
+        else
+          echo "Using ${{ inputs.repository }} as target repository."
+          API+="/${{ inputs.repository }}"
+        fi
+
+        if [[ -z "${{ inputs.architecture }}" ]]
+        then
+          echo "Using first architecture in $API as target architecture."
+          API+="/$(_get_entry_name "$($CURL_API "$API")" | head -n 1)"
+        else
+          echo "Using ${{ inputs.architecture }} as target architecture."
+          API+="/${{ inputs.architecture }}"
+        fi
+
+        mkdir -p "${{ inputs.download-directory }}"
+        EOF="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
+        echo "files<<$EOF" >> "$GITHUB_OUTPUT"
+        while read -r binary
+        do
+          if [[ "$binary" =~ ${{ inputs.regex }} ]]
+          then
+            echo "Found binary $binary."
+            $CURL "$API/$binary" -o "${{ inputs.download-directory }}/$binary"
+            echo "$binary" >> "$GITHUB_OUTPUT"
+          fi
+        done < <(_get_entry_name "$($CURL_API "$API")")
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+      shell: bash
