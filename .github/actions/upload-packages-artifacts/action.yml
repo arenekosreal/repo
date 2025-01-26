@@ -36,10 +36,13 @@ runs:
           fi          
         done
 
-        EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-        echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
-        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' -printf "%f\n" >> "$GITHUB_OUTPUT"
-        echo "$EOF" >> "GITHUB_OUTPUT"
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "packages<<$EOF"
+          find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' \
+            -printf "%f\n"
+          echo "$EOF"
+        } | tee -a "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Upload artifacts
