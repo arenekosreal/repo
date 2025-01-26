@@ -31,7 +31,7 @@ runs:
           mv "${{ inputs.directory }}/$name" "${{ inputs.directory }}/$original"
           rm "$f"
         done
-        EOF="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
+        EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
         echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
         find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' -printf "%f\n" >> "$GITHUB_OUTPUT"
         echo "$EOF" >> "$GITHUB_OUTPUT"

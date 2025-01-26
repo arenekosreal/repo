@@ -102,7 +102,7 @@ runs:
         fi
 
         mkdir -p "${{ inputs.download-directory }}"
-        EOF="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 8)"
+        EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
         echo "files<<$EOF" >> "$GITHUB_OUTPUT"
         while read -r binary
         do
