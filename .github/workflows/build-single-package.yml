@@ -186,7 +186,7 @@ jobs:
           do
             if [[ "$a" == "any" ]] || [[ "$a" == "${{ steps.get-target-arch.outputs.target-arch }}" ]]
             then
-              echo "ignore-arch=''" >> "$GITHUB_OUTPUT"
+              echo "ignore-arch=" >> "$GITHUB_OUTPUT"
               found=true
               break
             fi
@@ -194,7 +194,7 @@ jobs:
           if ! "$found" && ! "$is_binary"
           then
             echo "::warning::$arch is not supported in PKGBUILD, adding --ignorearch to force build..."
-            echo "ignore-arch='--ignorearch'" >> "$GITHUB_OUTPUT"
+            echo "ignore-arch=--ignorearch" >> "$GITHUB_OUTPUT"
           elif ! "$found" && "$is_binary"
           then
             echo "::error::${{ steps.pkgbase.outputs.value }} cannot be built with --ignorearch and run."
