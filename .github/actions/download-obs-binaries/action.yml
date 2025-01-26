@@ -72,7 +72,6 @@ runs:
           fi
         }
         CURL="curl -L -u '${{ inputs.username }}:${{ inputs.password }}'"
-        CURL_API="$CURL -H 'Accept: application/xml; charset=utf-8'"
         API="${{ inputs.api }}/published"
         if [[ -z "${{ inputs.project }}" ]]
         then
@@ -86,7 +85,7 @@ runs:
         if [[ -z "${{ inputs.repository }}" ]]
         then
           echo "Using first repository in $API as target repository."
-          API+="/$(_get_entry_name "$($CURL_API "$API")" | head -n 1)"
+          API+="/$(_get_entry_name "$($CURL -H "Accept: application/xml; charset=utf-8" "$API")" | head -n 1)"
         else
           echo "Using ${{ inputs.repository }} as target repository."
           API+="/${{ inputs.repository }}"
@@ -95,7 +94,7 @@ runs:
         if [[ -z "${{ inputs.architecture }}" ]]
         then
           echo "Using first architecture in $API as target architecture."
-          API+="/$(_get_entry_name "$($CURL_API "$API")" | head -n 1)"
+          API+="/$(_get_entry_name "$($CURL -H "Accept: application/xml; charset=utf-8" "$API")" | head -n 1)"
         else
           echo "Using ${{ inputs.architecture }} as target architecture."
           API+="/${{ inputs.architecture }}"
@@ -112,6 +111,6 @@ runs:
             $CURL "$API/$binary" -o "${{ inputs.download-directory }}/$binary"
             echo "$binary" >> "$GITHUB_OUTPUT"
           fi
-        done < <(_get_entry_name "$($CURL_API "$API")")
+        done < <(_get_entry_name "$($CURL -H "Accept: application/xml; charset=utf-8" "$API")")
         echo "$EOF" >> "$GITHUB_OUTPUT"
       shell: bash
