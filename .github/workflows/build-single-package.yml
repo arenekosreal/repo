@@ -84,6 +84,59 @@ jobs:
         id: get-target-arch
         uses: ./.github/actions/get-target-arch
 
+      - name: Create empty dependencies repository
+        run: mkdir -p repo
+
+      - name: Download packages to fill repository
+        uses: ./.github/actions/download-packages-artifacts
+        with:
+          directory: repo
+
+      - name: Generate dependencies repository
+        uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.1
+        with:
+          directory: startdir
+
+      - name: Bump pkgver
+        if: steps.gen-meta-info.outputs.bump-pkgver == 'true'
+        uses: arenekosreal/pkgbuild-actions/bump-pkgver@v0.2.1
+        with:
+          directory: startdir
+          env: |
+            PACKAGER="${{ vars.PACKAGER }}"
+            ${{ inputs.env }}
+            ${{ secrets.secrets-env }}
+          repo: repo
+          args: ${{ inputs.args }}
+
+      - name: Get unmodified pkgrel
+        id: original-pkgrel
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        with:
+          directory: startdir
+          name: pkgrel
+
+      - name: Bump pkgrel
+        if: inputs.bump-pkgrel
+        run:
+          pkgrel="${{ steps.original-pkgrel.outputs.value }}"
+          sed -i "s/^pkgrel=.*/pkgrel=$((pkgrel + 1))/" \
+            startdir/PKGBUILD
+
+      - name: Get pkgver
+        id: pkgver
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        with:
+          directory: startdir
+          name: pkgver
+
+      - name: Get pkgrel
+        id: pkgrel
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        with:
+          directory: startdir
+          name: pkgrel
+
       - name: Generate meta info
         id: gen-meta-info
         run: |
@@ -147,59 +200,6 @@ jobs:
             echo "::error::${{ steps.pkgbase.outputs.value }} cannot be built with --ignorearch and run."
             exit 1
           fi
-
-      - name: Create empty dependencies repository
-        run: mkdir -p repo
-
-      - name: Download packages to fill repository
-        uses: ./.github/actions/download-packages-artifacts
-        with:
-          directory: repo
-
-      - name: Generate dependencies repository
-        uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.1
-        with:
-          directory: startdir
-
-      - name: Bump pkgver
-        if: steps.gen-meta-info.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/pkgbuild-actions/bump-pkgver@v0.2.1
-        with:
-          directory: startdir
-          env: |
-            PACKAGER="${{ vars.PACKAGER }}"
-            ${{ inputs.env }}
-            ${{ secrets.secrets-env }}
-          repo: repo
-          args: ${{ inputs.args }}
-
-      - name: Get unmodified pkgrel
-        id: original-pkgrel
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
-        with:
-          directory: startdir
-          name: pkgrel
-
-      - name: Bump pkgrel
-        if: inputs.bump-pkgrel
-        run:
-          pkgrel="${{ steps.original-pkgrel.outputs.value }}"
-          sed -i "s/^pkgrel=.*/pkgrel=$((pkgrel + 1))/" \
-            startdir/PKGBUILD
-
-      - name: Get pkgver
-        id: pkgver
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
-        with:
-          directory: startdir
-          name: pkgver
-
-      - name: Get pkgrel
-        id: pkgrel
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
-        with:
-          directory: startdir
-          name: pkgrel
 
       - name: Fetch GnuPG keys
         uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.1
