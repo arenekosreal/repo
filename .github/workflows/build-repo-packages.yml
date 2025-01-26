@@ -120,7 +120,8 @@ jobs:
     with:
       git-repository: https://aur.archlinux.org/spotube.git
       bump-pkgrel: ${{ inputs.bump-pkgrel }}
-      env: |
+    secrets:
+      secrets-env: |
         MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
         MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
         MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}     

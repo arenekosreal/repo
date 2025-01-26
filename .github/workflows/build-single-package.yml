@@ -26,6 +26,11 @@ on:
         default: ''
         description: The KEY=VALUE lines to be used as environment variables
 
+    secrets:
+      secrets-env:
+        required: false
+        description: inputs.env but allow secrets being passed.
+
     outputs:
       artifact-name:
         description: The artifact name after built
@@ -163,6 +168,7 @@ jobs:
           env: |
             PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
+            ${{ secrets.secrets-env }}
           repo: repo
           args: ${{ inputs.args }}
 
