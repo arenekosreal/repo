@@ -103,7 +103,7 @@ jobs:
         with:
           directory: startdir
           env: |
-            PACKAGER="${{ vars.PACKAGER }}"
+            PACKAGER='${{ vars.PACKAGER }}'
             ${{ inputs.env }}
             ${{ secrets.secrets-env }}
           repo: repo
