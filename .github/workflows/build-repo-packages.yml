@@ -285,7 +285,7 @@ jobs:
           password: ${{ secrets.OBS_PASSWORD }}
           regex: .+\.pkg\.tar\.[0-9a-zA-Z]+
           project: ${{ steps.parse-matrix.outputs.project }}
-          repository: ${{ steps.parse-matrix.outputs.package }}
+          repository: Arch
           download-directory: pkgdest
           architecture: ${{ steps.get-target-arch.outputs.target-arch }}
 
