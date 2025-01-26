@@ -95,7 +95,7 @@ jobs:
       - name: Generate dependencies repository
         uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.1
         with:
-          directory: startdir
+          directory: repo
 
       - name: Bump pkgver
         if: steps.gen-meta-info.outputs.bump-pkgver == 'true'
