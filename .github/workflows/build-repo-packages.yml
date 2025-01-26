@@ -265,9 +265,9 @@ jobs:
         run: |
           {
             echo -n "project="
-            echo "${{ matrix.package }}" | cut -d -f 1
+            echo "${{ matrix.package }}" | cut / -d -f 1
             echo -n "package="
-            echo "${{ matrix.package }}" | cut -d -f 2
+            echo "${{ matrix.package }}" | cut / -d -f 2
           } >> "$GITHUB_OUTPUT"
 
       - name: Get target arch
