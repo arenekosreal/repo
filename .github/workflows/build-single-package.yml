@@ -67,10 +67,11 @@ jobs:
             find "patches/${{ steps.pkgbase.outputs.value }}" \
               -maxdepth 1 -mindepth 1 -type f \
               -name '*.patch' -o -name '*.diff' | while read -r p
-          do
-            echo "Applying patch $p..."
-            patch -Np1 -d startdir -i "../$p"
-          done
+            do
+              echo "Applying patch $p..."
+              patch -Np1 -d startdir -i "../$p"
+            done
+          fi
 
       - name: Get arch
         id: arch
