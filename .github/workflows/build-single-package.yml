@@ -195,7 +195,7 @@ jobs:
           name: pkgrel
 
       - name: Fetch GnuPG keys
-        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys
+        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.0
         with:
           directory: startdir
 
