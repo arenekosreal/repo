@@ -20,6 +20,8 @@ runs:
     - name: Escape packages names
       id: escape
       run: |
+        EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+        echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
         find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' | while read -r f
         do
           name="$(basename "$f")"
@@ -31,18 +33,12 @@ runs:
           if [[ "$name" != "$validname" ]]
           then 
             echo "Rewriting $name to $validname..."
-            echo "$name" > "pkgdest/$validname.original.txt"
-            mv "pkgdest/$name" "pkgdest/$validname"
-          fi          
+            echo "$name" > "${{ inputs.directory }}/$validname.original.txt"
+            mv "${{ inputs.directory }}/$name" "${{ inputs.directory }}/$validname"
+          fi
+          echo "$validname" >> "$GITHUB_OUTPUT"
         done
-
-        {
-          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-          echo "packages<<$EOF"
-          find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' \
-            -printf "%f\n"
-          echo "$EOF"
-        } | tee -a "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Upload artifacts
