@@ -179,7 +179,7 @@ jobs:
           directory: startdir
 
       - name: Download sources manually
-        if: steps.gen-meta-info.outputs.download-manually == 'true'
+        if: steps.analyze.outputs.download-manually == 'true'
         uses: arenekosreal/pkgbuild-actions/download-sources@v0.2.6
         with:
           directory: startdir
@@ -218,7 +218,7 @@ jobs:
           name: pkgrel
 
       - name: Free space
-        if: steps.gen-meta-info.outputs.needs-more-space == 'true'
+        if: steps.analyze.outputs.needs-more-space == 'true'
         uses: jlumbroso/free-disk-space@v1.3.1
 
       - name: Build the package
@@ -229,7 +229,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
           repo: repo
-          args: ${{ steps.gen-meta-info.outputs.ignore-arch }} ${{ inputs.args }}
+          args: ${{ steps.analyze.outputs.ignore-arch }} ${{ inputs.args }}
 
       - name: Generate meta info
         id: gen-meta-info
