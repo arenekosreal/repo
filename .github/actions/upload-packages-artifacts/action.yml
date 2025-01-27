@@ -17,10 +17,14 @@ outputs:
 runs:
   using: composite
   steps:
+    # https://github.com/actions/runner/issues/1282
+    - name: Fix files permission after docker action worked
+      run: sudo chown -R "$(id -u):$(id -g)" "${{ inputs.directory }}"
+      shell: bash
+
     - name: Escape packages names
       id: escape
       run: |
-        ls -laR "${{ inputs.directory }}"
         EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
         echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
         find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' | while read -r f
