@@ -84,6 +84,75 @@ jobs:
         id: get-target-arch
         uses: ./.github/actions/get-target-arch
 
+      - name: Analyze PKGBUILD
+        id: analyze
+        run: |
+          case "${{ steps.pkgbase.outputs.value }}" in
+            spotify)
+              {
+                echo "bump-pkgver=false"
+                echo "download-manually=true"
+                echo "needs-more-space=false"
+              } >> "$GITHUB_OUTPUT"
+              is_binary=true
+              ;;
+            ayugram-desktop|linux-pf)
+              {
+                echo "bump-pkgver=false"
+                echo "download-manually=false"
+                echo "needs-more-space=true"
+              } >> "$GITHUB_OUTPUT"
+              is_binary=false
+              ;;
+            *-git)
+              {
+                echo "bump-pkgver=true"
+                echo "download-manually=false"
+                echo "needs-more-space=false"
+              } >> "$GITHUB_OUTPUT"
+              is_binary=false
+              ;;
+            *-bin)
+              {
+                echo "bump-pkgver=false"
+                echo "download-manually=false"
+                echo "needs-more-space=false"
+              } >> "$GITHUB_OUTPUT"
+              is_binary=true
+              ;;
+            *)
+              {
+                echo "bump-pkgver=false"
+                echo "download-manually=false"
+                echo "needs-more-space=false"
+              } >> "$GITHUB_OUTPUT"
+              is_binary=false
+              ;;
+          esac
+
+          read -r -a archs <<< "${{ steps.arch.outputs.value }}"
+          found=false
+          for arch_ in "${archs[@]}"
+          do
+            if [[ "$arch_" == "any" ]] || [[ "$arch_" == "${{ steps.get-target-arch.outputs.target-arch }}" ]]
+            then
+              echo "ignore-arch=" >> "$GITHUB_OUTPUT"
+              found=true
+              break
+            fi
+          done
+          if ! "$found"
+          then
+            if "$is_binary"
+            then
+              echo "::error::${{ steps.pkgbase.outputs.value }} cannot be built with --ignorearch."
+              exit 1
+            else
+              echo "::warning::${{ steps.get-target-arch.outputs.target-arch }} is not supported in PKGBUILD, adding --ignorearch to force build..."
+              echo "ignore-arch=--ignorearch" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
       - name: Create empty dependencies repository
         run: mkdir -p repo
 
@@ -97,8 +166,26 @@ jobs:
         with:
           directory: repo
 
+      - name: Get unmodified pkgrel
+        id: original-pkgrel
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.6
+        with:
+          directory: startdir
+          name: pkgrel
+
+      - name: Fetch GnuPG keys
+        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.6
+        with:
+          directory: startdir
+
+      - name: Download sources manually
+        if: steps.gen-meta-info.outputs.download-manually == 'true'
+        uses: arenekosreal/pkgbuild-actions/download-sources@v0.2.6
+        with:
+          directory: startdir
+
       - name: Bump pkgver
-        if: steps.gen-meta-info.outputs.bump-pkgver == 'true'
+        if: steps.analyze.outputs.bump-pkgver == 'true'
         uses: arenekosreal/pkgbuild-actions/bump-pkgver@v0.2.6
         with:
           directory: startdir
@@ -108,13 +195,6 @@ jobs:
             ${{ secrets.secrets-env }}
           repo: repo
           args: ${{ inputs.args }}
-
-      - name: Get unmodified pkgrel
-        id: original-pkgrel
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.6
-        with:
-          directory: startdir
-          name: pkgrel
 
       - name: Bump pkgrel
         if: inputs.bump-pkgrel
@@ -137,81 +217,6 @@ jobs:
           directory: startdir
           name: pkgrel
 
-      - name: Generate meta info
-        id: gen-meta-info
-        run: |
-          printf "artifact-name=%s %s-%d %s\n" \
-            "${{ steps.pkgbase.outputs.value }}" \
-            "${{ steps.pkgver.outputs.value }}" \
-            "${{ steps.pkgrel.outputs.value }}" \
-            "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
-
-          case "${{ steps.pkgbase.outputs.value }}" in
-            *-git)
-              {
-                echo "bump-pkgver=true"
-                echo "download-manually=false"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-            spotify|*-bin)
-              {
-                echo "bump-pkgver=false"
-                echo "downloading-manually=true"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=true
-              ;;
-            ayugram-desktop|linux-pf)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=false"
-                echo "needs-more-space=true"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-            *)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=false"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-          esac
-          read -r -a archs <<< "${{ steps.arch.outputs.value }}"
-          found=false
-          for a in "${archs[@]}"
-          do
-            if [[ "$a" == "any" ]] || [[ "$a" == "${{ steps.get-target-arch.outputs.target-arch }}" ]]
-            then
-              echo "ignore-arch=" >> "$GITHUB_OUTPUT"
-              found=true
-              break
-            fi
-          done
-          if ! "$found" && ! "$is_binary"
-          then
-            echo "::warning::$arch is not supported in PKGBUILD, adding --ignorearch to force build..."
-            echo "ignore-arch=--ignorearch" >> "$GITHUB_OUTPUT"
-          elif ! "$found" && "$is_binary"
-          then
-            echo "::error::${{ steps.pkgbase.outputs.value }} cannot be built with --ignorearch and run."
-            exit 1
-          fi
-
-      - name: Fetch GnuPG keys
-        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.6
-        with:
-          directory: startdir
-
-      - name: Download sources manually
-        if: steps.gen-meta-info.outputs.download-manually == 'true'
-        uses: arenekosreal/pkgbuild-actions/download-sources@v0.2.6
-        with:
-          directory: startdir
-
       - name: Free space
         if: steps.gen-meta-info.outputs.needs-more-space == 'true'
         uses: jlumbroso/free-disk-space@v1.3.1
@@ -225,6 +230,15 @@ jobs:
             ${{ inputs.env }}
           repo: repo
           args: ${{ steps.gen-meta-info.outputs.ignore-arch }} ${{ inputs.args }}
+
+      - name: Generate meta info
+        id: gen-meta-info
+        run: |
+          printf "artifact-name=%s %s-%d %s\n" \
+            "${{ steps.pkgbase.outputs.value }}" \
+            "${{ steps.pkgver.outputs.value }}" \
+            "${{ steps.pkgrel.outputs.value }}" \
+            "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
         uses: ./.github/actions/upload-packages-artifacts
