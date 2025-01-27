@@ -62,6 +62,7 @@ runs:
       run: |
         # Get entry's name in directory.
         function _get_entry_name() {
+          echo "::debug::$1" >> /dev/stderr
           length=$(echo "$1" | xq-python -r '.directory.entry | length')
           if [[ "$length" -gt 1 ]]
           then
