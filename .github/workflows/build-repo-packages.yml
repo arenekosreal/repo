@@ -253,7 +253,7 @@ jobs:
       matrix:
         package:
           - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
-          - home:ZhangHua/mongodb
+          - home:ZhangHua:mongodb/mongodb
     outputs:
       artifact-name: ${{ steps.gen-meta-info.outputs.artifact-name }}
     steps:
