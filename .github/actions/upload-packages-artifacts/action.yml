@@ -20,6 +20,7 @@ runs:
     - name: Escape packages names
       id: escape
       run: |
+        ls -laR "${{ inputs.directory }}"
         EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
         echo "packages<<$EOF" >> "$GITHUB_OUTPUT"
         find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex '.+\.pkg\.tar\.[a-zA-Z0-9]+$' | while read -r f
