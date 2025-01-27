@@ -72,7 +72,7 @@ runs:
             echo "$1" | xq-python -r '.directory.entry."@name"'
           fi
         }
-        CURL="curl -L -u '${{ inputs.username }}:${{ inputs.password }}'"
+        CURL="curl -L -u ${{ inputs.username }}:${{ inputs.password }}"
         API="${{ inputs.api }}/published"
         if [[ -z "${{ inputs.project }}" ]]
         then
