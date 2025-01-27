@@ -283,7 +283,7 @@ jobs:
         with:
           username: ${{ secrets.OBS_USERNAME }}
           password: ${{ secrets.OBS_PASSWORD }}
-          regex: .+\.pkg\.tar\.[0-9a-zA-Z]+
+          regex: .+\.pkg\.tar\.[0-9a-zA-Z]+$
           project: ${{ steps.parse-matrix.outputs.project }}
           repository: Arch
           download-directory: pkgdest
@@ -300,8 +300,7 @@ jobs:
             "${{ steps.parse-matrix.outputs.package }}" \
             "$(echo "$f" | cut -d- -f 1)" \
             "$(echo "$f" | cut -d- -f 2)" \
-            "${{ steps.get-target-arch.outputs.target-arch }}"
-            >> "$GITHUB_OUTPUT"
+            "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
         uses: ./.github/actions/upload-packages-artifacts
