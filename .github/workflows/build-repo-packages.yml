@@ -253,7 +253,7 @@ jobs:
       matrix:
         package:
           - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
-          - home:ZhangHua:mongodb/mongodb
+          - home:ZhangHua/mongodb
     outputs:
       artifact-name: ${{ steps.gen-meta-info.outputs.artifact-name }}
     steps:
@@ -283,7 +283,7 @@ jobs:
         with:
           username: ${{ secrets.OBS_USERNAME }}
           password: ${{ secrets.OBS_PASSWORD }}
-          regex: .+\.pkg\.tar\.[0-9a-zA-Z]+$
+          regex: ^${{ steps.parse-matrix.outputs.package }}.+\.pkg\.tar\.[0-9a-zA-Z]+$
           project: ${{ steps.parse-matrix.outputs.project }}
           repository: Arch
           download-directory: pkgdest
