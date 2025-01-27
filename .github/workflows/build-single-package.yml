@@ -55,7 +55,7 @@ jobs:
 
       - name: Get pkgbase
         id: pkgbase
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.2
         with:
           directory: startdir
           name: pkgbase
@@ -75,7 +75,7 @@ jobs:
 
       - name: Get arch
         id: arch
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.2
         with:
           directory: startdir
           name: arch
@@ -93,13 +93,13 @@ jobs:
           directory: repo
 
       - name: Generate dependencies repository
-        uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.2
         with:
           directory: repo
 
       - name: Bump pkgver
         if: steps.gen-meta-info.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/pkgbuild-actions/bump-pkgver@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/bump-pkgver@v0.2.2
         with:
           directory: startdir
           env: |
@@ -111,7 +111,7 @@ jobs:
 
       - name: Get unmodified pkgrel
         id: original-pkgrel
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.2
         with:
           directory: startdir
           name: pkgrel
@@ -125,14 +125,14 @@ jobs:
 
       - name: Get pkgver
         id: pkgver
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.2
         with:
           directory: startdir
           name: pkgver
 
       - name: Get pkgrel
         id: pkgrel
-        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/get-global-variable@v0.2.2
         with:
           directory: startdir
           name: pkgrel
@@ -202,13 +202,13 @@ jobs:
           fi
 
       - name: Fetch GnuPG keys
-        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/fetch-pgp-keys@v0.2.2
         with:
           directory: startdir
 
       - name: Download sources manually
         if: steps.gen-meta-info.outputs.download-manually == 'true'
-        uses: arenekosreal/pkgbuild-actions/download-sources@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/download-sources@v0.2.2
         with:
           directory: startdir
 
@@ -217,7 +217,7 @@ jobs:
         uses: jlumbroso/free-disk-space@v1.3.1
 
       - name: Build the package
-        uses: arenekosreal/pkgbuild-actions/build@v0.2.1
+        uses: arenekosreal/pkgbuild-actions/build@v0.2.2
         with:
           directory: startdir
           env: |
