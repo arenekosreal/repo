@@ -394,7 +394,7 @@ jobs:
         with:
           directory: pkgdest
           gpg-fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}
-          gpg-args: --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}"
+          gpg-args: --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}" --pinentry-mode=loopback
           target-arch: ${{ steps.get-target-arch.outputs.target-arch }}
           notes: |
             `pacman.conf` example:
