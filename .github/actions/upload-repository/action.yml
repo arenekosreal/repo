@@ -1,0 +1,83 @@
+name: Upload repository
+description: Ensure everything is suitable for uploading and upload them
+
+inputs:
+  directory:
+    description: The directory contains repository
+    required: true
+
+  gpg-fingerprint:
+    description: The fingerprint of user who used to sign packages and database
+    required: true
+
+  target-arch:
+    description: The architecture of the repository
+    required: true
+
+  gpg-args:
+    description: Extra arguments to GnuPG
+    required: false
+    default: ''
+
+  notes:
+    description: Extra release notes
+    required: false
+    default: ''
+ 
+runs:
+  using: composite
+  steps:
+    - name: Remove generated files
+      run: |
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f ! -regex ".+\.pkg\.tar\.[0-9a-zA-Z]+" \
+          -exec rm -rf {} +
+      shell: bash
+
+    - name: Sign packages
+      run: |
+        find "${{ inputs.directory }}" -maxdepth 1 -mindepth 1 -type f -regex ".+\.pkg\.tar\.[0-9a-zA-Z]+" \
+          -exec gpg --batch --yes ${{ inputs.gpg-args }} --detach-sign --local-user "${{ inputs.gpg-fingerprint }}" \
+                    --output {}.sig {} \; 
+      shell: bash
+
+    - name: Generate db
+      uses: arenekosreal/pkgbuild-actions/update-pacman-repo@v0.2.6
+      with:
+        directory: ${{ inputs.directory }}
+
+    - name: Sign database
+      run: |
+        declare db compress=".tar.gz"
+        declare -a items=(files db)
+        db="$(basename "${{ inputs.directory }}")"
+        declare item
+        for item in "${items[@]}"
+        do
+          declare file="${{ inputs.directory }}/$db.$item"
+          gpg --batch --yes ${{ inputs.gpg-args }} --detach-sign --local-user "${{ inputs.gpg-fingerprint }}" \
+              --output "$file$compress.sig" "$file$compress"
+          ln -srfv "$file$compress" "$file"
+        done 
+      shell: bash
+
+    - name: Upload release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        declare "tag=os/${{ inputs.target-arch }}"
+        if gh release view "$tag" > /dev/null
+        then
+          echo "Removing existing release..."
+          gh release delete "$tag" --cleanup-tag --yes
+        fi
+        echo "Creating new release..."
+        gh release create "$tag" \
+          --generate-notes \
+          --notes-from-tag \
+          --notes "${{ inputs.notes }}" \
+          --target "${{ github.sha }}" \
+          --title "Release for $tag"
+        echo "Uploading files..."
+        gh release upload "$tag" ${{ inputs.directory }}/* \
+          --clobber        
+      shell: bash

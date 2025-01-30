@@ -360,13 +360,29 @@ jobs:
       - name: Prepare directory
         run: mkdir -p pkgdest
 
+      - name: Import GnuPG private key
+        id: import-gpg
+        run: |
+          gpg --batch --yes --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}" \
+            --import <<< "${{ secrets.GPG_PRIVATE_KEY }}"
+          echo -n "fingerprint=" >> "$GITHUB_OUTPUT"
+          gpg --batch --yes --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}" \
+            --show-key --with-colons <<< "${{ secrets.GPG_PRIVATE_KEY }}" | \
+          grep "^sec" | grep "S" | cut -d : -f 5 >> "$GITHUB_OUTPUT"
+
+      - name: Export public key
+        id: export-gpg
+        run: |
+          {
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "public-key<<$EOF"
+            gpg --batch --yes --export --armor --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}"
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Get target arch
         id: get-target-arch
         uses: ./.github/actions/get-target-arch
-
-      - name: Get date
-        id: get-date
-        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT" 
 
       - name: Download artifacts
         uses: ./.github/actions/download-packages-artifacts
@@ -374,10 +390,23 @@ jobs:
           directory: pkgdest
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        uses: ./.github/actions/upload-repository
         with:
-          files: pkgdest/*.pkg.tar.*
-          draft: true
-          tag_name: ${{ steps.get-target-arch.outputs.target-arch }}-${{ steps.get-date.outputs.date }}
-          name: Packages for the repository
-          fail_on_unmatched_files: true
+          directory: pkgdest
+          gpg-fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}
+          gpg-args: --passphrase "${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}"
+          target-arch: ${{ steps.get-target-arch.outputs.target-arch }}
+          notes: |
+            `pacman.conf` example:
+
+            ```
+              [arenekosreal]
+              # You can add more mirrors here.
+              Server = https://github.com/arenekosreal/repo/releases/download/os/$arch
+            ```
+            
+            Public key to sign those packages:
+            ```
+            ${{ steps.export-gpg.outputs.public-key }}
+            ```
+            Please import it into `pacman-key` so the packages can be verified by pacman during installation.
