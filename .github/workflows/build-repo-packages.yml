@@ -347,3 +347,6 @@ jobs:
       - obs-packages
       - bfgminer-git
     uses: ./.github/workflows/generate-repo.yml
+    secrets: inherit
+    permissions:
+      contents: write
