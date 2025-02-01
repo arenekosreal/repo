@@ -39,6 +39,21 @@ jobs:
             echo "$EOF"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Generate notes
+        run: |
+          {
+            echo '`pacman.conf` example:'
+            echo '```'
+            echo '[${{ github.repository_owner }}]'
+            echo 'Server = ${{ github.server_url }}/${{ github.repository }}/downloads/os/$arch'
+            echo '```'
+            echo 'Public key to sign packages and repository:'
+            echo '```'
+            echo '${{ steps.export-gpg.outputs.public-key }}'
+            echo '```'
+            echo 'Please import it with `pacman-key` so those packages can be verified.'
+          } > notes.md
+
       - name: Get target arch
         id: get-target-arch
         uses: ./.github/actions/get-target-arch
@@ -108,8 +123,7 @@ jobs:
           fi
           echo "Creating new release..."
           gh release create "$tag" \
-            --generate-notes \
-            --notes-from-tag \
+            --notes-file notes.md \
             --target '${{ github.sha }}' \
             --title "Release for $rag"
           echo "Uploading files..."
