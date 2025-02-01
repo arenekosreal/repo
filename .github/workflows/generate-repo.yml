@@ -109,6 +109,7 @@ jobs:
               --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}' \
               --output "$file$compress.sig" "$file$compress"
             ln -srfv "$file$compress" "$file"
+            ln -srfv "$file$compress.sig" "$file.sig"
           done
 
       - name: Upload release
@@ -130,3 +131,6 @@ jobs:
           gh release upload "$tag" \
             '${{ github.repository_owner }}'/* \
             --clobber
+          echo "Publishing..."
+          gh release edit "$tag" \
+            --draft=false
