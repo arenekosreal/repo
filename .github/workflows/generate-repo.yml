@@ -126,7 +126,7 @@ jobs:
           gh release create "$tag" \
             --notes-file notes.md \
             --target '${{ github.sha }}' \
-            --title "Release for $rag"
+            --title "Release for $tag"
           echo "Uploading files..."
           gh release upload "$tag" \
             '${{ github.repository_owner }}'/* \
