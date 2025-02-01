@@ -108,7 +108,7 @@ jobs:
           if gh release view "$tag" > /dev/null
           then
             echo "Removing existing release..."
-            gh release --delete "$tag" --cleanup-tag --yes
+            gh release delete "$tag" --cleanup-tag --yes
           fi
           echo "Creating new release..."
           gh release create "$tag" \
