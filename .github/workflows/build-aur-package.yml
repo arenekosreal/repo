@@ -215,6 +215,8 @@ jobs:
         if: steps.sources.outputs.value
         run: |
           mkdir -p srcdest
+          # Permission maybe broken due to files created by docker action.
+          sudo chwon -R "$(id -u):$(id -g)" srcdest
           while read -r source
           do
             declare url name
@@ -226,6 +228,7 @@ jobs:
                 read -r -a array <<< "${source//::/ }"
                 name="${array[0]}"
                 url="${array[1]}"
+                unset array
                 ;;
               http://*|https://*|ftp://*)
                 name="$(basename "$source")"
