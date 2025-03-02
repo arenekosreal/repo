@@ -23,7 +23,9 @@ runs:
         KEY="${{ inputs.key }}"
         SRCINFO="${{ inputs.srcinfo }}"
         EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-        echo "value<<$EOF" >> "$GITHUB_OUTPUT"
-        grep "$KEY = " "$SRCINFO" | sed "s/$KEY = //;s/^\s*//"  >> "$GITHUB_OUTPUT" 
-        echo "$EOF" >> "$GITHUB_OUTPUT"
+        {
+          echo "value<<$EOF"
+          grep "$KEY = " "$SRCINFO" | sed "s/$KEY = //;s/^\s*//" || true
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
       shell: bash
