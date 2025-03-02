@@ -196,7 +196,8 @@ jobs:
           directory: repo
       - name: Generate dependencies repository
         run: |
-          repo-add repo/repo.db.tar.gz repo/*.pkg.tar.*
+          find repo -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' \
+            -exec repo-add repo/repo.db.tar.gz {} +
       - name: Get unmodified pkgrel
         id: original-pkgrel
         uses: ./.github/actions/get-srcinfo-value
