@@ -61,6 +61,25 @@ jobs:
       - name: Checkout PKGBUILD
         run: |
           git clone "${{ inputs.repository }}" startdir
+      - name: Get pkgbase
+        id: pkgbase
+        uses: ./.github/actions/get-srcinfo-value
+        with:
+          srcinfo: startdir/.SRCINFO
+          key: pkgbase
+      - name: Apply patch
+        run: |
+          pkgbase="${{ steps.pkgbase.outputs.value }}"
+          if [[ -d "patches/$pkgbase" ]]
+          then
+            find "patches/$pkgbase" -maxdepth 1 -mindepth 1 -type f \
+              -name '*.patch' -o -name '*.diff' | \
+            while read -r p
+            do
+              echo "Applying patch $p..."
+              patch -Np1 -d startdir -i "../$p"
+            done
+          fi
       - name: Gen .SRCINFO
         uses: arenekosreal/makepkg-action@v0.2.1
         with:
@@ -93,25 +112,6 @@ jobs:
             done
             $GPG --export --armor -o "startdir/keys/pgp/$fingerprint.asc" "$fingerprint"
           done <<< "${{ steps.gpg-fingerprints.outputs.value }}"
-      - name: Get pkgbase
-        id: pkgbase
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: pkgbase
-      - name: Apply patch
-        run: |
-          pkgbase="${{ steps.pkgbase.outputs.value }}"
-          if [[ -d "patches/$pkgbase" ]]
-          then
-            find "patches/$pkgbase" -maxdepth 1 -mindepth 1 -type f \
-              -name '*.patch' -o -name '*.diff' | \
-            while read -r p
-            do
-              echo "Applying patch $p..."
-              patch -Np1 -d startdir -i "../$p"
-            done
-          fi
       - name: Get arch
         id: arch
         uses: ./.github/actions/get-srcinfo-value
