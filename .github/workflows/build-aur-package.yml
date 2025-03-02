@@ -62,7 +62,7 @@ jobs:
         run: |
           git clone "${{ inputs.repository }}" startdir
       - name: Gen .SRCINFO
-        uses: arenekosreal/makepkg-action@v0.2.0
+        uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: startdir
           args: --printsrcinfo
@@ -217,35 +217,33 @@ jobs:
           mkdir -p srcdest
           while read -r source
           do
+            declare url name
             case "$source" in
+              git+*|*::git+*)
+                echo "::warning::Downloading git repository is not supported, skipping..."
+                ;;
+              *::http://*|*::https://*|*::ftp://*)
+                read -r -a array <<< "${source//::/ }"
+                name="${array[0]}"
+                url="${array[1]}"
+                ;;
               http://*|https://*|ftp://*)
-                # source=<name>::<url>
-                if [[ "${source//::/}" != "$source" ]]
-                then
-                  read -r -a array <<< "${source//::/ }"
-                  name="${array[0]}"
-                  url="${array[1]}"
-                  unset array
-                else
-                  name="$(basename "$source")"
-                  url="$source"
-                fi
-                if [[ "$url" =~ git\\+ ]]
-                then
-                  echo "::error::Downloading git repository is not supported, skipping..."
-                  exit
-                fi
-                echo "Downloading $source with wget..."
-                wget --tries=0 --retry-connrefused --retry-on-host-error -O "srcdest/$name" "$url" 
+                name="$(basename "$source")"
+                url="$source"
                 ;;
               *)
                 echo "::warning::Unsupported source $source, skipping..."
                 ;; 
             esac
+            if [[ -n "$url" && -n "$name" ]]
+            then
+              echo "Downloading $source with wget..."
+              wget --tries=0 --retry-connrefused --retry-on-host-error -O "srcdest/$name" "$url" 
+            fi
           done <<< "${{ steps.sources.outputs.value }}"
       - name: Bump pkgver
         if: steps.analyze.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.0
+        uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: startdir
           env: |
@@ -263,7 +261,7 @@ jobs:
             startdir/PKGBUILD
       - name: Generate updated .SRCINFO
         if: steps.analyze.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.0
+        uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: startdir
           args: --printsrcinfo
@@ -293,7 +291,7 @@ jobs:
         if: steps.analyze.outputs.needs-more-space == 'true'
         uses: jlumbroso/free-disk-space@v1.3.1
       - name: Build package
-        uses: arenekosreal/makepkg-action@v0.2.0
+        uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: startdir
           env: |
