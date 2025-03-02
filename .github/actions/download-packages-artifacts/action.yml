@@ -14,6 +14,11 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Create directory
+      run: |
+        mkdir -p "${{ inputs.directory }}"
+      shell: bash
+
     - name: Download artifacts
       uses: actions/download-artifact@v4
       with:
