@@ -84,8 +84,8 @@ jobs:
             echo "Fetching $fingerprint..."
             for extra_gpg_arg in "${EXTRA_GPG_ARGS[@]}"
             do
-              $GPG $extra_gpg_arg --recv-keys "$fingerprint"
-              if $GPG --list-keys "$fingerprint"
+              if $GPG $extra_gpg_arg --recv-keys "$fingerprint" && \
+                 $GPG --list-keys "$fingerprint"
               then
                 echo "Fetch fingerprint successfully."
                 break
