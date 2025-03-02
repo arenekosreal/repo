@@ -216,7 +216,7 @@ jobs:
         run: |
           mkdir -p srcdest
           # Permission maybe broken due to files created by docker action.
-          sudo chwon -R "$(id -u):$(id -g)" srcdest
+          sudo chown -R "$(id -u):$(id -g)" srcdest
           while read -r source
           do
             declare url name
