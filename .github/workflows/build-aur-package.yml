@@ -251,7 +251,7 @@ jobs:
           env: |
             PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
-            ${{ secrets.secrets-env }}
+            ${{ github.event_name == 'workflow_call' && secrets.secrets-env || '' }}
           args: --nobuild
           updatepkgbuild: true
           repo: repo
@@ -299,7 +299,7 @@ jobs:
           env: |
             PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
-            ${{ secrets.secrets-env }}
+            ${{ github.event_name == 'workflow_call' && secrets.secrets-env || '' }}
           repo: repo
       - name: Upload artifact
         uses: ./.github/actions/upload-packages-artifacts
