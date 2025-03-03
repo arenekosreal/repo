@@ -265,5 +265,5 @@ runs:
         name: ${{ steps.gen-meta-info.outputs.artifact-name }}
     - name: Fix srcdest permission
       run: |
-        sudo chwon -R "$(id -u):$(id -g)" srcdest
+        sudo chown -R "$(id -u):$(id -g)" srcdest
       shell: bash
