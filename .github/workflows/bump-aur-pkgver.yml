@@ -33,8 +33,8 @@ jobs:
       - name: Setup Git
         if: steps.check-tag.outputs.tag
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Clone repository
         if: steps.check-tag.outputs.tag
         run: |
@@ -44,10 +44,9 @@ jobs:
         run:
           current_tag="${{ steps.check-tag.outputs.tag }}"
           target_tag="${{ steps.target-tag.outputs.tag }}"
-          cd ruffle-nightly
           sed -i "s/_date=$current_tag/_date=$target_tag/" \
-            PKGBUILD
-          git commit -m "Bump to $target_tag"
+            ruffle-nightly/PKGBUILD
+          git -C ruffle-nightly commit -m "Bump to $target_tag"
       - name: Patch source
         if: steps.check-tag.outputs.tag
         run: |
@@ -67,9 +66,8 @@ jobs:
       - name: Check if needs to push
         id: needs-push
         run: |
-          cd ruffle-nightly
-          git reset --hard
-          count="$(git rev-list --count origin/master..HEAD)"
+          git -C ruffle-nightly reset --hard
+          count="$(git -C ruffle-nightly rev-list --count origin/master..HEAD)"
           if [[ "$count" -gt 0 ]]
           then
             echo "result=true" >> "$GITHUB_OUTPUT"
@@ -79,5 +77,4 @@ jobs:
       - name: Push to AUR
         if: steps.needs-push.outputs.result == 'true'
         run: |
-          cd ruffle-nightly
-          git push
+          git -C ruffle-nightly push
