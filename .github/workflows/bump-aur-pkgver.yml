@@ -52,6 +52,7 @@ jobs:
         with:
           repository: ruffle-rs/ruffle
           path: ruffle
+          fetch-tags: true
       - name: Get current state
         id: current-state
         if: steps.check-tag.outputs.tag
