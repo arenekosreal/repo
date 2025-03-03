@@ -163,9 +163,7 @@ runs:
       uses: arenekosreal/makepkg-action@v0.2.2
       with:
         builddir: ${{ inputs.builddir }}
-        env: |
-          PACKAGER=${{ vars.PACKAGER }}
-          ${{ inputs.env }}
+        env: ${{ inputs.env }}
         args: --nobuild
         updatepkgbuild: true
         repo: repo

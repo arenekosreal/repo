@@ -64,6 +64,7 @@ jobs:
         with:
           builddir: startdir
           env: |
+            PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
             ${{ github.event_name == 'workflow_call' && inputs.secret-env || '' }}
           bump-pkgrel: ${{ inputs.bump-pkgrel }}
