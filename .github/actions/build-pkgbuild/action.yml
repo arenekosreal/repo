@@ -256,9 +256,7 @@ runs:
       uses: arenekosreal/makepkg-action@v0.2.2
       with:
         builddir: ${{ inputs.builddiir }}
-        env: |
-          PACKAGER=${{ vars.PACKAGER }}
-          ${{ inputs.env }}
+        env: ${{ inputs.env }}
         args: ${{ steps.needs-ignorearch.outputs.result == 'true' && '--ignorearch' || '' }}
     - name: Upload artifact
       uses: ./.github/actions/upload-package/artifacts
