@@ -60,6 +60,18 @@ jobs:
           source ruffle-nightly/PKGBUILD
           echo "date=$_date" >> "$GITHUB_OUTPUT"
           echo "repo-sha256=${sha256sums[0]}" >> "$GITHUB_OUTPUT"
+      - name: Get target sha256
+        # /usr/share/makepkg/source/git.sh
+        id: target-sha256
+        if: steps.check-tag.outputs.tag
+        env:
+          GIT_CONFIG_GLOBAL: /dev/null
+          GIT_CONFIG_SYSTEM: /dev/null
+        run: |
+          echo -n sha256= >> "$GITHUB_OUTPUT"
+          git -c core.abbrev=no -C ruffle \
+            archive --format tar "nightly-${{ steps.check-tag.outputs.date }}" | \
+          sha256sum | cut -d " " -f 1 >> "$GITHUB_OUTPUT"
       - name: Update pkgver
         id: update-pkgver
         if: steps.check-tag.outputs.tag
@@ -67,14 +79,7 @@ jobs:
           current_date="${{ steps.current-state.outputs.date }}"
           target_date="${{ steps.check-tag.outputs.date }}"
           current_sha256="${{ steps.current-state.outputs.repo-sha256 }}"
-          # /usr/share/makepkg/source/git.sh#L164
-          target_sha256="$( \
-            GIT_CONFIG_GLOBAL=/dev/null \
-            GIT_CONFIG_SYSTEM=/dev/null \
-            git -c core.abbrev=no -C "ruffle" \
-              archive --format tar "nightly-$target_date" | \
-            sha256sum 2>&1 \
-          )"
+          target_sha256="${{ steps.target-sha256.outputs.sha256 }}"
           sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
           if git --no-pager diff 2>&1
