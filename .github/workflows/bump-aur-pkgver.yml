@@ -77,7 +77,7 @@ jobs:
           )"
           sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
-          if git diff
+          if git --no-pager diff 2>&1
           then
             echo "Updated PKGBUILD."
             echo "updated=true" >> "$GITHUB_OUTPUT"
