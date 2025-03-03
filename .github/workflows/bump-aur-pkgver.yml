@@ -8,23 +8,21 @@ jobs:
     name: Bump aur/ruffle-nightly
     runs-on: ubuntu-latest
     steps:
-      - name: Get target tag
-        id: target-tag
-        run: |
-          echo -n tag=nightly- >> "$GITHUB_OUTPUT"
-          date -u +%F >> "$GITHUB_OUTPUT"
       - name: Check if tag exists
         id: check-tag
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo -n tag= >> "$GITHUB_OUTPUT"
-          target_tag="${{ steps.target-tag.outputs.tag }}"
-          gh release --repo ruffle-rs/ruffle list \
-            --json tagName \
-            --jq ".[] | select(.tagName == \"$target_tag\") | .tagName" \
-            --exclude-drafts \
-          >> "$GITHUB_OUTPUT"
+          {
+            date="$(date -u +%F)"
+            echo -n tag=
+            gh release --repo ruffle-rs/ruffle list \
+              --json tagName \
+              --jq ".[] | select(.tagName == \"nightly-$date\") | .tagName" \
+              --exclude-drafts \
+              --limit 1
+            echo date=$date
+          } >> "$GITHUB_OUTPUT"
       - name: Setup SSH
         if: steps.check-tag.outputs.tag
         uses: webfactory/ssh-agent@v0.9.0
@@ -36,6 +34,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Setup known_hosts
+        if: steps.check-tag.outputs.tag
         run: |
           mkdir -m 600 -p ~/.ssh
           ssh-keyscan aur.archlinux.org | tee -a ~/.ssh/known_hosts
@@ -47,11 +46,18 @@ jobs:
       - name: Update pkgver
         if: steps.check-tag.outputs.tag
         run: |
-          current_tag="${{ steps.check-tag.outputs.tag }}"
-          target_tag="${{ steps.target-tag.outputs.tag }}"
-          sed -i "s/_date=$current_tag/_date=$target_tag/" \
+          current_date="$(grep _date= ruffle-nightly/PKGBUILD | sed 's/_date=//')"
+          target_date="${{ steps.check-tag.outputs.date }}"
+          sed -i "s/_date=$current_date/_date=$target_date/" \
             ruffle-nightly/PKGBUILD
-          git -C ruffle-nightly commit -m "Bump to $target_tag"
+          if git diff
+          then
+            git -C ruffle-nightly commit -m "Bump to $target_date"
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PKGBUILD is not updated."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Patch source
         if: steps.check-tag.outputs.tag
         run: |
@@ -68,18 +74,7 @@ jobs:
         uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: ruffle-nightly
-      - name: Check if needs to push
-        id: needs-push
-        run: |
-          git -C ruffle-nightly reset --hard
-          count="$(git -C ruffle-nightly rev-list --count origin/master..HEAD)"
-          if [[ "$count" -gt 0 ]]
-          then
-            echo "result=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "result=false" >> "$GITHUB_OUTPUT"
-          fi
       - name: Push to AUR
-        if: steps.needs-push.outputs.result == 'true'
+        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         run: |
           git -C ruffle-nightly push
