@@ -79,12 +79,23 @@ jobs:
             ruffle-nightly/PKGBUILD
           if git diff
           then
-            git -C ruffle-nightly commit -m "Bump to $target_date"
+            echo "Updated PKGBUILD."
             echo "updated=true" >> "$GITHUB_OUTPUT"
           else
             echo "PKGBUILD is not updated."
             echo "updated=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Update .SRCINFO
+        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
+        uses: arenekosreal/makepkg-action@v0.2.1
+        with:
+          builddir: ruffle-nightly
+          args: --printsrcinfo
+          stdout: ruffle-nightly/.SRCINFO
+      - name: Commit change
+        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
+        run: |
+          git -C ruffle-nightly commit --all -m "Bump to ${{ steps.check-tag.outputs.date }}"
       - name: Patch source
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         run: |
