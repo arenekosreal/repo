@@ -8,9 +8,9 @@ inputs:
     description: The env which will be passed to build action.
     required: false
   bump-pkgrel:
-    description: If bump pkgrel by adding 1 to existing.
+    description: How many pkgrels are added.
     required: false
-    default: 'false'
+    default: '0'
 outputs:
   artifact-name:
     description: The name of artifact which storage built package(s).
@@ -170,8 +170,14 @@ runs:
         updatepkgbuild: true
         repo: repo
     - name: Bump pkgrel
-      if: inputs.bump-pkgrel
+      if: inputs.bump-pkgrel > 0
       run: |
+        BUMP_PKGREL='${{ inputs.bump-pkgrel }}'
+        if ! [[ "$BUMP_PKGREL" =~ [0-9]+ ]]
+        then
+          echo "::error::Invalid bump-pkgrel input, skipping bumping pkgrel..."
+          exit
+        fi
         ORIGINAL_PKGREL='${{ steps.original-pkgrel.outputs.value }}'
         sed -i "s/^pkgrel=$ORIGINAL_PKGREL/pkgrel=$((ORIGINAL_PKGREL + 1))/" \
           '${{ inputs.builddir }}/PKGBUILD'
