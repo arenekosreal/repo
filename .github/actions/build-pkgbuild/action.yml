@@ -65,7 +65,7 @@ runs:
         stdout: ${{ inputs.builddir }}/.SRCINFO
     - name: Get pkgbase
       id: pkgbase
-      uses: ./github/actions/get-srcinfo-value
+      uses: ./.github/actions/get-srcinfo-value
       with:
         srcinfo: ${{ inputs.builddir }}/.SRCINFO
         key: pkgbase
