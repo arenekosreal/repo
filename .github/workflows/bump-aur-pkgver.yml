@@ -46,7 +46,7 @@ jobs:
           git clone ssh://aur@aur.archlinux.org/ruffle-nightly.git
       - name: Update pkgver
         if: steps.check-tag.outputs.tag
-        run:
+        run: |
           current_tag="${{ steps.check-tag.outputs.tag }}"
           target_tag="${{ steps.target-tag.outputs.tag }}"
           sed -i "s/_date=$current_tag/_date=$target_tag/" \
