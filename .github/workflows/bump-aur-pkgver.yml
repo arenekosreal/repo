@@ -60,7 +60,7 @@ jobs:
           done
       - name: Try build
         if: steps.check-tag.outputs.tag
-        uses: arenekosreal/makepkg-action@v0.1.3
+        uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: ruffle-nightly
       - name: Check if needs to push
