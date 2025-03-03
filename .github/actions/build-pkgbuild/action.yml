@@ -101,7 +101,7 @@ runs:
         done <<< '${{ steps.gpg-fingerprints.outputs.value }}'
       shell: bash
     - name: Download packages to fill dependencies repository
-      uses: ./.github/actions/download-pacages-artifacts
+      uses: ./.github/actions/download-packages-artifacts
       with:
         directory: repo
     - name: Generate dependencies repository
