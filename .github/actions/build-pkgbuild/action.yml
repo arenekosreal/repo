@@ -259,7 +259,7 @@ runs:
         env: ${{ inputs.env }}
         args: ${{ steps.needs-ignorearch.outputs.result == 'true' && '--ignorearch' || '' }}
     - name: Upload artifact
-      uses: ./.github/actions/upload-package/artifacts
+      uses: ./.github/actions/upload-packages-artifacts
       with:
         directory: pkgdest
         name: ${{ steps.gen-meta-info.outputs.artifact-name }}
