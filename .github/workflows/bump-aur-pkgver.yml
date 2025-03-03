@@ -35,6 +35,11 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Setup known_hosts
+        run: |
+          mkdir -m 600 -p ~/.ssh
+          ssh-keyscan -q aur.archlinux.org | tee -a ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
       - name: Clone repository
         if: steps.check-tag.outputs.tag
         run: |
