@@ -16,9 +16,9 @@ on:
         type: string
       bump-pkgrel:
         required: false
-        description: If bump pkgrel by adding 1 to existing.
-        type: boolean
-        default: false
+        description: How many pkgrels are added to existing.
+        type: number
+        default: 0
     secrets:
       secret-env:
         description: env but supports secrets.*
@@ -43,272 +43,27 @@ on:
         type: string
       bump-pkgrel:
         required: false
-        description: If bump pkgrel by adding 1 to existing.
-        type: boolean
-        default: false
+        description: How many pkgrels are added to existing.
+        type: number
+        default: 0
 jobs:
   build-single-package:
     name: Build ${{ inputs.repository }}
     runs-on: ${{ inputs.runs-on }}
     outputs:
-      artifact-name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install depends
-        run: |
-          sudo apt-get install -y pacman-package-manager libarchive-tools
       - name: Checkout PKGBUILD
         run: |
           git clone "${{ inputs.repository }}" startdir
-      - name: Get pkgbase
-        id: pkgbase
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: pkgbase
-      - name: Apply patch
-        run: |
-          pkgbase="${{ steps.pkgbase.outputs.value }}"
-          if [[ -d "patches/$pkgbase" ]]
-          then
-            find "patches/$pkgbase" -maxdepth 1 -mindepth 1 -type f \
-              -name '*.patch' -o -name '*.diff' | \
-            while read -r p
-            do
-              echo "Applying patch $p..."
-              patch -Np1 -d startdir -i "../$p"
-            done
-          fi
-      - name: Gen .SRCINFO
-        uses: arenekosreal/makepkg-action@v0.2.1
-        with:
-          builddir: startdir
-          args: --printsrcinfo
-          stdout: startdir/.SRCINFO
-      - name: Get gpg fingerprints
-        id: gpg-fingerprints
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: validpgpkeys
-      - name: Fetch GPG keys
-        if: steps.gpg-fingerprints.outputs.value
-        run: |
-          GPG="gpg --batch --yes"
-          declare -a EXTRA_GPG_ARGS=("" "--keyserver keyserver.ubuntu.com" "--keyserver keys.openpgp.org")
-          mkdir -p startdir/keys/pgp
-          while read -r fingerprint
-          do
-            echo "Fetching $fingerprint..."
-            for extra_gpg_arg in "${EXTRA_GPG_ARGS[@]}"
-            do
-              if $GPG $extra_gpg_arg --recv-keys "$fingerprint" && \
-                 $GPG --list-keys "$fingerprint"
-              then
-                echo "Fetch fingerprint successfully."
-                break
-              fi
-            done
-            $GPG --export --armor -o "startdir/keys/pgp/$fingerprint.asc" "$fingerprint"
-          done <<< "${{ steps.gpg-fingerprints.outputs.value }}"
-      - name: Get arch
-        id: arch
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: arch
-      - name: Get target arch
-        id: target-arch
-        uses: ./.github/actions/get-target-arch
-      - name: Analyze PKGBUILD
-        id: analyze
-        run: |
-          PKGBASE="${{ steps.pkgbase.outputs.value }}"
-          TARGET_ARCH="${{ steps.target-arch.outputs.target-arch }}"
-          case "$PKGBASE" in
-            spotify)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=true"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=true
-              ;;
-            ayugram-desktop|linux-pf)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=false"
-                echo "needs-more-space=true"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-            *-git)
-              {
-                echo "bump-pkgver=true"
-                echo "download-manually=false"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-            *-bin)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=false"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=true
-              ;;
-            *)
-              {
-                echo "bump-pkgver=false"
-                echo "download-manually=false"
-                echo "needs-more-space=false"
-              } >> "$GITHUB_OUTPUT"
-              is_binary=false
-              ;;
-          esac
-          read -r -a archs <<< "${{ steps.arch.outputs.value }}"
-          found=false
-          for arch in "${archs[@]}"
-          do
-            if [[ "$arch" == "any" || "$arch" == "$TARGET_ARCH" ]]
-            then
-              echo "ignore-arch=" >> "$GITHUB_OUTPUT"
-              found=true
-              break
-            fi
-          done
-          if ! "$found"
-          then
-            if "$is_binary"
-            then
-              echo "::error::$PKGBASE cannot be built with --ignorearch."
-              exit 1
-            else
-              echo "::warning::$TARGET_ARCH is not supported in PKGBUILD, adding --ignorearch to force build..."
-              echo "ignore-arch=--ignorearch" >> "$GITHUB_OUTPUT"
-            fi
-          fi
-      - name: Download packages to fill repository
-        uses: ./.github/actions/download-packages-artifacts
-        with:
-          directory: repo
-      - name: Generate dependencies repository
-        run: |
-          find repo -maxdepth 1 -mindepth 1 -type f -name '*.pkg.tar.*' \
-            -exec repo-add repo/repo.db.tar.gz {} +
-      - name: Get unmodified pkgrel
-        id: original-pkgrel
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: pkgrel
-      - name: Get sources required downloading
-        id: sources
-        if: steps.analyze.outputs.download-manually == 'true'
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: source
-      - name: Download sources
-        if: steps.sources.outputs.value
-        run: |
-          mkdir -p srcdest
-          # Permission maybe broken due to files created by docker action.
-          sudo chown -R "$(id -u):$(id -g)" srcdest
-          while read -r source
-          do
-            declare url name
-            case "$source" in
-              git+*|*::git+*)
-                echo "::warning::Downloading git repository is not supported, skipping..."
-                ;;
-              *::http://*|*::https://*|*::ftp://*)
-                read -r -a array <<< "${source//::/ }"
-                name="${array[0]}"
-                url="${array[1]}"
-                unset array
-                ;;
-              http://*|https://*|ftp://*)
-                name="$(basename "$source")"
-                url="$source"
-                ;;
-              *)
-                echo "::warning::Unsupported source $source, skipping..."
-                ;; 
-            esac
-            if [[ -n "$url" && -n "$name" ]]
-            then
-              echo "Downloading $source with wget..."
-              wget --tries=0 --retry-connrefused --retry-on-host-error -O "srcdest/$name" "$url" 
-            fi
-          done <<< "${{ steps.sources.outputs.value }}"
-      - name: Bump pkgver
-        if: steps.analyze.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.1
+      - name: Start building
+        id: build
+        uses: ./.github/actions/build-pkgbuild
         with:
           builddir: startdir
           env: |
-            PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
-            ${{ github.event_name == 'workflow_call' && secrets.secrets-env || '' }}
-          args: --nobuild
-          updatepkgbuild: true
-          repo: repo
-      - name: Bump pkgrel
-        if: inputs.bump-pkgrel
-        run: |
-          ORIGINAL_PKGREL="${{ steps.original-pkgrel.outputs.value }}"
-          sed -i "s/^pkgrel=$ORIGINAL_PKGREL/pkgrel=$((ORIGINAL_PKGREL + 1))" \
-            startdir/PKGBUILD
-      - name: Generate updated .SRCINFO
-        if: steps.analyze.outputs.bump-pkgver == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.1
-        with:
-          builddir: startdir
-          args: --printsrcinfo
-          stdout: startdir/.SRCINFO
-      - name: Get updated pkgver
-        id: pkgver
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: pkgver
-      - name: Get updated pkgrel
-        id: pkgrel
-        uses: ./.github/actions/get-srcinfo-value
-        with:
-          srcinfo: startdir/.SRCINFO
-          key: pkgrel
-      - name: Generate meta info
-        id: gen-meta-info
-        run: |
-          printf "artifact-name=%s %s-%d %s\n" \
-            "${{ steps.pkgbase.outputs.value }}" \
-            "${{ steps.pkgver.outputs.value }}" \
-            "${{ steps.pkgrel.outputs.value }}" \
-            "${{ steps.target-arch.outputs.target-arch }}" \
-          >> "$GITHUB_OUTPUT"
-      - name: Free space
-        if: steps.analyze.outputs.needs-more-space == 'true'
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          docker-images: false
-      - name: Build package
-        uses: arenekosreal/makepkg-action@v0.2.1
-        with:
-          builddir: startdir
-          env: |
-            PACKAGER=${{ vars.PACKAGER }}
-            ${{ inputs.env }}
-            ${{ github.event_name == 'workflow_call' && secrets.secrets-env || '' }}
-          repo: repo
-      - name: Upload artifact
-        uses: ./.github/actions/upload-packages-artifacts
-        with:
-          directory: pkgdest
-          name: ${{ steps.gen-meta-info.outputs.artifact-name }}
-      - name: Fixup srcdest permission
-        run: |
-          sudo chown -R "$(id -u):$(id -g)" srcdest
+            ${{ github.event_name == 'workflow_call' && inputs.secret-env || '' }}
+          bump-pkgrel: ${{ inputs.bump-pkgrel }}

@@ -92,7 +92,7 @@ jobs:
           fi
       - name: Update .SRCINFO
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.1
+        uses: arenekosreal/makepkg-action@v0.2.2
         with:
           builddir: ruffle-nightly
           args: --printsrcinfo
@@ -114,7 +114,7 @@ jobs:
           done
       - name: Try build
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
-        uses: arenekosreal/makepkg-action@v0.2.1
+        uses: arenekosreal/makepkg-action@v0.2.2
         with:
           builddir: ruffle-nightly
       - name: Push to AUR
