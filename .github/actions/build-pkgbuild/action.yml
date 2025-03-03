@@ -1,0 +1,267 @@
+name: Build PKGBUILD
+description: Build PKGBUILD and upload artifacts.
+inputs:
+  builddir:
+    description: The directory contains PKGBUILD.
+    required: true
+  env:
+    description: The env which will be passed to build action.
+    required: false
+  bump-pkgrel:
+    description: If bump pkgrel by adding 1 to existing.
+    required: false
+    default: 'false'
+outputs:
+  artifact-name:
+    description: The name of artifact which storage built package(s).
+    value: ${{ steps.gen-meta-info.outputs.artifact-name }}
+runs:
+  using: composite
+  steps:
+    - name: Install depends
+      run: |
+        if ! type bsdtar
+        then
+          sudo apt-get install -y libarchive-tools
+        fi
+
+        if ! type repo-add
+        then
+          sudo apt-get install -y pacman-package-manager
+        fi
+      shell: bash
+    - name: Gen .SRCINFO
+      uses: arenekosreal/makepkg-action@v0.2.2
+      with:
+        builddir: ${{ inputs.builddir }}
+        args: --printsrcinfo
+        stdout: ${{ inputs.builddir }}/.SRCINFO
+    - name: Get original pkgbase
+      id: original-pkgbase
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: pkgbase
+    - name: Apply patch
+      run: |
+        pkgbase='${{ steps.original-pkgbase.outputs.value }}'
+        if [[ -d "patches/$pkgbase" ]]
+        then
+          declare p
+          find "patches/$pkgbase" -maxdepth 1 -mindepth 1 -type f \
+            -name "*.patch" -o -name "*.diff" | \
+          while read -r p
+          do
+            echo "Applying patch $p..."
+            patch -Np1 -d '${{ inputs.builddir }}' -i "../$p"
+          done
+        fi
+      shell: bash
+    - name: Gen updated .SRCINFO
+      uses: arenekosreal/makepkg-action@v0.2.2
+      with:
+        builddir: ${{ inputs.builddir }}
+        args: --printsrcinfo
+        stdout: ${{ inputs.builddir }}/.SRCINFO
+    - name: Get pkgbase
+      id: pkgbase
+      uses: ./github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: pkgbase
+    - name: Get GPG fingerprints
+      id: gpg-fingerprints
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: validpgpkeys
+    - name: Fetch GPG public keys
+      if: steps.gpg-fingerprints.outputs.value
+      run: |
+        GPG='gpg --batch --yes'
+        KEYS_PGP='${{ inputs.builddir }}/keys/pgp'
+        declare -a EXTRA_GPG_ARGS=("" "--keyserver keyserver.ubuntu.com" "--keyserver keys.openpgp.org")
+        mkdir -p "$KEYS_PGP"
+        declare fingerprint
+        while read -r fingerprint
+        do
+          echo "Fetching $fingerprint..."
+          declare extra_arg FINGERPRINT_ASC="$KEYS_PGP/$fingerprint.asc"
+          for extra_arg in "${EXTRA_ARGS[@]}"
+          do
+              declare GPG_FULL="$GPG $extra_arg"
+              if $GPG_FULL --recv-keys "$fingerprint" && \
+                 $GPG --list-keys "$fingerprint"
+              then
+                echo "Fetch fingerprint successfully."
+                break
+              fi
+          done
+          $GPG --export --armor -o "$FINGERPRINT_ASC" "$fingerprint"
+        done <<< '${{ steps.gpg-fingerprints.outputs.value }}'
+      shell: bash
+    - name: Download packages to fill dependencies repository
+      uses: ./.github/actions/download-pacages-artifacts
+      with:
+        directory: repo
+    - name: Generate dependencies repository
+      run: |
+        find repo -maxdepth 1 -mindepth 1 -type f -name "*.pkg.tar.*" \
+          -exec repo-add repo/repo.db.tar.gz {} +
+      shell: bash
+    - name: Get original pkgrel
+      id: original-pkgrel
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: pkgrel
+    - name: Get sources required downloading
+      id: sources
+      if: contains(fromJSON('["spotify"]'), steps.pkgbase.outputs.value)
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: source
+    - name: Download sources
+      if: steps.sources.outputs.value
+      run: |
+        mkdir -p srcdest
+        # Permission maybe broen after docker action
+        sudo chown -R "$(id -u):$(id -g)" srcdest
+        declare source
+        while read -r source
+        do
+          declare url name
+          case "$source" in
+            git+*|*::git+*)
+              echo "::warning::Downloading git repository is not supported, skipping..."
+              ;;
+            *::http://*|*::https://*|*::ftp://*)
+              declare -a array
+              read -r -a array <<< "${source//::/ }"
+              name="${array[0]}"
+              url="${array[1]}"
+              unset array
+              ;;
+            http://*|https://*|ftp://*)
+              name="$(basename "$source")"
+              url="$source"
+              ;;
+            *)
+              echo "::warning::Unsupported source $source, skipping..."
+              ;;
+          esac
+          if [[ -n "$name" ]] && [[ -n "$url" ]]
+          then
+            echo "Doanloading $url to srcdest/$name..."
+            wget --tries 0 --retry-connrefused --retry-on-host-error -O "srcdest/$name" "$url"
+          fi
+        done <<< '${{ steps.sources.outputs.value }}'
+      shell: bash
+    - name: Bump pkgver
+      if: endsWith(steps.pkgbase.outputs.value, '-git')
+      uses: arenekosreal/makepkg-action@v0.2.2
+      with:
+        builddir: ${{ inputs.builddir }}
+        env: |
+          PACKAGER=${{ vars.PACKAGER }}
+          ${{ inputs.env }}
+        args: --nobuild
+        updatepkgbuild: true
+        repo: repo
+    - name: Bump pkgrel
+      if: inputs.bump-pkgrel
+      run: |
+        ORIGINAL_PKGREL='${{ steps.original-pkgrel.outputs.value }}'
+        sed -i "s/^pkgrel=$ORIGINAL_PKGREL/pkgrel=$((ORIGINAL_PKGREL + 1))/" \
+          '${{ inputs.builddir }}/PKGBUILD'
+      shell: bash
+    - name: Generate updated .SRCINFO
+      uses: arenekosreal/makepkg-action@v0.2.2
+      with:
+        builddir: ${{ inputs.builddir }}
+        args: --printsrcinfo
+        stdout: ${{ inputs.builddir }}/.SRCINFO
+    - name: Get updated pkgver
+      id: pkgver
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: pkgver
+    - name: Get updated pkgrel
+      id: pkgrel
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: pkgrel
+    - name: Get target arch
+      id: target-arch
+      uses: ./.github/actions/get-target-arch
+    - name: Generate meta info
+      id: gen-meta-info
+      run: |
+        printf "artifact-name=%s %s-%d %s\n" \
+          '${{ steps.pkgbase.outputs.value }}' \
+          '${{ steps.pkgver.outputs.value }}' \
+          '${{ steps.pkgrel.outputs.value }}' \
+          '${{ steps.target-arch.outputs.target-arch }}' \
+        >> "$GITHUB_OUTPUT"
+      shell: bash
+    - name: Free space
+      if: contains(fromJSON('["linux-pf", "ayugram-desktop"]'), steps.pkgbase.outputs.value)
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        docker-images: false
+    - name: Get arch
+      id: arch
+      uses: ./.github/actions/get-srcinfo-value
+      with:
+        srcinfo: ${{ inputs.builddir }}/.SRCINFO
+        key: arch
+    - name: Check if requires --ignorearch
+      id: needs-ignorearch
+      run: |
+        declare -a archs
+        read -r -a archs <<< '${{ steps.arch.outputs.value }}'
+        declare arch target_arch='${{ steps.target-arch.outputs.target-arch }}'
+        declare result=false found=false
+        for arch in "${archs[@]}"
+        do
+          if [[ "$arch" == "any" ]] || [[ "$arch" == "$target_arch" ]]
+          then
+            found=true
+            break
+          fi
+        done
+        if ! $found
+        then
+          case '${{ steps.pkgbase.outputs.value }}' in
+            spotify|*-bin)
+              echo "::error::Unable to build binary package with --ignorearch"
+              exit 1
+              ;;
+            *)
+              echo "::warning::Adding --ignorearch to force building..."
+              result=true
+              ;;
+          esac
+        fi
+        echo "result=$result" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - name: Build package
+      uses: arenekosreal/makepkg-action@v0.2.2
+      with:
+        builddir: ${{ inputs.builddiir }}
+        env: |
+          PACKAGER=${{ vars.PACKAGER }}
+          ${{ inputs.env }}
+        args: ${{ steps.needs-ignorearch.outputs.result == 'true' && '--ignorearch' || '' }}
+    - name: Upload artifact
+      uses: ./.github/actions/upload-package/artifacts
+      with:
+        directory: pkgdest
+        name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+    - name: Fix srcdest permission
+      run: |
+        sudo chwon -R "$(id -u):$(id -g)" srcdest
+      shell: bash
