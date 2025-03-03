@@ -39,16 +39,42 @@ jobs:
           mkdir -m 600 -p ~/.ssh
           ssh-keyscan aur.archlinux.org | tee -a ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+      - name: Checkout
+        if: steps.check-tag.outputs.tag
+        uses: actions/checkout@v4
       - name: Clone repository
         if: steps.check-tag.outputs.tag
         run: |
           git clone ssh://aur@aur.archlinux.org/ruffle-nightly.git
-      - name: Update pkgver
+      - name: Checkout ruffle
+        if: steps.check-tag.outputs.tag
+        uses: actions/checkout@v4
+        with:
+          repository: ruffle-rs/ruffle
+          path: ruffle
+      - name: Get current state
+        id: current-state
         if: steps.check-tag.outputs.tag
         run: |
-          current_date="$(grep _date= ruffle-nightly/PKGBUILD | sed 's/_date=//')"
+          source ruffle-nightly/PKGBUILD
+          echo "date=$_date" >> "$GITHUB_OUTPUT"
+          echo "repo-sha256=${sha256sums[0]}" >> "$GITHUB_OUTPUT"
+      - name: Update pkgver
+        id: update-pkgver
+        if: steps.check-tag.outputs.tag
+        run: |
+          current_date="${{ steps.current-state.outputs.date }}"
           target_date="${{ steps.check-tag.outputs.date }}"
-          sed -i "s/_date=$current_date/_date=$target_date/" \
+          current_sha256="${{ steps.current-state.outputs.repo-sha256 }}"
+          # /usr/share/makepkg/source/git.sh#L164
+          target_sha256="$( \
+            GIT_CONFIG_GLOBAL=/dev/null \
+            GIT_CONFIG_SYSTEM=/dev/null \
+            git -c core.abbrev=no -C "ruffle" \
+              archive --format tar "nightly-$target_date" | \
+            sha256sum 2>&1 \
+          )"
+          sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
           if git diff
           then
@@ -59,7 +85,7 @@ jobs:
             echo "updated=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Patch source
-        if: steps.check-tag.outputs.tag
+        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         run: |
           find "patches/ruffle-nightly" \
             -maxdepth 1 -mindepth 1 -type f \
@@ -70,7 +96,7 @@ jobs:
             patch -Np1 -d ruffle-nightly -i "../$p"
           done
       - name: Try build
-        if: steps.check-tag.outputs.tag
+        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         uses: arenekosreal/makepkg-action@v0.2.1
         with:
           builddir: ruffle-nightly
