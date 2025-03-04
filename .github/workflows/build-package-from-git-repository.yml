@@ -1,10 +1,10 @@
-name: Build aur package
+name: Build package from git repository.
 on:
   workflow_call:
     inputs:
       repository:
         required: true
-        description: The repository of AUR package.
+        description: The repository of package.
         type: string
       runs-on:
         required: true
@@ -31,7 +31,7 @@ on:
     inputs:
       repository:
         required: true
-        description: The repository of AUR package.
+        description: The repository of package.
         type: string
       runs-on:
         required: true
