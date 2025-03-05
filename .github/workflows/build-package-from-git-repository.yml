@@ -82,8 +82,11 @@ jobs:
                   fi
                   ;;
                 *)
-                  echo "::error::Unsupported target arch $target_arch."
-                  exit 1
+                  if [[ -n "$target_arch" ]]
+                  then
+                    echo "::error::Unsupported target arch $target_arch."
+                    exit 1
+                  fi
                   ;;
               esac
             done <<< '${{ inputs.target-archs }}'
