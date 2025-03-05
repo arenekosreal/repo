@@ -6,9 +6,9 @@ on:
         required: true
         description: The repository of package.
         type: string
-      runs-on:
-        required: true
-        description: The GitHub action runner.
+      target-archs:
+        required: false
+        description: The target architectures in newline to try building
         type: string
       env:
         required: false
@@ -33,9 +33,9 @@ on:
         required: true
         description: The repository of package.
         type: string
-      runs-on:
-        required: true
-        description: The GitHub action runner.
+      target-archs:
+        required: false
+        description: The target architectures to try building.
         type: string
       env:
         required: false
@@ -47,9 +47,59 @@ on:
         type: number
         default: 0
 jobs:
+  gen-runs-on:
+    name: Get runs-ons from target-archs
+    runs-on: ubuntu-latest
+    outputs:
+      runs-on: ${{ steps.gen-runs-on.outputs.runs-on }}
+    steps:
+      - name: Gen runs-on
+        id: gen-runs-on
+        run: |
+          declare -a runs_ons
+          if [[ -z '${{ inputs.target-archs }}' ]]
+          then
+            runs_ons=(ubuntu-24.04 ubuntu-24.04-arm)
+          else
+            declare target_arch \
+                    x86_64=false \
+                    aarch64=false
+            while read -r target_arch
+            do
+              case "$target_arch" in
+                x86_64)
+                  if ! "$x86_64"
+                  then
+                    x86_64=true
+                    runs_ons+=(ubuntu-24.04)
+                  fi
+                  ;;
+                aarch64)
+                  if ! "$aarch64"
+                  then
+                    aarch64=true
+                    runs_ons+=(ubuntu-24.04-arm)
+                  fi
+                  ;;
+                *)
+                  echo "::error::Unsupported target arch $target_arch."
+                  exit 1
+                  ;;
+              esac
+            done <<< '${{ inputs.target-archs }}'
+          fi
+          {
+            echo runs-on=
+            jq --compat-output --null-input --raw-output \
+              '$ARGS.positional' --args "${runs_ons[@]}"
+          } >> "$GITHUB_OUTPUT"
   build-single-package:
+    needs: gen-runs-on
+    strategy:
+      matrix:
+        runs-on: ${{ fromJSON(needs.gen-runs-on.outputs.runs-on) }}
     name: Build ${{ inputs.repository }}
-    runs-on: ${{ inputs.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
     outputs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:

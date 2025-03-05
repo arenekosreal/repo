@@ -11,6 +11,9 @@ inputs:
     description: How many pkgrels are added.
     required: false
     default: '0'
+  target-arch:
+    description: The target architecture to try building.
+    required: false
 outputs:
   artifact-name:
     description: The name of artifact which storage built package(s).
@@ -200,6 +203,7 @@ runs:
         key: pkgrel
     - name: Get target arch
       id: target-arch
+      if: ${{ ! inputs.target-arch }}
       uses: ./.github/actions/get-target-arch
     - name: Generate meta info
       id: gen-meta-info
@@ -208,7 +212,7 @@ runs:
           '${{ steps.pkgbase.outputs.value }}' \
           '${{ steps.pkgver.outputs.value }}' \
           '${{ steps.pkgrel.outputs.value }}' \
-          '${{ steps.target-arch.outputs.target-arch }}' \
+          '${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}' \
         >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Free space
@@ -227,7 +231,7 @@ runs:
       run: |
         declare -a archs
         read -r -a archs <<< '${{ steps.arch.outputs.value }}'
-        declare arch target_arch='${{ steps.target-arch.outputs.target-arch }}'
+        declare arch target_arch='${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}'
         declare result=false found=false
         for arch in "${archs[@]}"
         do

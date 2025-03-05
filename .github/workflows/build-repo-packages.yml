@@ -102,77 +102,97 @@ jobs:
           - https://aur.archlinux.org/linux-pf.git
           - https://aur.archlinux.org/ayugram-desktop.git
 
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: ${{ matrix.pkgbuild-repo }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}      
 
   cinny:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/cinny.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/cinny.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
       env: |
         cinnyBase=/cinny
 
   spotube:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/spotube.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/spotube.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
     secrets:
-      secrets-env: |
+      secret-env: |
         MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
         MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
         MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}     
 
   libvgm-git:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libvgm-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libvgm-git.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   fooyin:
     needs:
       - libvgm-git
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/fooyin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/fooyin.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   libmongocrypt:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libmongocrypt.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libmongocrypt.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   mongosh:
     needs:
       - libmongocrypt
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/mongosh.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/mongosh.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   osu-mime:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/osu-mime.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/osu-mime.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   osu-lazer-bin:
     needs:
       - osu-mime
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/osu-lazer-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/osu-lazer-bin.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   spicetify-cli:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/spicetify-cli.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/spicetify-cli.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   spicetify-themes:
     needs:
@@ -182,69 +202,87 @@ jobs:
         pkgbuild-repo:
           - https://aur.archlinux.org/spicetify-theme-nord-git.git
           - https://aur.archlinux.org/spicetify-themes-git.git
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: ${{ matrix.pkgbuild-repo }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   dotnet-core-bin:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/dotnet-core-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/dotnet-core-bin.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   thrive:
     needs:
       - dotnet-core-bin
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/thrive.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/thrive.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   dotnet-install:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/dotnet-install.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/dotnet-install.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   watt-toolkit-git:
     needs:
       - dotnet-core-bin
       - dotnet-install
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/watt-toolkit-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/watt-toolkit-git.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   libglibutil:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libglibutil.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libglibutil.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   libgbinder:
     needs:
       - libglibutil
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libgbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libgbinder.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   python-gbinder:
     needs:
       - libgbinder
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/python-gbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/python-gbinder.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   waydroid:
     needs:
       - python-gbinder
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/waydroid.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/waydroid.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   obs-packages:
     name: Get packages built on Open Build Service
@@ -309,27 +347,33 @@ jobs:
           name: ${{ steps.gen-meta-info.outputs.artifact-name }}
 
   libbase58:
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libbase58.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libbase58.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   libblkmaker:
     needs:
       - libbase58
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/libblkmaker.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/libblkmaker.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   bfgminer-git:
     needs:
       - libbase58
       - libblkmaker
-    uses: ./.github/workflows/build-single-package.yml
+    uses: ./.github/workflows/build-package-from-git-repository.yml
     with:
-      git-repository: https://aur.archlinux.org/bfgminer-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel }}
+      target-archs: |
+        x86_64
+      repository: https://aur.archlinux.org/bfgminer-git.git
+      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
 
   release:
     name: Grab all artifacts and prepare release
