@@ -33,6 +33,10 @@ runs:
           sudo apt-get install -y pacman-package-manager
         fi
       shell: bash
+    - name: Get target arch
+      id: target-arch
+      if: ${{ ! inputs.target-arch }}
+      uses: ./.github/actions/get-target-arch
     - name: Gen .SRCINFO
       uses: arenekosreal/makepkg-action@v0.2.2
       with:
@@ -116,6 +120,7 @@ runs:
       uses: ./.github/actions/download-packages-artifacts
       with:
         directory: repo
+        target-arch: ${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}
     - name: Generate dependencies repository
       run: |
         find repo -maxdepth 1 -mindepth 1 -type f -name "*.pkg.tar.*" \
@@ -210,10 +215,6 @@ runs:
       with:
         srcinfo: ${{ inputs.builddir }}/.SRCINFO
         key: pkgrel
-    - name: Get target arch
-      id: target-arch
-      if: ${{ ! inputs.target-arch }}
-      uses: ./.github/actions/get-target-arch
     - name: Generate meta info
       id: gen-meta-info
       run: |
