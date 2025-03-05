@@ -5,6 +5,9 @@ inputs:
   directory:
     description: The directory to storage downloaded packages.
     required: true
+  target-arch:
+    description: The architecture of built packages.
+    required: false
 
 outputs:
   packages:
@@ -14,6 +17,11 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Get target arch
+      id: target-arch
+      if: ${{ ! inputs.target-arch }}
+      uses: ./.github/actions/get-target-arch
+
     - name: Create directory
       run: |
         mkdir -p "${{ inputs.directory }}"
@@ -24,6 +32,7 @@ runs:
       with:
         path: ${{ inputs.directory }}
         merge-multiple: true
+        pattern: "* ${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}" 
 
     - name: Recover escaped files names
       id: escape
