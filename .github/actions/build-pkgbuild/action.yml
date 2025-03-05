@@ -92,7 +92,7 @@ runs:
         do
           echo "Fetching $fingerprint..."
           declare extra_arg FINGERPRINT_ASC="$KEYS_PGP/$fingerprint.asc"
-          for extra_arg in "${EXTRA_ARGS[@]}"
+          for extra_arg in "${EXTRA_GPG_ARGS[@]}"
           do
               declare GPG_FULL="$GPG $extra_arg"
               if $GPG_FULL --recv-keys "$fingerprint" && \
