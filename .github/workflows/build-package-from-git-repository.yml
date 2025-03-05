@@ -92,8 +92,8 @@ jobs:
             done <<< '${{ inputs.target-archs }}'
           fi
           {
-            echo runs-on=
-            jq --compat-output --null-input --raw-output \
+            echo -n runs-on=
+            jq --compact-output --null-input --raw-output \
               '$ARGS.positional' --args "${runs_ons[@]}"
           } >> "$GITHUB_OUTPUT"
   build-single-package:
