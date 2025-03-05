@@ -226,35 +226,42 @@ runs:
       with:
         srcinfo: ${{ inputs.builddir }}/.SRCINFO
         key: arch
-    - name: Check if requires --ignorearch
-      id: needs-ignorearch
+    - name: Get compatible arch
+      id: compatible-arch
       run: |
         declare -a archs
         read -r -a archs <<< '${{ steps.arch.outputs.value }}'
-        declare arch target_arch='${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}'
-        declare result=false found=false
+        declare TARGET_ARCH='${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}'
+        declare arch result=false found=false
         for arch in "${archs[@]}"
         do
-          if [[ "$arch" == "any" ]] || [[ "$arch" == "$target_arch" ]]
-          then
-            found=true
-            break
-          fi
-        done
-        if ! $found
-        then
-          case '${{ steps.pkgbase.outputs.value }}' in
-            spotify|*-bin)
-              echo "::error::Unable to build binary package with --ignorearch"
-              exit 1
+          case "$arch" in
+            any)
+              echo arch=any >> "$GITHUB_OUTPUT"
+              exit
               ;;
-            *)
-              echo "::warning::Adding --ignorearch to force building..."
-              result=true
+            $TARGET_ARCH)
+              echo "arch=$TARGET_ARCH" >> "$GITHUB_OUTPUT"
+              exit
               ;;
           esac
-        fi
-        echo "result=$result" >> "$GITHUB_OUTPUT"
+        done
+        echo arch= >> "$GITHUB_OUTPUT"
+      shell: bash
+    - name: Check if requires --ignorearch
+      id: needs-ignorearch
+      if: ${{ ! steps.compatible-arch.outputs.arch }}
+      run: |
+        case '${{ steps.pkgbase.outputs.value }}' in
+          spotify|*-bin)
+            echo "::error::Unable to build binary package with current architecture."
+            exit 1
+            ;;
+          *)
+            echo "::warning::Current architecture is not in \$arch, force building..."
+            echo "result=--ignorearch" >> "$GITHUB_OUTPUT"
+            ;;
+        esac
       shell: bash
     - name: Build package
       uses: arenekosreal/makepkg-action@v0.2.2
