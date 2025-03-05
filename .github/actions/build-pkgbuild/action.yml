@@ -81,6 +81,8 @@ runs:
     - name: Fetch GPG public keys
       if: steps.gpg-fingerprints.outputs.value
       run: |
+        echo "Printing GPG info..."
+        gpg --version
         GPG='gpg --batch --yes'
         KEYS_PGP='${{ inputs.builddir }}/keys/pgp'
         declare -a EXTRA_GPG_ARGS=("" "--keyserver keyserver.ubuntu.com" "--keyserver keys.openpgp.org")
@@ -98,8 +100,15 @@ runs:
               then
                 echo "Fetch fingerprint successfully."
                 break
+              else
+                if [[ -n "$extra_arg" ]]
+                then
+                  extra=" with $extra_arg"
+                fi
+                echo "::warning::Failed to fetch fingerprint$extra"
               fi
           done
+          echo "Exporting public key..."
           $GPG --export --armor -o "$FINGERPRINT_ASC" "$fingerprint"
         done <<< '${{ steps.gpg-fingerprints.outputs.value }}'
       shell: bash
