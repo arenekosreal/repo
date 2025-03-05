@@ -107,7 +107,7 @@ jobs:
       target-archs: |
         x86_64
       repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}      
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   cinny:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -115,7 +115,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/cinny.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
       env: |
         cinnyBase=/cinny
 
@@ -125,7 +125,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/spotube.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
     secrets:
       secret-env: |
         MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
@@ -138,7 +138,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libvgm-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   fooyin:
     needs:
@@ -148,7 +148,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/fooyin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   libmongocrypt:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -156,7 +156,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libmongocrypt.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   mongosh:
     needs:
@@ -166,7 +166,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/mongosh.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   osu-mime:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -174,7 +174,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/osu-mime.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   osu-lazer-bin:
     needs:
@@ -184,7 +184,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/osu-lazer-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   spicetify-cli:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -192,7 +192,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/spicetify-cli.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   spicetify-themes:
     needs:
@@ -207,7 +207,7 @@ jobs:
       target-archs: |
         x86_64
       repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   dotnet-core-bin:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -215,7 +215,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/dotnet-core-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   thrive:
     needs:
@@ -225,7 +225,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/thrive.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   dotnet-install:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -233,7 +233,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/dotnet-install.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   watt-toolkit-git:
     needs:
@@ -244,7 +244,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/watt-toolkit-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   libglibutil:
     uses: ./.github/workflows/build-package-from-git-repository.yml
@@ -252,7 +252,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libglibutil.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   libgbinder:
     needs:
@@ -262,7 +262,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libgbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   python-gbinder:
     needs:
@@ -272,7 +272,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/python-gbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   waydroid:
     needs:
@@ -282,7 +282,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/waydroid.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   obs-packages:
     name: Get packages built on Open Build Service
@@ -352,7 +352,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libbase58.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   libblkmaker:
     needs:
@@ -362,7 +362,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/libblkmaker.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   bfgminer-git:
     needs:
@@ -373,7 +373,7 @@ jobs:
       target-archs: |
         x86_64
       repository: https://aur.archlinux.org/bfgminer-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && '1' || '0' }}
+      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
 
   release:
     name: Grab all artifacts and prepare release
