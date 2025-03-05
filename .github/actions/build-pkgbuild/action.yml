@@ -239,7 +239,7 @@ runs:
       id: compatible-arch
       run: |
         declare -a archs
-        read -r -a archs <<< '${{ steps.arch.outputs.value }}'
+        readarray archs <<< '${{ steps.arch.outputs.value }}'
         declare TARGET_ARCH='${{ inputs.target-arch && inputs.target-arch || steps.target-arch.outputs.target-arch }}'
         declare arch result=false found=false
         for arch in "${archs[@]}"
