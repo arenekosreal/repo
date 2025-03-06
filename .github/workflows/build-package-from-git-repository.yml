@@ -116,8 +116,10 @@ jobs:
         uses: ./.github/actions/build-pkgbuild
         with:
           builddir: startdir
+          # github.event_name == 'workflow_call' is not working here.
+          # https://github.com/actions/runner/discussions/1884
           env: |
             PACKAGER=${{ vars.PACKAGER }}
             ${{ inputs.env }}
-            ${{ github.event_name == 'workflow_call' && secrets.secret-env || '' }}
+            ${{ secrets.secret-env }}
           bump-pkgrel: ${{ inputs.bump-pkgrel }}
