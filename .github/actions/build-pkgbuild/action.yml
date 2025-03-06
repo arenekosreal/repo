@@ -279,6 +279,7 @@ runs:
         builddir: ${{ inputs.builddir }}
         env: ${{ inputs.env }}
         args: ${{ steps.needs-ignorearch.outputs.result == 'true' && '--ignorearch' || '' }}
+        repo: repo
     - name: Upload artifact
       uses: ./.github/actions/upload-packages-artifacts
       with:
