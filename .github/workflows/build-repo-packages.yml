@@ -76,7 +76,6 @@ jobs:
           - https://aur.archlinux.org/plasma-gamemode-git.git
           - https://aur.archlinux.org/plasma6-applets-caraoke-git.git
           - https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
-          - https://aur.archlinux.org/podman-desktop.git
           - https://aur.archlinux.org/python-pyclip.git
           - https://aur.archlinux.org/qcm.git
           - https://aur.archlinux.org/rclone-aliyundrive-git.git
