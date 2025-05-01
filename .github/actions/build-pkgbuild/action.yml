@@ -38,7 +38,7 @@ runs:
       if: ${{ ! inputs.target-arch }}
       uses: ./.github/actions/get-target-arch
     - name: Gen .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.2
+      uses: arenekosreal/makepkg-action@v0.2.3
       with:
         builddir: ${{ inputs.builddir }}
         args: --printsrcinfo
@@ -65,7 +65,7 @@ runs:
         fi
       shell: bash
     - name: Gen updated .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.2
+      uses: arenekosreal/makepkg-action@v0.2.3
       with:
         builddir: ${{ inputs.builddir }}
         args: --printsrcinfo
@@ -177,7 +177,7 @@ runs:
       shell: bash
     - name: Bump pkgver
       if: endsWith(steps.pkgbase.outputs.value, '-git')
-      uses: arenekosreal/makepkg-action@v0.2.2
+      uses: arenekosreal/makepkg-action@v0.2.3
       with:
         builddir: ${{ inputs.builddir }}
         env: ${{ inputs.env }}
@@ -198,7 +198,7 @@ runs:
           '${{ inputs.builddir }}/PKGBUILD'
       shell: bash
     - name: Generate updated .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.2
+      uses: arenekosreal/makepkg-action@v0.2.3
       with:
         builddir: ${{ inputs.builddir }}
         args: --printsrcinfo
@@ -274,7 +274,7 @@ runs:
         esac
       shell: bash
     - name: Build package
-      uses: arenekosreal/makepkg-action@v0.2.2
+      uses: arenekosreal/makepkg-action@v0.2.3
       with:
         builddir: ${{ inputs.builddir }}
         env: ${{ inputs.env }}
