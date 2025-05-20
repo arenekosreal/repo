@@ -378,7 +378,7 @@ jobs:
         id: build
         uses: ./.github/actions/build-pkgbuild
         with:
-          where: ${{ matrix.build-repo }}
+          where: ${{ matrix.pkgbuild-repo }}
           repo: repo
           env: |
             PACKAGER=${{ vars.PACKAGER }}
