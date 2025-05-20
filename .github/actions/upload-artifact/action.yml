@@ -1,0 +1,28 @@
+name: Upload artifact
+description: Pack and upload artifact
+inputs:
+  name:
+    description: The name of artifact
+    required: true
+  directory:
+    description: Where contains packages
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Pack packages
+      shell: bash
+      run: |
+        find '${{ inputs.directory }}' -maxdepth 1 -type f -name '*.pkg.tar.*' -exec tar -c -f repo.tar -p {} +
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: repo.tar
+        if-no-files-found: error
+
+    - name: Remove archive
+      shell: bash
+      run: |
+        rm repo.tar

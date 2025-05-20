@@ -1,0 +1,26 @@
+name: Download artifact
+description: Download artifact and unpack
+inputs:
+  name:
+    description: The name of artifact
+    required: true
+  directory:
+    description: Where to storage unpacked contents
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Create directory
+      shell: bash
+      run: mkdir -p '${{ inputs.directory }}'
+
+    - name: Get artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+
+    - name: Unpack artifact
+      shell: bash
+      run: |
+        tar -x -f repo.tar -p -C '${{ inputs.directory }}'
+        rm repo.tar

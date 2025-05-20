@@ -1,197 +1,338 @@
 name: Build packages in the repository
 
 on:
-  #schedule:
-  # - cron: 1 */8 * * *
   workflow_dispatch:
     inputs:
-      bump-pkgrel:
-        required: false
-        type: boolean
-        default: false
-        description: If bump pkgrel by adding 1 to existing
+      runs-on:
+        required: true
+        type: choice
+        options:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+        description: The runner to build packages
+  
+  workflow_call:
+    inputs:
+      runs-on:
+        required: true
+        type: string
+        description: The runner to build packages
 
 jobs:
   independent-packages:
     strategy:
       matrix:
         pkgbuild-repo:
-          - https://aur.archlinux.org/ares-decrypt.git
-          - https://aur.archlinux.org/aria2cd.git
-          - https://aur.archlinux.org/ariang-git.git
-          - https://aur.archlinux.org/ariang-native-git.git
-          - https://aur.archlinux.org/basedpyright.git
-          - https://aur.archlinux.org/bcache-tools.git
-          - https://aur.archlinux.org/binder_linux-dkms.git
-          - https://aur.archlinux.org/btrfs-assistant.git
-          - https://aur.archlinux.org/btrfsmaintenance.git
-          - https://aur.archlinux.org/caddy-trojan.git
-          - https://aur.archlinux.org/carapace.git
-          - https://aur.archlinux.org/chromium-extension-plasma-integration.git
-          - https://aur.archlinux.org/chromium-extension-web-store.git
-          - https://aur.archlinux.org/cloudflarespeedtest.git
-          - https://aur.archlinux.org/crow-translate.git
-          - https://aur.archlinux.org/csharp-ls.git
-          - https://aur.archlinux.org/dendrite.git
-          - https://aur.archlinux.org/dockerfile-language-server.git
-          - https://aur.archlinux.org/downgrade.git
-          - https://aur.archlinux.org/electron22-bin.git
-          - https://aur.archlinux.org/fcitx5-pinyin-custom-pinyin-dictionary.git
-          - https://aur.archlinux.org/fcitx5-pinyin-moegirl.git
-          - https://aur.archlinux.org/ffmpeg-audio-thumbnailer.git
-          - https://aur.archlinux.org/find-the-command.git
-          - https://aur.archlinux.org/firefox-extension-adguard.git
-          - https://aur.archlinux.org/firefox-extension-localcdn.git
-          - https://aur.archlinux.org/firefox-extension-plasma-integration.git
-          - https://aur.archlinux.org/gpt4all-chat.git
-          - https://aur.archlinux.org/hath-rust.git
-          - https://aur.archlinux.org/hplip-plugin.git
-          - https://aur.archlinux.org/icalingua++-git.git
-          - https://aur.archlinux.org/icecream.git
-          - https://aur.archlinux.org/icoextract.git
-          - https://aur.archlinux.org/jamesdsp.git
-          - https://aur.archlinux.org/kde-thumbnailer-apk.git
-          - https://aur.archlinux.org/ksmbd-tools.git
-          - https://aur.archlinux.org/lyrica.git
-          - https://aur.archlinux.org/matrix-sliding-sync.git
-          - https://aur.archlinux.org/mongodb-tools.git
-          - https://aur.archlinux.org/mpv-memo-git.git
-          - https://aur.archlinux.org/mpv-thumbfast-noenabled-git.git
-          - https://aur.archlinux.org/mpv-uosc.git
-          - https://aur.archlinux.org/naiveproxy.git
-          - https://aur.archlinux.org/needrestart.git
-          - https://aur.archlinux.org/netcoredbg.git
-          - https://aur.archlinux.org/nodejs-jsonlint.git
-          - https://aur.archlinux.org/ntfysh.git
-          - https://aur.archlinux.org/obs-pipewire-audio-capture.git
-          - https://aur.archlinux.org/oh-my-posh.git
-          - https://aur.archlinux.org/openwrt-devel.git
-          - https://aur.archlinux.org/osc.git
-          - https://aur.archlinux.org/paccache-hook.git
-          - https://aur.archlinux.org/paru.git
-          - https://aur.archlinux.org/pay-respects.git
-          - https://aur.archlinux.org/phonon-qt6-mpv.git
-          - https://aur.archlinux.org/pipewire-module-xrdp.git
-          - https://aur.archlinux.org/pipewire-module-xrdp-git.git
-          - https://aur.archlinux.org/plasma-gamemode-git.git
-          - https://aur.archlinux.org/plasma6-applets-caraoke-git.git
-          - https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
-          - https://aur.archlinux.org/python-pyclip.git
-          - https://aur.archlinux.org/qcm.git
-          - https://aur.archlinux.org/rclone-aliyundrive-git.git
-          - https://aur.archlinux.org/realitlscanner.git
-          - https://aur.archlinux.org/ruffle-nightly.git
-          - https://aur.archlinux.org/sing-box.git
-          - https://aur.archlinux.org/sing-geoip.git
-          - https://aur.archlinux.org/sing-geosite.git
-          - https://aur.archlinux.org/spicetify-extensions-rxri-git.git
-          - https://aur.archlinux.org/stable-diffusion.cpp-vulkan-git.git
-          - https://aur.archlinux.org/systemd-boot-pacman-hook.git
-          - https://aur.archlinux.org/systemd-cron.git
-          - https://aur.archlinux.org/tcp-brutal-dkms.git
-          - https://aur.archlinux.org/uksmd.git
-          - https://aur.archlinux.org/unblockneteasemusic-golang-git.git
-          - https://aur.archlinux.org/usbguard-notifier-git.git
-          - https://aur.archlinux.org/vkdevicechooser.git
-          - https://aur.archlinux.org/watt-toolkit-bin.git
-          - https://aur.archlinux.org/waylyrics.git
-          - https://aur.archlinux.org/wine-wow64.git
-          - https://aur.archlinux.org/xdg-ninja.git
-          - https://aur.archlinux.org/spotify.git
-          - https://aur.archlinux.org/linux-pf.git
-          - https://aur.archlinux.org/ayugram-desktop.git
+          - git+https://aur.archlinux.org/ares-decrypt.git
+          - git+https://aur.archlinux.org/aria2cd.git
+          - git+https://aur.archlinux.org/ariang-git.git
+          - git+https://aur.archlinux.org/ariang-native-git.git
+          - git+https://aur.archlinux.org/basedpyright.git
+          - git+https://aur.archlinux.org/bcache-tools.git
+          - git+https://aur.archlinux.org/binder_linux-dkms.git
+          - git+https://aur.archlinux.org/btrfs-assistant.git
+          - git+https://aur.archlinux.org/btrfsmaintenance.git
+          - git+https://aur.archlinux.org/caddy-trojan.git
+          - git+https://aur.archlinux.org/carapace.git
+          - git+https://aur.archlinux.org/chromium-extension-plasma-integration.git
+          - git+https://aur.archlinux.org/chromium-extension-web-store.git
+          - git+https://aur.archlinux.org/cloudflarespeedtest.git
+          - git+https://aur.archlinux.org/crow-translate.git
+          - git+https://aur.archlinux.org/csharp-ls.git
+          - git+https://aur.archlinux.org/dendrite.git
+          - git+https://aur.archlinux.org/dockerfile-language-server.git
+          - git+https://aur.archlinux.org/downgrade.git
+          - git+https://aur.archlinux.org/fcitx5-pinyin-custom-pinyin-dictionary.git
+          - git+https://aur.archlinux.org/fcitx5-pinyin-moegirl.git
+          - git+https://aur.archlinux.org/ffmpeg-audio-thumbnailer.git
+          - git+https://aur.archlinux.org/find-the-command.git
+          - git+https://aur.archlinux.org/firefox-extension-adguard.git
+          - git+https://aur.archlinux.org/firefox-extension-localcdn.git
+          - git+https://aur.archlinux.org/firefox-extension-plasma-integration.git
+          - git+https://aur.archlinux.org/gpt4all-chat.git
+          - git+https://aur.archlinux.org/hath-rust.git
+          - git+https://aur.archlinux.org/hplip-plugin.git
+          - git+https://aur.archlinux.org/icalingua++-git.git
+          - git+https://aur.archlinux.org/icecream.git
+          - git+https://aur.archlinux.org/icoextract.git
+          - git+https://aur.archlinux.org/kde-thumbnailer-apk.git
+          - git+https://aur.archlinux.org/ksmbd-tools.git
+          - git+https://aur.archlinux.org/lyrica.git
+          - git+https://aur.archlinux.org/mpv-memo-git.git
+          - git+https://aur.archlinux.org/mpv-thumbfast-noenabled-git.git
+          - git+https://aur.archlinux.org/mpv-uosc.git
+          - git+https://aur.archlinux.org/naiveproxy.git
+          - git+https://aur.archlinux.org/needrestart.git
+          - git+https://aur.archlinux.org/netcoredbg.git
+          - git+https://aur.archlinux.org/nodejs-jsonlint.git
+          - git+https://aur.archlinux.org/ntfysh.git
+          - git+https://aur.archlinux.org/obs-pipewire-audio-capture.git
+          - git+https://aur.archlinux.org/oh-my-posh.git
+          - git+https://aur.archlinux.org/openwrt-devel.git
+          - git+https://aur.archlinux.org/osc.git
+          - git+https://aur.archlinux.org/paccache-hook.git
+          - git+https://aur.archlinux.org/paru.git
+          - git+https://aur.archlinux.org/pay-respects.git
+          - git+https://aur.archlinux.org/pipewire-module-xrdp.git
+          - git+https://aur.archlinux.org/pipewire-module-xrdp-git.git
+          - git+https://aur.archlinux.org/plasma-gamemode-git.git
+          - git+https://aur.archlinux.org/plasma6-applets-caraoke-git.git
+          - git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
+          - git+https://aur.archlinux.org/python-pyclip.git
+          - git+https://aur.archlinux.org/qcm.git
+          - git+https://aur.archlinux.org/rclone-aliyundrive-git.git
+          - git+https://aur.archlinux.org/realitlscanner.git
+          - git+https://aur.archlinux.org/ruffle-nightly.git
+          - git+https://aur.archlinux.org/sing-box.git
+          - git+https://aur.archlinux.org/sing-geoip.git
+          - git+https://aur.archlinux.org/sing-geosite.git
+          - git+https://aur.archlinux.org/spicetify-extensions-rxri-git.git
+          - git+https://aur.archlinux.org/systemd-boot-pacman-hook.git
+          - git+https://aur.archlinux.org/systemd-cron.git
+          - git+https://aur.archlinux.org/tcp-brutal-dkms.git
+          - git+https://aur.archlinux.org/unblockneteasemusic-golang-git.git
+          - git+https://aur.archlinux.org/usbguard-notifier-git.git
+          - git+https://aur.archlinux.org/watt-toolkit-bin.git
+          - git+https://aur.archlinux.org/waylyrics.git
+          - git+https://aur.archlinux.org/wine-wow64.git
+          - git+https://aur.archlinux.org/xdg-ninja.git
+          - git+https://aur.archlinux.org/spotify.git
+          - git+https://aur.archlinux.org/linux-pf.git
+          - git+https://aur.archlinux.org/ayugram-desktop.git
+          - git+https://aur.archlinux.org/thrive.git
+    runs-on: ${{ inputs.runs-on }}
+    name: Build packages without any customization
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: ${{ matrix.pkgbuild-repo }}
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   cinny:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/cinny.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
-      env: |
-        cinnyBase=/cinny
+    runs-on: ${{ inputs.runs-on }}
+    name: Build cinny with customized cinnyBase env
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/cinny.git
+          env: |
+            cinnyBase=/cinny
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   spotube:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/spotube.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
-    secrets:
-      secret-env: |
-        MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
-        MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
-        MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}     
+    runs-on: ${{ inputs.runs-on }}
+    name: Build spotube with customized env
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/spotube.git
+          env: |
+            MAKEPKG_SPOTUBE_SPOTIFY_SECRETS=${{ secrets.MAKEPKG_SPOTUBE_SPOTIFY_SECRETS }}
+            MAKEPKG_SPOTUBE_LASTFM_API_KEY=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
+            MAKEPKG_SPOTUBE_LASTFM_API_SECRET=${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+            PACKAGER=${{ vars.PACKAGER }}     
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   libvgm-git:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libvgm-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build libvgm for packages depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/libvgm-git.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   fooyin:
     needs:
       - libvgm-git
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/fooyin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build fooyin which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  libmongocrypt:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libmongocrypt.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Get libvgm
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libvgm-git.outputs.artifact-name }}
+          directory: repo
 
-  mongosh:
-    needs:
-      - libmongocrypt
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/mongosh.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Get libvgm
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libvgm*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/fooyin.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   osu-mime:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/osu-mime.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build osu-mime for packages depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build packages
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/osu-mime.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   osu-lazer-bin:
     needs:
       - osu-mime
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/osu-lazer-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build osu-lazer-bin which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get osu-mime
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.osu-mime.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get osu-mime
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/osu-mime*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/osu-lazer-bin.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   spicetify-cli:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/spicetify-cli.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build spicetify-cli for packages depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/spicetify-cli.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
 
   spicetify-themes:
     needs:
@@ -199,100 +340,648 @@ jobs:
     strategy:
       matrix:
         pkgbuild-repo:
-          - https://aur.archlinux.org/spicetify-theme-nord-git.git
-          - https://aur.archlinux.org/spicetify-themes-git.git
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: ${{ matrix.pkgbuild-repo }}
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+          - git+https://aur.archlinux.org/spicetify-theme-nord-git.git
+          - git+https://aur.archlinux.org/spicetify-themes-git.git
+    runs-on: ${{ inputs.runs-on }}
+    name: Build spicetify themes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  dotnet-core-bin:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/dotnet-core-bin.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Get spicetify-cli
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.spicetify-cli.outputs.artifact-name }}
+          directory: repo
 
-  thrive:
-    needs:
-      - dotnet-core-bin
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/thrive.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Get spicetify-cli
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/spicetify-cli*.pkg.tar.* repo
 
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: ${{ matrix.build-repo }}
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+  
   dotnet-install:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/dotnet-install.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build dotnet-install for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/dotnet-install.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   watt-toolkit-git:
     needs:
-      - dotnet-core-bin
       - dotnet-install
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/watt-toolkit-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build watt-toolkit-git which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get dotnet-install
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.dotnet-install.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get dotnet-install
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/dotnet-install*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/watt-toolkit-git.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   libglibutil:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libglibutil.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build libglibutil for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/libglibutil.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifacts
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   libgbinder:
     needs:
       - libglibutil
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libgbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build libgbinder which has aur depends for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get libglibutil
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libglibutil.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libglibutil
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libglibutil*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/libgbinder.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   python-gbinder:
     needs:
+      - libglibutil
       - libgbinder
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/python-gbinder.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build python-gbinder which has aur depends for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get libglibutil
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libglibutil.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libglibutil
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libglibutil*.pkg.tar.* repo
+
+      - name: Get libgbinder
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libgbinder.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libgbinder
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgest/libgbinder*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/python-gbinder.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   waydroid:
     needs:
+      - libglibutil
+      - libgbinder
       - python-gbinder
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/waydroid.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+    runs-on: ${{ inputs.runs-on }}
+    name: Build waydroid which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get libglibutil
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libglibutil.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libglibutil
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libglibutil*.pkg.tar.* repo
+
+      - name: Get libgbinder
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libgbinder.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libgbinder
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libgbinder*.pkg.tar.* repo
+
+      - name: Get python-gbinder
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.python-gbinder.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get python-gbinder
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/python-gbinder*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/waydroid.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  libbase58:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build libbase58 for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/libbase58.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  libblkmaker:
+    needs:
+      - libbase58
+    runs-on: ${{ inputs.runs-on }}
+    name: Build libblkmaker which has aur depends for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get libbase58
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libbase58.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libbase58
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libbase58*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/libblkmaker.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  bfgminer-git:
+    needs:
+      - libbase58
+      - libblkmaker
+    runs-on: ${{ inputs.runs-on }}
+    name: Build bfgminer-git which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get libbase58
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libbase58.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libbase58
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libbase58*.pkg.tar.* repo
+
+      - name: Get libblkmaker
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.libblkmaker.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get libblkmaker
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/libblkmaker*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/bfgminer-git.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  gorice:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build go.rice for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/go.rice.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  protoc-gen-go:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build protoc-gen-go for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/protoc-gen-go.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  protoc-gen-go-grpc:
+    needs:
+      - protoc-gen-go
+    runs-on: ${{ inputs.runs-on }}
+    name: Build protoc-gen-go-grpc with aur depends for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get protoc-gen-go
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get protoc-gen-go
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/protoc-gen-go*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/protoc-gen-go-grpc.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  local-ai:
+    needs:
+      - gorice
+      - protoc-gen-go
+      - protoc-gen-go-grpc
+    runs-on: ${{ inputs.runs-on }}
+    name: Build local-ai with aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get go.rice
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.gorice.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get go.rice
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/go.rice*.pkg.tar.* repo
+
+      - name: Get protoc-gen-go
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get protoc-gen-go
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/protoc-gen-go*.pkg.tar.* repo
+
+      - name: Get protoc-gen-go-grpc
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.protoc-gen-go-grpc.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get protoc-gen-go-grpc
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/protoc-gen-go-grpc*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: ./packages/local-ai
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
 
   obs-packages:
     name: Get packages built on Open Build Service
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.runs-on }}
+    # aarch64 is not supported on Open Build Service
+    if: ${{ ! endsWith(inputs.runs-on, 'arm') }}
     strategy:
       matrix:
         package:
-          - home:ZhangHua:ungoogled-chromium-xdg/ungoogled-chromium-xdg
-          - home:ZhangHua/mongodb
-    outputs:
-      artifact-name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+          - home:ZhangHua/ungoogled-chromium-xdg
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -340,56 +1029,89 @@ jobs:
             "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
-        uses: ./.github/actions/upload-packages-artifacts
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
         with:
-          directory: pkgdest
           name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+          directory: pkgdest
 
-  libbase58:
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libbase58.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+  github-packages:
+    name: Get packages on GitHub
+    runs-on: ${{ inputs.runs-on }}
+    strategy:
+      matrix:
+        repo:
+          - arenekosreal/firefox-xdg
+    steps:
+      - name: Checkout
+        uses: action/checkout@v4
 
-  libblkmaker:
-    needs:
-      - libbase58
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/libblkmaker.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Get target arch
+        id: get-target-arch
+        uses: ./.github/action/get-target-arch
+      
+      - name: Download release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pkgdest
+          gh release download \
+            --dir pkgdest \
+            --repo '${{ matrix.repo }}' \
+            --pattern '*-${{ steps.get-target-arch.outputs.target-arch }}.pkg.tar.*'
+          find pkgdest -maxdepth 1 -type f -name '*.pkg.tar.*.*' -delete
 
-  bfgminer-git:
-    needs:
-      - libbase58
-      - libblkmaker
-    uses: ./.github/workflows/build-package-from-git-repository.yml
-    with:
-      target-archs: |
-        x86_64
-      repository: https://aur.archlinux.org/bfgminer-git.git
-      bump-pkgrel: ${{ inputs.bump-pkgrel && 1 || 0 }}
+      - name: Generate meta info
+        id: gen-meta-info
+        run: |
+          f="$(ls pkgdest | head -n 1)"
+          name="$(basename '${{ matrix.repo }}')"          
+          f="$(echo "$f" | sed "s/$name-debug-//")"
+          f="$(echo "$f" | sed "s/$name-//")"
+          f="$(echo "$f" | sed 's/.pkg.tar.*$//')"
+          printf "artifact-name=%s %s-%d %s\n" \
+            "$name" \
+            "$(echo "$f" | cut -d- -f 1)" \
+            "$(echo "$f" | cut -d- -f 2)" \
+            '${{ steps.get-target-arch.outputs.target-arch }}' \
+          >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+          directory: pkgdest
 
   release:
     name: Grab all artifacts and prepare release
     needs:
-      - independent-packages
       - cinny
       - spotube
       - fooyin
-      - mongosh
       - osu-lazer-bin
       - spicetify-themes
-      - thrive
       - watt-toolkit-git
       - waydroid
-      - obs-packages
       - bfgminer-git
-    uses: ./.github/workflows/generate-repo.yml
-    secrets: inherit
+      - local-ai
+      - obs-packages
+      - github-packages
+      - independent-packages
     permissions:
       contents: write
+    if: ${{ ! github.event.act.local }}
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - name: Checkout
+        uses: action/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+
+      - name: Unpack artifact
+        run: |
+          mkdir -p repo
+          find . -maxdepth 2 -type f -name 'repo.tar' -exec tar -x -p -C repo -k -f {} \;
+          find . -maxdepth 1 -type d ! -name 'repo' -exec rm -rf {} +
+          ls -l repo
