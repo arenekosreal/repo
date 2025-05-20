@@ -88,24 +88,23 @@ runs:
         gpg --version
         GPG=(gpg --batch --yes)
         KEYS_PGP="startdir/keys/pgp"
-        EXTRA_GPG_ARGS=("" "--keyserver keyserver.ubuntu.com" "--keyserver keys.openpgp.org")
         mkdir -p "$KEYS_PGP"
         while read -r fingerprint
         do
           echo "Fetching $fingerprint..."
           FINGERPRINT_ASC="$KEYS_PGP/fingerprint.asc"
-          for extra_gpg_arg in "${EXTRA_GPG_ARGS[@]}"
-          do
-            GPG_FULL=("${GPG[@]}" "$extra_gpg_arg")
-            if "${GPG_FULL[@]}" --recv-keys "$fingerprint" && \
+          if "${GPG[@]}" --recv-keys --keyserver keyserver.ubuntu.com "$fingerprint" && \
+             "${GPG[@]}" --list-keys "$fingerprint"
+          then
+            echo "Fetch $fingerprint from keyserver.ubuntu.com successfully."
+          elif "${GPG[@]}" --recv-keys --keyserver keys.openpgp.org "$fingerprint" && \
                "${GPG[@]}" --list-keys "$fingerprint"
-            then
-              echo "Fetch $fingerprint successfully."
-              break
-            else
-              echo "::warning::Failed to fetch $fingerprint, trying next server..."
-            fi
-          done
+          then
+            echo "Fetch $fingerprint from keys.openpgp.org successfully."
+          else
+            echo "::error::Failed to fetch $fingerprint."
+            exit 1
+          fi
           echo "Exporting public key..."
           "${GPG[@]}" --export --armor -o "$FINGERPRINT_ASC" "$fingerprint"
         done <<< '${{ steps.gpg-fingerprints.outputs.value }}'
