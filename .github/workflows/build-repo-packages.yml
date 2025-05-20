@@ -48,7 +48,6 @@ jobs:
           - git+https://aur.archlinux.org/find-the-command.git
           - git+https://aur.archlinux.org/firefox-extension-adguard.git
           - git+https://aur.archlinux.org/firefox-extension-localcdn.git
-          - git+https://aur.archlinux.org/firefox-extension-plasma-integration.git
           - git+https://aur.archlinux.org/gpt4all-chat.git
           - git+https://aur.archlinux.org/hath-rust.git
           - git+https://aur.archlinux.org/hplip-plugin.git
@@ -973,6 +972,78 @@ jobs:
           name: ${{ steps.build.outputs.artifact-name }}
           directory: pkgdest
 
+  web-ext:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build web-ext for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/web-ext.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  firefox-extension-plasma-integration:
+    needs:
+      - web-ext
+    runs-on: ${{ inputs.runs-on }}
+    name: Build firefox-extension-plasma-integration which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get web-ext
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.web-ext.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get web-ext
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/web-ext*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/firefox-extension-plasma-integration.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
   obs-packages:
     name: Get packages built on Open Build Service
     runs-on: ${{ inputs.runs-on }}
@@ -1095,6 +1166,7 @@ jobs:
       - waydroid
       - bfgminer-git
       - local-ai
+      - firefox-extension-plasma-integration
       - obs-packages
       - github-packages
       - independent-packages
