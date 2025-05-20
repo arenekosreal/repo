@@ -184,7 +184,7 @@ jobs:
 
       - name: Build package
         id: build
-        uses: ./github/actions/build-pkgbuild
+        uses: ./.github/actions/build-pkgbuild
         with:
           where: git+https://aur.archlinux.org/libvgm-git.git
           env: |
@@ -1044,11 +1044,11 @@ jobs:
           - arenekosreal/firefox-xdg
     steps:
       - name: Checkout
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Get target arch
         id: get-target-arch
-        uses: ./.github/action/get-target-arch
+        uses: ./.github/actions/get-target-arch
       
       - name: Download release
         env:
@@ -1104,7 +1104,7 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Download artifact
         uses: actions/download-artifact@v4
