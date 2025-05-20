@@ -78,7 +78,6 @@ jobs:
           - git+https://aur.archlinux.org/plasma6-applets-caraoke-git.git
           - git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
           - git+https://aur.archlinux.org/python-pyclip.git
-          - git+https://aur.archlinux.org/qcm.git
           - git+https://aur.archlinux.org/rclone-aliyundrive-git.git
           - git+https://aur.archlinux.org/realitlscanner.git
           - git+https://aur.archlinux.org/ruffle-nightly.git
@@ -1044,6 +1043,116 @@ jobs:
           name: ${{ steps.build.outputs.artifact-name }}
           directory: pkgdest
 
+  cubeb:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build cubeb for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/cubeb.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  ctre:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build ctre for package depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/ctre.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
+  qcm:
+    needs:
+      - cubeb
+      - ctre
+    runs-on: ${{ inputs.runs-on }}
+    name: Build qcm which has aur depends
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get cubeb
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.cubeb.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get cubeb
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/cubeb*.pkg.tar.* repo
+
+      - name: Get ctre
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: ${{ needs.ctre.outputs.artifact-name }}
+          directory: repo
+
+      - name: Get ctre
+        if: github.event.act.local
+        run: |
+          mkdir -p repo
+          cp pkgdest/ctre*.pkg.tar.* repo
+
+      - name: Install pacman-package-manager
+        run: |
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+
+      - name: Setup repository
+        run: |
+          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/qcm.git
+          repo: repo
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
   obs-packages:
     name: Get packages built on Open Build Service
     runs-on: ${{ inputs.runs-on }}
@@ -1167,6 +1276,7 @@ jobs:
       - bfgminer-git
       - local-ai
       - firefox-extension-plasma-integration
+      - qcm
       - obs-packages
       - github-packages
       - independent-packages
