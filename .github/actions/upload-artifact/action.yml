@@ -13,7 +13,8 @@ runs:
     - name: Pack packages
       shell: bash
       run: |
-        find '${{ inputs.directory }}' -maxdepth 1 -type f -name '*.pkg.tar.*' -exec tar -c -f repo.tar -p {} +
+        find '${{ inputs.directory }}' -maxdepth 1 -type f -name '*.pkg.tar.*' -printf "%f\n" | \
+          xargs tar -c -f repo.tar -p -C '${{ inputs.directory }}'
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
