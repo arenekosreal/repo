@@ -332,6 +332,13 @@ jobs:
           env: |
             PACKAGER=${{ vars.PACKAGER }}
 
+      - name: Upload artifact
+        if: ${{ ! github.event.act.local }}
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          directory: pkgdest
+
   spicetify-themes:
     needs:
       - spicetify-cli
