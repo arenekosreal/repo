@@ -1302,7 +1302,6 @@ jobs:
         run: |
           mkdir -p '${{ github.repository_owner }}'
           find . -mindepth 2 -maxdepth 2 -type f -name 'repo.tar' -exec tar -x -p -C '${{ github.repository_owner }}' -k -f {} \;
-          ls -l repo
 
       - name: Install pacman-package-manager
         run: |
