@@ -1334,7 +1334,7 @@ jobs:
             echo '`pacman.conf` example:'
             echo '```'
             echo '[${{ github.repository_owner }}]'
-            echo 'Server = ${{ github.server_url }}/${{ github.repository/releses/download/os/$arch }}'
+            echo 'Server = ${{ github.server_url }}/${{ github.repository }}/releses/download/os/$arch'
             echo '```'
             echo ''
             echo 'Public key to sign packages and repository:'
