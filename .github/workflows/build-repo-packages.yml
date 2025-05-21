@@ -1383,5 +1383,5 @@ jobs:
             --target '${{ github.sha }}' \
             --title "Release for $tag"
           echo "Uploading files..."
-          gh release upload "$tag" '${{ github.repository_owner }}/*' --clobber
+          gh release upload "$tag" '${{ github.repository_owner }}'/* --clobber
           gh release edit "$tag" --draft=false
