@@ -1349,9 +1349,9 @@ jobs:
         
       - name: Generate repository
         run: |
-          find '${{ github.repository_owner }}' -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz' {} +
+          find '${{ github.repository_owner }}' -maxdepth 1 -type f -name '*.pkg.tar.*' ! -name '*.pkg.tar.*.sig' -exec repo-add '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz' {} +
 
-      - name: Sign database
+      - name: Sign repository
         run: |
           GPG=(gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}' --pinentry-mode loopback --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}')
           "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz'
