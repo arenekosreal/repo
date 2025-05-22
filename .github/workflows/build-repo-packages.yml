@@ -1356,8 +1356,8 @@ jobs:
           GPG=(gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}' --pinentry-mode loopback --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}')
           "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz'
           "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz'
-          ln -srfv '${{ github.repository_owner }}.db.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.db'
-          ln -srfv '${{ github.repository_owner }}.files.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.files'
+          ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.db'
+          ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.files'
 
       - name: Show repository status
         run: |
@@ -1375,13 +1375,10 @@ jobs:
           if gh release view "$tag" > /dev/null
           then
             echo "Removing existing release..."
-            gh release delete "$tag" --clenup-tag --yes
+            gh release delete "$tag" --cleanup-tag --yes
           fi
           echo "Creating new release..."
-          gh release create "$tag" \
-            --notes-file notes.md \
-            --target '${{ github.sha }}' \
-            --title "Release for $tag"
+          gh release create "$tag" --notes-file notes.md --target '${{ github.sha }}' --title "Release for $tag" --draft
           echo "Uploading files..."
           gh release upload "$tag" '${{ github.repository_owner }}'/* --clobber
           gh release edit "$tag" --draft=false
