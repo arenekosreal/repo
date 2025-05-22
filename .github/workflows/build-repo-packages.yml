@@ -1314,7 +1314,7 @@ jobs:
           "${GPG[@]}" --import <<< '${{ secrets.GPG_PRIVATE_KEY }}'
           {
             echo -n fingerprint=
-            "${GPG[@]}" --show-key --with-colons <<< '${{ secrets.GPG_PRIVATE_KEY }}' | grep "^sec" | greo "S" | cut -d : -f 5  
+            "${GPG[@]}" --show-key --with-colons <<< '${{ secrets.GPG_PRIVATE_KEY }}' | grep "^sec.*S" | cut -d : -f 5  
           } >> "$GITHUB_OUTPUT"
 
       - name: Exporting GPG public key
@@ -1353,8 +1353,9 @@ jobs:
 
       - name: Sign database
         run: |
-          gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}' --pinentry-mode loopback --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}' --output '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz'
-          gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}' --pinentry-mode loopback --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}' --output '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz'
+          GPG=(gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}' --pinentry-mode loopback --detach-sign --local-user '${{ steps.import-gpg.outputs.fingerprint }}')
+          "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz'
+          "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz'
           ln -srfv '${{ github.repository_owner }}.db.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.db'
           ln -srfv '${{ github.repository_owner }}.files.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.files'
 
