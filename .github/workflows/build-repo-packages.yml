@@ -1358,6 +1358,8 @@ jobs:
           "${GPG[@]}"  --output '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz'
           ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.db'
           ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz' '${{ github.repository_owner }}/${{ github.repository_owner }}.files'
+          ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.db.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.db.sig'
+          ln -srfv '${{ github.repository_owner }}/${{ github.repository_owner }}.files.tar.gz.sig' '${{ github.repository_owner }}/${{ github.repository_owner }}.files.sig'
 
       - name: Show repository status
         run: |
