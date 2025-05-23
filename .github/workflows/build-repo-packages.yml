@@ -34,8 +34,10 @@ jobs:
           - git+https://aur.archlinux.org/btrfsmaintenance.git
           - git+https://aur.archlinux.org/caddy-trojan.git
           - git+https://aur.archlinux.org/carapace.git
+          - git+https://aur.archlinux.org/cgtproxy.git
           - git+https://aur.archlinux.org/chromium-extension-plasma-integration.git
           - git+https://aur.archlinux.org/chromium-extension-web-store.git
+          - git+https://aur.archlinux.org/cleanmedia.git
           - git+https://aur.archlinux.org/cloudflarespeedtest.git
           - git+https://aur.archlinux.org/crow-translate.git
           - git+https://aur.archlinux.org/csharp-ls.git
@@ -78,6 +80,7 @@ jobs:
           - git+https://aur.archlinux.org/plasma6-applets-caraoke-git.git
           - git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
           - git+https://aur.archlinux.org/python-pyclip.git
+          - git+https://aur.archlinux.org/q4wine.git
           - git+https://aur.archlinux.org/rclone-aliyundrive-git.git
           - git+https://aur.archlinux.org/realitlscanner.git
           - git+https://aur.archlinux.org/ruffle-nightly.git
@@ -90,6 +93,7 @@ jobs:
           - git+https://aur.archlinux.org/tcp-brutal-dkms.git
           - git+https://aur.archlinux.org/unblockneteasemusic-golang-git.git
           - git+https://aur.archlinux.org/usbguard-notifier-git.git
+          - git+https://aur.archlinux.org/vnt.git
           - git+https://aur.archlinux.org/watt-toolkit-bin.git
           - git+https://aur.archlinux.org/waylyrics.git
           - git+https://aur.archlinux.org/wine-wow64.git
