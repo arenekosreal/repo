@@ -1,0 +1,17 @@
+name: Trigger building regularly
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  trigger-build:
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-24.04
+          #- ubuntu-24.04-arm
+    uses: ./.github/workflows/build-repo-packages.yml
+    secrets: inherit
+    with:
+      runs-on: ${{ matrix.runs-on }}
