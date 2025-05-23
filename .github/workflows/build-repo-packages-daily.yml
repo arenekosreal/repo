@@ -11,6 +11,8 @@ jobs:
         runs-on:
           - ubuntu-24.04
           #- ubuntu-24.04-arm
+    permissions:
+      contents: write
     uses: ./.github/workflows/build-repo-packages.yml
     secrets: inherit
     with:
