@@ -1176,7 +1176,7 @@ jobs:
         id: build
         uses: ./.github/actions/build-pkgbuild
         with:
-          where: https://aur.archlinux.org/icoextract.git
+          where: git+https://aur.archlinux.org/icoextract.git
           env: |
             PACKAGER=${{ vars.PACKAGER }}
 
