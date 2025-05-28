@@ -1710,5 +1710,10 @@ jobs:
           echo "Creating new release..."
           gh release create "$tag" --notes-file notes.md --target '${{ github.sha }}' --title "Release for $tag" --draft
           echo "Uploading files..."
-          gh release upload "$tag" '${{ github.repository_owner }}'/* --clobber
+          # https://github.com/cli/cli/issues/9586
+          for f in '${{ github.repository_owner }}'/*
+          do
+            gh release upload "$tag" "$f" --clobber
+            sleep 1
+          done
           gh release edit "$tag" --draft=false
