@@ -97,7 +97,6 @@ jobs:
           - git+https://aur.archlinux.org/waylyrics.git
           - git+https://aur.archlinux.org/wine-wow64.git
           - git+https://aur.archlinux.org/xdg-ninja.git
-          - git+https://aur.archlinux.org/spotify.git
           - git+https://aur.archlinux.org/linux-pf.git
           - git+https://aur.archlinux.org/ayugram-desktop.git
           - git+https://aur.archlinux.org/thrive.git
