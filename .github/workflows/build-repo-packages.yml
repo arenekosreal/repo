@@ -52,7 +52,6 @@ jobs:
           - git+https://aur.archlinux.org/firefox-extension-localcdn.git
           - git+https://aur.archlinux.org/gpt4all-chat.git
           - git+https://aur.archlinux.org/hath-rust.git
-          - git+https://aur.archlinux.org/hplip-plugin.git
           - git+https://aur.archlinux.org/icalingua++-git.git
           - git+https://aur.archlinux.org/icecream.git
           - git+https://aur.archlinux.org/kde-thumbnailer-apk.git
