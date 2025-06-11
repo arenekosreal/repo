@@ -267,3 +267,10 @@ runs:
         env: ${{ inputs.env }}
         args: ${{ steps.needs-ignore-arch.outputs.result }}
         repo: ${{ inputs.repo }}
+
+    - name: Fix permission
+      # https://github.com/actions/runner/issues/1282
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sudo chown -R "$(id -u):$(id -g)" pkgdest
