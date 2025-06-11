@@ -205,7 +205,9 @@ runs:
       id: cache
       uses: actions/cache@v4
       with:
-        path: pkgdest
+        path: |
+          pkgdest
+          srcdest
         key: ${{ steps.meta.outputs.artifact-name }}
 
     - name: Free space
@@ -273,4 +275,4 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        sudo chown -R "$(id -u):$(id -g)" pkgdest
+        sudo chown -R "$(id -u):$(id -g)" pkgdest srcdest
