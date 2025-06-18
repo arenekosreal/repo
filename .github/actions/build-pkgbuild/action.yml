@@ -130,7 +130,7 @@ runs:
       run: |
         mkdir -p srcdest
         # Permission maybe broen after docker action
-        sudo chown -R "$(id -u):$(id -g)" srcdest
+        sudo chown -R --reference . srcdest
         while read -r source
         do
           case "$source" in
@@ -273,4 +273,4 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        sudo chown -R "$(id -u):$(id -g)" pkgdest
+        sudo chown -R --reference . pkgdest
