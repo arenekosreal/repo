@@ -346,7 +346,7 @@ jobs:
       matrix:
         pkgbuild-repo:
           - git+https://aur.archlinux.org/spicetify-theme-nord-git.git
-          - ./packages/spicetify-themes-git
+          - git+https://aur.archlinux.org/spicetify-themes-git.git
     runs-on: ${{ inputs.runs-on }}
     name: Build spicetify themes
     steps:
