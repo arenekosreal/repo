@@ -1,7 +1,7 @@
 # Contributor: robertfoster
 
 pkgname=local-ai
-pkgver=3.0.0
+pkgver=3.1.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -11,7 +11,7 @@ depends=(gcc-libs glibc grpc protobuf abseil-cpp zlib openblas)
 makedepends=(cmake git go go.rice protoc-gen-go protoc-gen-go-grpc upx blas-openblas blas64-openblas)
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service")
-sha256sums=('b9325c0b9a115834a14313bbb83deab515b61826f67f547b8906bbdc7d095a3b'
+sha256sums=('9b4ca69c25b3488aa13d1eea009fdd1ee3f0fc9896beedf96408241a4542a97b'
             'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737')
 options=(!strip)
 
