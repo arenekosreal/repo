@@ -76,7 +76,7 @@ jobs:
           - git+https://aur.archlinux.org/pipewire-module-xrdp-git.git
           - git+https://aur.archlinux.org/plasma-gamemode-git.git
           - git+https://aur.archlinux.org/plasma6-applets-caraoke-git.git
-          - git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
+          #- git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
           - git+https://aur.archlinux.org/python-pyclip.git
           - git+https://aur.archlinux.org/q4wine.git
           - git+https://aur.archlinux.org/rclone-aliyundrive-git.git
