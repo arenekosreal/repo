@@ -221,6 +221,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -293,6 +294,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -368,6 +370,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -440,6 +443,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -512,6 +516,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -574,6 +579,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -650,6 +656,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -722,6 +729,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -784,6 +792,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -880,6 +889,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -956,6 +966,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -1028,6 +1039,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -1138,6 +1150,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -1234,6 +1247,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -1462,6 +1476,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Setup repository
@@ -1630,6 +1645,7 @@ jobs:
 
       - name: Install pacman-package-manager
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y pacman-package-manager libarchive-tools
 
       - name: Import GPG private key
