@@ -16,11 +16,8 @@ If everything is fine, `os/<arch>` tag will be updated and new packages and repo
 
 ### Build Locally
 
-Use [act](https://github.com/nektos/act), set event to [local.json](./act/events/local.json), all packages will be placed at `pkgdest` folder.
-
-But all containers to build packages share same directories when building, this may break isolation.
-
-This will also not generate a repository like building on GitHub.
+Use [act](https://github.com/nektos/act), set event to [local.json](./act/events/local.json),
+all packages and repository will be placed at `${{ github.repository_owner }}` folder.
 
 ### Secrets
 
