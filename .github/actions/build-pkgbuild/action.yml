@@ -273,4 +273,6 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        ls -l .
         sudo chown -R --reference . pkgdest
+        ls -l .
