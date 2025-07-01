@@ -47,10 +47,12 @@ runs:
 
     - name: Get pkgbase in generated .SRCINFO
       id: original-pkgbase
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: pkgbase
+      run: |
+        {
+          echo -n value=
+          grep pkgbase startdir/.SRCINFO | cut -d = -f 2- | xargs
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Apply patch
       shell: bash
@@ -75,10 +77,14 @@ runs:
 
     - name: Get GPG fingerprints
       id: gpg-fingerprints
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: validpgpkeys
+      run: |
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "value<<$EOF"
+          grep validpgpkeys startdir/.SRCINFO | cut -d = -f 2-
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Fetch GPG fingerprints
       if: steps.gpg-fingerprints.outputs.value
@@ -111,18 +117,24 @@ runs:
 
     - name: Get pkgbase
       id: pkgbase
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: pkgbase
+      run: |
+        {
+          echo -n value=
+          grep pkgbase startdir/.SRCINFO | cut -d = -f 2- | xargs
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
       
     - name: Get sources required downloading
       id: sources
       if: contains('["spotify"]', steps.pkgbase.outputs.value)
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: source
+      run: |
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "value<<$EOF"
+          grep source startdir/.SRCINFO | cut -d = -f 2=
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Download sources
       if: steps.sources.outputs.value
@@ -174,22 +186,27 @@ runs:
 
     - name: Get updated pkgver
       id: pkgver
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: pkgver
+      run: |
+        {
+          echo -n value=
+          grep pkgver startdir/.SRCINFO | cut -d = -f 2- | xargs
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Get updated pkgrel
       id: pkgrel
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: pkgrel
+      run: |
+        {
+          echo -n value=
+          grep pkgrel startdir/.SRCINFO | cut -d = -f 2- | xargs
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Get target architecture
       id: target-arch
       run: |
         echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Generate meta info
       id: meta
@@ -218,10 +235,14 @@ runs:
 
     - name: Get arch
       id: arch
-      uses: ./.github/actions/get-srcinfo-value
-      with:
-        srcinfo: startdir/.SRCINFO
-        key: arch
+      run: |
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "value<<$EOF"
+          grep arch startdir/.SRCINFO | cut -d = -f 2-
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
 
     - name: Filter compatible arch
       id: compatible-arch
