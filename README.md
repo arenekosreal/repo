@@ -16,8 +16,8 @@ If everything is fine, `os/<arch>` tag will be updated and new packages and repo
 
 ### Build Locally
 
-Use [act](https://github.com/nektos/act), set event to [local.json](./act/events/local.json),
-all packages and repository will be placed at `${{ github.repository_owner }}` folder.
+Use [act](https://github.com/nektos/act), run `act` in the repository,
+all packages and repository will be placed at `./act/out` folder.
 
 ### Secrets
 

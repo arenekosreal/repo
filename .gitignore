@@ -1,5 +1,7 @@
 .secrets
-artifacts
+/act/artifacts
+/act/caches
+/act/out
 arenekosreal
 srcdest
 pkgdest

@@ -1665,3 +1665,8 @@ jobs:
             sleep 1
           done
           gh release edit "$tag" --draft=false
+
+      - name: Save to volume
+        if: github.event.act.local
+        run: |
+          cp -a --target-directory /act/out '${{ github.repository_owner }}'/*
