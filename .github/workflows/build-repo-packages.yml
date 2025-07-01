@@ -208,12 +208,6 @@ jobs:
           name: ${{ needs.libvgm-git.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libvgm
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libvgm*.pkg.tar.* repo
-
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
@@ -277,12 +271,6 @@ jobs:
         with:
           name: ${{ needs.osu-mime.outputs.artifact-name }}
           directory: repo
-
-      - name: Get osu-mime
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/osu-mime*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -351,12 +339,6 @@ jobs:
           name: ${{ needs.spicetify-cli.outputs.artifact-name }}
           directory: repo
 
-      - name: Get spicetify-cli
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/spicetify-cli*.pkg.tar.* repo
-
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
@@ -420,12 +402,6 @@ jobs:
         with:
           name: ${{ needs.dotnet-install.outputs.artifact-name }}
           directory: repo
-
-      - name: Get dotnet-install
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/dotnet-install*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -491,12 +467,6 @@ jobs:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libglibutil
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libglibutil*.pkg.tar.* repo
-
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
@@ -539,23 +509,11 @@ jobs:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libglibutil
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libglibutil*.pkg.tar.* repo
-
       - name: Get libgbinder
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
           directory: repo
-
-      - name: Get libgbinder
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgest/libgbinder*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -600,35 +558,17 @@ jobs:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libglibutil
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libglibutil*.pkg.tar.* repo
-
       - name: Get libgbinder
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libgbinder
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libgbinder*.pkg.tar.* repo
-
       - name: Get python-gbinder
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.python-gbinder.outputs.artifact-name }}
           directory: repo
-
-      - name: Get python-gbinder
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-gbinder*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -694,12 +634,6 @@ jobs:
           name: ${{ needs.libbase58.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libbase58
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libbase58*.pkg.tar.* repo
-
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
@@ -742,23 +676,11 @@ jobs:
           name: ${{ needs.libbase58.outputs.artifact-name }}
           directory: repo
 
-      - name: Get libbase58
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libbase58*.pkg.tar.* repo
-
       - name: Get libblkmaker
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.libblkmaker.outputs.artifact-name }}
           directory: repo
-
-      - name: Get libblkmaker
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/libblkmaker*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -847,12 +769,6 @@ jobs:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
           directory: repo
 
-      - name: Get protoc-gen-go
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/protoc-gen-go*.pkg.tar.* repo
-
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
@@ -896,35 +812,17 @@ jobs:
           name: ${{ needs.gorice.outputs.artifact-name }}
           directory: repo
 
-      - name: Get go.rice
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/go.rice*.pkg.tar.* repo
-
       - name: Get protoc-gen-go
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
           directory: repo
 
-      - name: Get protoc-gen-go
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/protoc-gen-go*.pkg.tar.* repo
-
       - name: Get protoc-gen-go-grpc
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.protoc-gen-go-grpc.outputs.artifact-name }}
           directory: repo
-
-      - name: Get protoc-gen-go-grpc
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/protoc-gen-go-grpc*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -989,12 +887,6 @@ jobs:
         with:
           name: ${{ needs.web-ext.outputs.artifact-name }}
           directory: repo
-
-      - name: Get web-ext
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/web-ext*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -1084,23 +976,11 @@ jobs:
           name: ${{ needs.cubeb.outputs.artifact-name }}
           directory: repo
 
-      - name: Get cubeb
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/cubeb*.pkg.tar.* repo
-
       - name: Get ctre
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.ctre.outputs.artifact-name }}
           directory: repo
-
-      - name: Get ctre
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/ctre*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -1188,12 +1068,6 @@ jobs:
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
           directory: repo
-
-      - name: Get python-setuptools-reproducible
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-setuptools-reproducible*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
@@ -1334,23 +1208,11 @@ jobs:
           name: ${{ needs.icoextract.outputs.artifact-name }}
           directory: repo
 
-      - name: Get icoextract
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/icoextract*.pkg.tar.* repo
-
       - name: Get python-setuptools-reproducible
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
           directory: repo
-
-      - name: Get python-setuptools-reproducible
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-setuptools/reproducible*.pkg.tar.* repo
 
       - name: Get patool
         uses: ./.github/actions/download-artifact
@@ -1358,23 +1220,11 @@ jobs:
           name: ${{ needs.patool.outputs.artifact-name }}
           directory: repo
 
-      - name: Get patool
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/patool*.pkg.tar.* repo
-
       - name: Get python-fvs
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.python-fvs.outputs.artifact-name }}
           directory: repo
-
-      - name: Get python-fvs
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-fvs*.pkg.tar.* repo
 
       - name: Get python-pathvalidate
         uses: ./.github/actions/download-artifact
@@ -1382,35 +1232,17 @@ jobs:
           name: ${{ needs.python-pathvalidate.outputs.artifact-name }}
           directory: repo
 
-      - name: Get python-pathvalidate
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-pathvalidate*.pkg.tar.* repo
-
       - name: Get python-steamgriddb
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.python-steamgriddb.outputs.artifact-name }}
           directory: repo
 
-      - name: Get python-steamgriddb
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/python-steamgriddb*.pkg.tar.* repo
-
       - name: Get vkbasalt-cli
         uses: ./.github/actions/download-artifact
         with:
           name: ${{ needs.vkbasalt-cli.outputs.artifact-name }}
           directory: repo
-
-      - name: Get vkbasalt-cli
-        if: github.event.act.local
-        run: |
-          mkdir -p repo
-          cp pkgdest/vkbasalt-cli*.pkg.tar.* repo
 
       - name: Install pacman-package-manager
         run: |
