@@ -188,7 +188,8 @@ runs:
 
     - name: Get target architecture
       id: target-arch
-      uses: ./.github/actions/get-target-arch
+      run: |
+        echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
 
     - name: Generate meta info
       id: meta

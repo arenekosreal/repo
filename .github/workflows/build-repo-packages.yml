@@ -1461,7 +1461,8 @@ jobs:
 
       - name: Get target arch
         id: get-target-arch
-        uses: ./.github/actions/get-target-arch
+        run: |
+          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
 
       - name: Create download directory
         run: mkdir -p pkgdest
@@ -1510,7 +1511,8 @@ jobs:
 
       - name: Get target arch
         id: get-target-arch
-        uses: ./.github/actions/get-target-arch
+        run: |
+          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
       
       - name: Download release
         env:
@@ -1642,7 +1644,8 @@ jobs:
 
       - name: Get target arch
         id: target-arch
-        uses: ./.github/actions/get-target-arch
+        run: |
+          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
 
       - name: Update release
         if: ${{ ! github.event.act.local }}
