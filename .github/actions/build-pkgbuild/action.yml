@@ -195,6 +195,7 @@ runs:
 
     - name: Check if requires --ignorearch
       id: needs-ignorearch
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         TARGET_ARCH="$(uname -m)"
