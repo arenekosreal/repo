@@ -45,19 +45,10 @@ runs:
         args: --printsrcinfo
         stdout: startdir/.SRCINFO
 
-    - name: Get pkgbase in generated .SRCINFO
-      id: original-pkgbase
-      run: |
-        {
-          echo -n value=
-          grep pkgbase startdir/.SRCINFO | cut -d = -f 2- | xargs
-        } >> "$GITHUB_OUTPUT"
-      shell: bash
-
     - name: Apply patch
       shell: bash
       run: |
-        pkgbase='${{ steps.original-pkgbase.outputs.value }}'
+        pkgbase="$(grep pkgbase startdir/.SRCINFO | cut -d = -f 2- | xargs)"
         if [[ -d "patches/$pkgbase" ]]
         then
           find "patches/$pkgbase" -maxdepth 1 -type f -name '*.patch' -o -name '*.diff' | \
@@ -75,19 +66,7 @@ runs:
         args: --printsrcinfo
         stdout: startdir/.SRCINFO
 
-    - name: Get GPG fingerprints
-      id: gpg-fingerprints
-      run: |
-        {
-          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-          echo "value<<$EOF"
-          grep validpgpkeys startdir/.SRCINFO | cut -d = -f 2-
-          echo "$EOF"
-        } >> "$GITHUB_OUTPUT"
-      shell: bash
-
     - name: Fetch GPG fingerprints
-      if: steps.gpg-fingerprints.outputs.value
       shell: bash
       run: |
         echo "GPG version:"
@@ -113,7 +92,7 @@ runs:
           fi
           echo "Exporting public key..."
           "${GPG[@]}" --export --armor -o "$FINGERPRINT_ASC" "$fingerprint"
-        done <<< '${{ steps.gpg-fingerprints.outputs.value }}'
+        done < <(grep validpgpkeys startdir/.SRCINFO | cut -d = -f 2-)
 
     - name: Get pkgbase
       id: pkgbase
@@ -184,40 +163,21 @@ runs:
         args: --printsrcinfo
         stdout: startdir/.SRCINFO
 
-    - name: Get updated pkgver
-      id: pkgver
-      run: |
-        {
-          echo -n value=
-          grep pkgver startdir/.SRCINFO | cut -d = -f 2- | xargs
-        } >> "$GITHUB_OUTPUT"
-      shell: bash
-
-    - name: Get updated pkgrel
-      id: pkgrel
-      run: |
-        {
-          echo -n value=
-          grep pkgrel startdir/.SRCINFO | cut -d = -f 2- | xargs
-        } >> "$GITHUB_OUTPUT"
-      shell: bash
-
-    - name: Get target architecture
-      id: target-arch
-      run: |
-        echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
-      shell: bash
-
     - name: Generate meta info
       id: meta
       shell: bash
       run: |
         printf "artifact-name=%s %s-%d %s\n" \
           '${{ steps.pkgbase.outputs.value }}' \
-          '${{ steps.pkgver.outputs.value }}' \
-          '${{ steps.pkgrel.outputs.value }}' \
-          '${{ steps.target-arch.outputs.target-arch }}' \
+          "$(grep pkgver startdir/.SRCINFO | cut -d = -f 2- | xargs)" \
+          "$(grep pkgrel startdir/.SRCINFO | cut -d = -f 2- | xargs)" \
+          "$(uname -m)" \
         >> "$GITHUB_OUTPUT"
+
+    - name: Ensure pkgdest permission
+      run: |
+        sudo chown -R --reference . pkgdest
+      shell: bash
 
     - name: Try using packages built before
       id: cache
@@ -233,53 +193,27 @@ runs:
         docker-images: false
         swap-storage: false
 
-    - name: Get arch
-      id: arch
-      run: |
-        {
-          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-          echo "value<<$EOF"
-          grep arch startdir/.SRCINFO | cut -d = -f 2-
-          echo "$EOF"
-        } >> "$GITHUB_OUTPUT"
-      shell: bash
-
-    - name: Filter compatible arch
-      id: compatible-arch
-      shell: bash
-      run: |
-        read -r -a archs <<< '${{ steps.arch.outputs.value }}'
-        TARGET_ARCH='${{ steps.target-arch.outputs.target-arch }}'
-        for arch in "${archs[@]}"
-        do
-          case "$arch" in
-            any)
-              echo arch=any >> "$GITHUB_OUTPUT"
-              exit
-              ;;
-            $TARGET_ARCH)
-              echo "arch=$TARGET_ARCH" >> "$GITHUB_OUTPUT"
-              exit
-              ;;
-          esac  
-        done
-        echo arch= >> "$GITHUB_OUTPUT"
-
     - name: Check if requires --ignorearch
       id: needs-ignorearch
-      if: ${{ ! steps.compatible-arch.outputs.arch }}
       shell: bash
       run: |
-        case '${{ steps.pkgbase.outputs.value }}' in
-          spotify|*-bin)
-            echo "::error::Unable to build binary package with --ignorearch"
-            exit 1
-            ;;
-          *)
-            echo "::warning:Current architecture is not supported by PKGBUILD, force building..."
-            echo result=--ignorerch >> "$GITHUB_OUTPUT"
-            ;;
-        esac
+        TARGET_ARCH="$(uname -m)"
+        while read -r arch
+        do
+          if [[ "$arch" == "any" ]] || [[ "$arch" == "$TARGET_ARCH" ]]
+          then
+            echo result= >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+        done < <(grep arch startdir/.SRCINFO | cut -d = -f 2-)
+        if [[ '${{ steps.pkgbase.outputs.value }}' == "spotify" ]] || [[ '${{ steps.pkgbase.outputs.value }}' == *-bin ]]
+        then
+          echo "::error::Unable to build binary package with --ignorearch"
+          exit 1
+        else
+          echo "::warning:Current architecture is not supported by PKGBUILD, force building..."
+          echo result=--ignorerch >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Build package
       if: steps.cache.outputs.cache-hit != 'true'
@@ -287,7 +221,7 @@ runs:
       with:
         builddir: startdir
         env: ${{ inputs.env }}
-        args: ${{ steps.needs-ignore-arch.outputs.result }}
+        args: ${{ steps.needs-ignorearch.outputs.result }}
         repo: ${{ inputs.repo }}
 
     - name: Fix permission
@@ -295,6 +229,4 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        ls -l .
         sudo chown -R --reference . pkgdest
-        ls -l .

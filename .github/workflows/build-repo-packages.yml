@@ -1340,11 +1340,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get target arch
-        id: get-target-arch
-        run: |
-          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
       
       - name: Download release
         env:
@@ -1354,7 +1349,7 @@ jobs:
           gh release download \
             --dir pkgdest \
             --repo '${{ matrix.repo }}' \
-            --pattern '*-${{ steps.get-target-arch.outputs.target-arch }}.pkg.tar.*'
+            --pattern "*-$(uname -m).pkg.tar.*"
           find pkgdest -maxdepth 1 -type f -name '*.pkg.tar.*.*' -delete
 
       - name: Generate meta info
@@ -1369,7 +1364,7 @@ jobs:
             "$name" \
             "$(echo "$f" | cut -d- -f 1)" \
             "$(echo "$f" | cut -d- -f 2)" \
-            '${{ steps.get-target-arch.outputs.target-arch }}' \
+            "$(uname -m)" \
           >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
@@ -1474,17 +1469,12 @@ jobs:
         run: |
           ls -l '${{ github.repository_owner }}'
 
-      - name: Get target arch
-        id: target-arch
-        run: |
-          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
-
       - name: Update release
         if: ${{ ! github.event.act.local }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag='os/${{ steps.target-arch.outputs.target-arch }}'
+          tag="os/$(uname -m)"
           if gh release view "$tag" > /dev/null
           then
             echo "Removing existing release..."
@@ -1504,4 +1494,6 @@ jobs:
       - name: Save to volume
         if: github.event.act.local
         run: |
-          cp -a --target-directory /act/out '${{ github.repository_owner }}'/*
+          mkdir -p '/act/out/${{ github.repository_owner }}'"/os/$(uname -m)"
+          cp -a --target-directory '/act/out/${{ github.repository_owner }}'"/os/$(uname -m)" \
+            '${{ github.repository_owner }}'/*
