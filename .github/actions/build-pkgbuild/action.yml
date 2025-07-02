@@ -176,6 +176,7 @@ runs:
 
     - name: Ensure pkgdest permission
       run: |
+        mkdir -p pkgdest
         sudo chown -R --reference . pkgdest
       shell: bash
 
