@@ -4,6 +4,6 @@
 --cache-server-path=./act/caches
 --container-options="--volume=./act/out:/act/out"
 --workflows=./.github/workflows/build-repo-packages.yml
---pull=false
+--action-offline-mode
 --detect-event=true
 --rm
