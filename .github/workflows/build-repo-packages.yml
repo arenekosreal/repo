@@ -1405,6 +1405,7 @@ jobs:
 
       - name: Move directory
         run: |
+          ls -l
           mv -v pkgdest '${{ github.repository_owner }}'
       
       - name: Install pacman-package-manager
