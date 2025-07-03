@@ -936,7 +936,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact
+        uses: arenekosreal/upload-artifact@v4
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
