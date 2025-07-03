@@ -1402,6 +1402,8 @@ jobs:
 
       - name: Download artifact
         uses: arenekosreal/download-artifact@v4
+        with:
+          merge-multiple: true
 
       - name: Move directory
         run: |
