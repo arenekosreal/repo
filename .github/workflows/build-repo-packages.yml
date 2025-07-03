@@ -206,7 +206,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libvgm-git.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -215,6 +214,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -270,7 +271,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.osu-mime.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -279,6 +279,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -337,7 +339,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.spicetify-cli.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -346,6 +347,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -401,7 +404,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.dotnet-install.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -410,6 +412,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -465,7 +469,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -474,6 +477,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -507,13 +512,11 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
-          path: repo
 
       - name: Get libgbinder
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -522,6 +525,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -556,19 +561,16 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
-          path: repo
 
       - name: Get libgbinder
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
-          path: repo
 
       - name: Get python-gbinder
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-gbinder.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -577,6 +579,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -632,7 +636,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libbase58.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -641,6 +644,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -674,13 +679,11 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libbase58.outputs.artifact-name }}
-          path: repo
 
       - name: Get libblkmaker
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.libblkmaker.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -689,6 +692,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -767,7 +772,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -776,6 +780,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -810,19 +816,16 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.gorice.outputs.artifact-name }}
-          path: repo
 
       - name: Get protoc-gen-go
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
-          path: repo
 
       - name: Get protoc-gen-go-grpc
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.protoc-gen-go-grpc.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -831,6 +834,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -886,7 +891,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.web-ext.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -895,6 +899,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -974,13 +980,11 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.cubeb.outputs.artifact-name }}
-          path: repo
 
       - name: Get ctre
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.ctre.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -989,6 +993,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -1067,7 +1073,6 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -1076,6 +1081,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -1206,43 +1213,36 @@ jobs:
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.icoextract.outputs.artifact-name }}
-          path: repo
 
       - name: Get python-setuptools-reproducible
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
-          path: repo
 
       - name: Get patool
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.patool.outputs.artifact-name }}
-          path: repo
 
       - name: Get python-fvs
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-fvs.outputs.artifact-name }}
-          path: repo
 
       - name: Get python-pathvalidate
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-pathvalidate.outputs.artifact-name }}
-          path: repo
 
       - name: Get python-steamgriddb
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.python-steamgriddb.outputs.artifact-name }}
-          path: repo
 
       - name: Get vkbasalt-cli
         uses: arenekosreal/download-artifact@v4
         with:
           name: ${{ needs.vkbasalt-cli.outputs.artifact-name }}
-          path: repo
 
       - name: Install pacman-package-manager
         run: |
@@ -1251,6 +1251,8 @@ jobs:
 
       - name: Setup repository
         run: |
+          mv -v pkgdest repo
+          ls -l repo
           find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
 
       - name: Build package
@@ -1401,11 +1403,10 @@ jobs:
       - name: Download artifact
         uses: arenekosreal/download-artifact@v4
 
-      - name: Unpack artifact
+      - name: Move directory
         run: |
-          mkdir -p '${{ github.repository_owner }}'
-          find . -mindepth 2 -maxdepth 2 -type f -name 'repo.tar' -exec tar -x -p -C '${{ github.repository_owner }}' -k -f {} \;
-
+          mv -v pkgdest '${{ github.repository_owner }}'
+      
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
