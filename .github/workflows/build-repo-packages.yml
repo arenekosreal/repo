@@ -1283,53 +1283,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Parse matrix
-        id: parse-matrix
+      - name: Install python-yq
         run: |
-          {
-            echo -n "project="
-            echo "${{ matrix.package }}" | cut -d / -f 1
-            echo -n "package="
-            echo "${{ matrix.package }}" | cut -d / -f 2
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Get target arch
-        id: get-target-arch
-        run: |
-          echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
-
-      - name: Create download directory
-        run: mkdir -p pkgdest
+          sudo apt-get update -y
+          sudo apt-get install -y yq
 
       - name: Get package
-        uses: ./.github/actions/download-obs-binaries
         id: download
-        with:
-          username: ${{ secrets.OBS_USERNAME }}
-          password: ${{ secrets.OBS_PASSWORD }}
-          regex: ^${{ steps.parse-matrix.outputs.package }}.+\.pkg\.tar\.[0-9a-zA-Z]+$
-          project: ${{ steps.parse-matrix.outputs.project }}
-          repository: Arch
-          download-directory: pkgdest
-          architecture: ${{ steps.get-target-arch.outputs.target-arch }}
-
-      - name: Generate meta info
-        id: gen-meta-info
         run: |
-          f="$(echo "${{ steps.download.outputs.files }}" | head -n 1)"
-          f="$(echo "$f" | sed 's/${{ steps.parse-matrix.outputs.package }}-//' )"
-          f="$(echo "$f" | sed 's/${{ steps.parse-matrix.outputs.package }}-debug-//')"
-          f="$(echo "$f" | sed 's/.pkg.tar.*$//')"
+          PROJECT="$(echo '${{ matrix.package }}' | cut -d / -f 1)"
+          PACKAGE="$(echo '${{ matrix.package }}' | cut -d / -f 2)"
+          TARGET_ARCH="$(uname -m)"
+          API="https://api.opensuse.org/published/$PROJECT/Arch/$TARGET_ARCH"
+          CURL=(curl -L -u '${{ secrets.OBS_USERNAME }}:${{ secrets.OBS_PASSWORD }}')
+          QUERY=".directory.entry[].\"@name\" | select(test(\"^$PACKAGE-.+-$TARGET_ARCH.pkg.tar.[0-9a-zA-Z]+$\"))"
+          mkdir -p pkgdest
+          echo "::debug::Using ${CURL[*]} to query $API with jq filter '$QUERY'..."
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "files<<$EOF" >> "$GITHUB_OUTPUT"
+          while read -r file
+          do
+            url="$API/$file"
+            echo "Downloading $file from $url..."
+            "${CURL[@]}" "$url" -o "pkgdest/$file"
+            echo "$file" >> "$GITHUB_OUTPUT"
+          done < <("${CURL[@]}" -H "Accept: application/xml; charset=utf-8" "$API" | tee response.xml | xq-python -r "$QUERY")
+          echo "$EOF" >> "$GITHUB_OUTPUT"
+          echo -e "::debug::Response from server:\n$(cat response.xml)"
+          pkgver_pkgrel="$(ls pkgdest | head -n 1 | sed "s/$PACKAGE-debug-//;s/$PACKAGE-//;s/.pkg.tar.[0-9a-zA-Z]+$//")"
           printf "artifact-name=%s %s-%d %s\n" \
-            "${{ steps.parse-matrix.outputs.package }}" \
-            "$(echo "$f" | cut -d- -f 1)" \
-            "$(echo "$f" | cut -d- -f 2)" \
-            "${{ steps.get-target-arch.outputs.target-arch }}" >> "$GITHUB_OUTPUT"
+            "$PACKAGE" \
+            "$(echo "$pkgver_pkgrel" | cut -d- -f 1)" \
+            "$(echo "$pkgver_pkgrel" | cut -d- -f 2)" \
+            "$(uname -m)" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
         uses: arenekosreal/upload-artifact@v4
         with:
-          name: ${{ steps.gen-meta-info.outputs.artifact-name }}
+          name: ${{ steps.download.outputs.artifact-name }}
           path: pkgdest
 
   github-packages:
