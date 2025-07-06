@@ -72,6 +72,7 @@ jobs:
           - git+https://aur.archlinux.org/paccache-hook.git
           - git+https://aur.archlinux.org/paru.git
           - git+https://aur.archlinux.org/pay-respects.git
+          - git+https://aur.archlinux.org/phonon-mpv.git
           - git+https://aur.archlinux.org/pipewire-module-xrdp.git
           - git+https://aur.archlinux.org/pipewire-module-xrdp-git.git
           - git+https://aur.archlinux.org/plasma-gamemode-git.git
