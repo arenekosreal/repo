@@ -1322,7 +1322,6 @@ jobs:
       - spotube
       - fooyin
       - osu-lazer-bin
-      - spicetify-themes
       - watt-toolkit-git
       - waydroid
       - bfgminer-git
