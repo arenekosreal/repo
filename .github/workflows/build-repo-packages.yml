@@ -86,7 +86,10 @@ jobs:
           - git+https://aur.archlinux.org/sing-box.git
           - git+https://aur.archlinux.org/sing-geoip.git
           - git+https://aur.archlinux.org/sing-geosite.git
+          - git+https://aur.archlinux.org/spicetify-cli.git
           - git+https://aur.archlinux.org/spicetify-extensions-rxri-git.git
+          - git+https://aur.archlinux.org/spicetify-theme-nord-git.git
+          - git+https://aur.archlinux.org/spicetify-themes-git.git
           - git+https://aur.archlinux.org/systemd-boot-pacman-hook.git
           - git+https://aur.archlinux.org/systemd-cron.git
           - git+https://aur.archlinux.org/tcp-brutal-dkms.git
@@ -289,74 +292,6 @@ jobs:
         uses: ./.github/actions/build-pkgbuild
         with:
           where: git+https://aur.archlinux.org/osu-lazer-bin.git
-          repo: repo
-          env: |
-            PACKAGER=${{ vars.PACKAGER }}
-
-      - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest
-
-  spicetify-cli:
-    runs-on: ${{ inputs.runs-on }}
-    name: Build spicetify-cli for packages depends on it
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build package
-        id: build
-        uses: ./.github/actions/build-pkgbuild
-        with:
-          where: git+https://aur.archlinux.org/spicetify-cli.git
-          env: |
-            PACKAGER=${{ vars.PACKAGER }}
-
-      - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest
-
-  spicetify-themes:
-    needs:
-      - spicetify-cli
-    strategy:
-      matrix:
-        pkgbuild-repo:
-          - git+https://aur.archlinux.org/spicetify-theme-nord-git.git
-          - git+https://aur.archlinux.org/spicetify-themes-git.git
-    runs-on: ${{ inputs.runs-on }}
-    name: Build spicetify themes
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get spicetify-cli
-        uses: arenekosreal/download-artifact@v4
-        with:
-          name: ${{ needs.spicetify-cli.outputs.artifact-name }}
-
-      - name: Install pacman-package-manager
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y pacman-package-manager libarchive-tools
-
-      - name: Setup repository
-        run: |
-          mv -v pkgdest repo
-          ls -l repo
-          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
-
-      - name: Build package
-        id: build
-        uses: ./.github/actions/build-pkgbuild
-        with:
-          where: ${{ matrix.pkgbuild-repo }}
           repo: repo
           env: |
             PACKAGER=${{ vars.PACKAGER }}
