@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 82de5c7..906e112 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -4,7 +4,7 @@ pkgname=needrestart
+ url=https://github.com/liske/needrestart
+ pkgdesc='Restart daemons after library updates.'
+ pkgver=3.11
+-pkgrel=1
++pkgrel=2
+ source=("needrestart-${pkgver}.tar.gz::https://github.com/liske/needrestart/archive/v${pkgver}.tar.gz"
+ 	'needrestart.hook'
+ )
