@@ -1,7 +1,7 @@
 # Contributor: robertfoster
 
 pkgname=local-ai
-pkgver=3.2.2
+pkgver=3.2.3
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -16,7 +16,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0002-fix-whisper-ggml-path.diff"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
-sha256sums=('139e9092d4a8050c1aa634a4ad2364ee8ef28d077e418ee549beb70c91899630'
+sha256sums=('b99a5f1f05f51440cb184fd59b3f76cd677dd4614025d8b5c4a27f4894e36637'
             'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'b692e7cce0d6ff9ac2e81685d7f4298a5a83f69dd5ff92ac1f0a4359b64cd60e'
