@@ -1,25 +1,45 @@
 # Contributor: robertfoster
 
 pkgname=local-ai
-pkgver=3.1.1
+pkgver=3.2.2
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
 license=(MIT)
-depends=(gcc-libs glibc grpc protobuf abseil-cpp zlib openblas)
-makedepends=(cmake git go go.rice protoc-gen-go protoc-gen-go-grpc upx blas-openblas blas64-openblas)
+depends=(gcc-libs glibc grpc protobuf abseil-cpp bash openblas)
+makedepends=(cmake git go go.rice protoc-gen-go protoc-gen-go-grpc blas-openblas blas64-openblas)
+install=$pkgname.install
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
-        "local-ai.service")
-sha256sums=('4cea676a1e284fdd338bc7df3b4346b317647e678f856a36137747e915cee0ed'
-            'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737')
+        "local-ai.service"
+        "0001-disable-installing-extra-tools.diff"
+        "0002-fix-whisper-ggml-path.diff"
+        "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
+        "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
+sha256sums=('139e9092d4a8050c1aa634a4ad2364ee8ef28d077e418ee549beb70c91899630'
+            'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737'
+            '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
+            'b692e7cce0d6ff9ac2e81685d7f4298a5a83f69dd5ff92ac1f0a4359b64cd60e'
+            '24e3895abb97aebf94bb2af4203922a6480974be88947a5826a2fffda9e6c29e'
+            'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3')
+# static resources are embedded into binary and cannot be stripped.
 options=(!strip)
+
+_llama_cpp_variants=(avx avx2 avx512 fallback grpc rpc-server)
+_golang_backends=(bark-cpp piper local-store huggingface silero-vad stablediffusion-ggml whisper)
 
 prepare() {
     cd "$srcdir/LocalAI"
-    make prepare-sources
-    sed -i "s/ -lfmt -lspdlog -lucd//;s/-I./-I\$(INCLUDE_PATH)/g;s/-L./-L\$(LIBRARY_PATH)/g" sources/go-piper/Makefile
-    sed -i "s/3.3/3.5/" sources/bark.cpp/encodec.cpp/ggml/CMakeLists.txt
+    make -C backend/cpp/llama-cpp llama.cpp
+    make -C backend/go/bark-cpp sources/bark.cpp
+    make -C backend/go/piper sources/go-piper
+    make -C backend/go/silero-vad sources/onnxruntime
+    make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
+    make -C backend/go/whisper sources/whisper.cpp
+    patch -Np1 -i ../0001-disable-installing-extra-tools.diff
+    patch -Np1 -i ../0002-fix-whisper-ggml-path.diff
+    patch -Np1 -i ../0003-avoid-gobark-flags-being-applied-to-cmake.diff
+    patch -Np1 -d backend/go/piper/sources/go-piper -i "$srcdir/0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
 }
 
 build() {
@@ -29,16 +49,67 @@ build() {
     export CGO_CXXFLAGS="${CXXFLAGS}"
     export CGO_LDFLAGS="${LDFLAGS}"
     export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
-    make BUILD_TYPE=openblas \
-         GO_TAGS=stablediffusion,tts,p2p \
-         CGO_LDFLAGS_WHISPER="${CGO_LDFLAGS}" \
+    echo "Building main program..."
+    make GO_TAGS=stablediffusion,tts,p2p \
          build
+    echo "Building llama-cpp..."
+    local variant
+    for variant in "${_llama_cpp_variants[@]}"
+    do
+        make -C backend/cpp/llama-cpp \
+             BUILD_TYPE=openblas \
+             "llama-cpp-$variant"
+    done
+    local backend
+    # Golang backends
+    for backend in "${_golang_backends[@]}"
+    do
+        echo "Building $backend..."
+        make -C "backend/go/$backend" \
+            BUILD_TYPE=openblas \
+            "$backend"
+    done
 }
 
 package() {
     cd "$srcdir/LocalAI"
-    install -Dm755 $pkgname "$pkgdir/usr/bin/$pkgname"
-    install -Dm644 "$srcdir/$pkgname.service" "$pkgdir/usr/lib/systemd/system/$pkgname.service"
-    install -Dm644 .env "$pkgdir/usr/share/doc/$pkgname/$pkgname.env"
-    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    local variant backend
+    for variant in "${_llama_cpp_variants[@]}"
+    do
+        install -Dvm755 "backend/cpp/llama-cpp/llama-cpp-$variant" \
+            "$pkgdir/usr/lib/$pkgname/backend/cpp/llama-cpp/package/llama-cpp-$variant"
+    done
+    install -Dvm755 backend/cpp/llama-cpp/run.sh "$pkgdir/usr/lib/$pkgname/backend/cpp/llama-cpp/package/run.sh"
+    for backend in "${_golang_backends[@]}"
+    do
+        install -Dvm755 "backend/go/$backend/$backend" \
+            "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/$backend"
+        install -Dvm755 "backend/go/$backend/run.sh" \
+            "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/run.sh"
+    done
+    find backend/go/piper/sources/go-piper/piper-phonemize/pi/lib -maxdepth 1 -type f -exec \
+        install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
+    find backend/go/piper/sources/go-piper/piper-phonemize/pi/lib -maxdepth 1 -type l -exec \
+        cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
+    cp -r backend/go/piper/espeak-ng-data "$pkgdir/usr/lib/$pkgname/backend/go/piper/package"
+    mkdir -p "$pkgdir/usr/bin"
+    ln -srfv "$pkgdir/usr/lib/$pkgname/$pkgname" "$pkgdir/usr/bin/$pkgname"
+    install -Dvm755 $pkgname "$pkgdir/usr/lib/$pkgname/$pkgname"
+    install -Dvm644 "$srcdir/$pkgname.service" "$pkgdir/usr/lib/systemd/system/$pkgname.service"
+    install -Dvm644 .env "$pkgdir/usr/share/doc/$pkgname/$pkgname.env"
+    install -Dvm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    local file
+    while read -r file
+    do
+        case "$(file -Sib "$file")" in
+            application/x-sharedlib\;*)      # Libraries (.so)
+                strip -v $STRIP_SHARED "$file" ;;
+            application/x-archive\;*)        # Libraries (.a)
+                strip -v $STRIP_STATIC "$file" ;;
+            application/x-executable\;*)     # Binaries
+                strip -v $STRIP_BINARIES "$file" ;;
+            application/x-pie-executable\;*) # Relocatable binaries
+                strip -v $STRIP_SHARED "$file" ;;
+        esac
+    done < <(find "$pkgdir/usr/lib/$pkgname/backend" -type f -executable -o -name "*.so*" -a ! -name "*.sh")
 }

@@ -1,0 +1,13 @@
+diff --git a/backend/go/whisper/Makefile b/backend/go/whisper/Makefile
+index bdcb8fb8..372882f9 100644
+--- a/backend/go/whisper/Makefile
++++ b/backend/go/whisper/Makefile
+@@ -39,6 +39,8 @@ ifeq ($(BUILD_TYPE),cublas)
+ # to CMAKE_ARGS automatically
+ else ifeq ($(BUILD_TYPE),openblas)
+ 	CMAKE_ARGS+=-DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS
++	CGO_LDFLAGS_WHISPER+=-lggml-blas $(shell pkg-config --libs openblas)
++	export WHISPER_LIBRARY_PATH:=$(WHISPER_LIBRARY_PATH):$(WHISPER_DIR)/build/ggml/src/ggml-blas/
+ # If build type is clblas (openCL) we set -DGGML_CLBLAST=ON -DCLBlast_DIR=/some/path
+ else ifeq ($(BUILD_TYPE),clblas)
+ 	CMAKE_ARGS+=-DGGML_CLBLAST=ON -DCLBlast_DIR=/some/path

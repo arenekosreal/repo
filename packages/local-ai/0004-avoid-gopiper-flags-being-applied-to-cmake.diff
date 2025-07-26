@@ -1,0 +1,39 @@
+diff --git a/Makefile b/Makefile
+index 0c3b5f4..721b49d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,13 +4,13 @@ LIBRARY_PATH := $(abspath ./)
+ 
+ BUILD_TYPE?=
+ # keep standard at C11 and C++11
+-CFLAGS   = -I. -I./piper/src/cpp -I./piper/build/fi/include -I./piper/build/pi/include -I./piper/build/si/include -O3 -DNDEBUG -std=c11 -fPIC -I./piper-phonemize/pi/include
+-CXXFLAGS = -I. -I./piper/src/cpp -I./piper/build/fi/include -I./piper/build/pi/include -I./piper/build/si/include -O3 -DNDEBUG -std=c++17 -fPIC -I./piper-phonemize/pi/include
+-LDFLAGS  = -L./piper-phonemize/pi/lib -L./espeak/ei/lib/ -L./piper/build/fi/lib -L./piper/build/pi/lib -L./piper/build/si/lib -lfmt -lspdlog -lucd
++GOPIPER_CFLAGS   = -I. -I./piper/src/cpp -I./piper/build/fi/include -I./piper/build/pi/include -I./piper/build/si/include -O3 -DNDEBUG -std=c11 -fPIC -I./piper-phonemize/pi/include
++GOPIPER_CXXFLAGS = -I. -I./piper/src/cpp -I./piper/build/fi/include -I./piper/build/pi/include -I./piper/build/si/include -O3 -DNDEBUG -std=c++17 -fPIC -I./piper-phonemize/pi/include
++GOPIPER_LDFLAGS  = -L./piper-phonemize/pi/lib -L./espeak/ei/lib/ -L./piper/build/fi/lib -L./piper/build/pi/lib -L./piper/build/si/lib -lfmt -lspdlog -lucd
+ 
+ # warnings
+-CFLAGS   += -Wall -Wextra -Wpedantic -Wcast-qual -Wdouble-promotion -Wshadow -Wstrict-prototypes -Wpointer-arith -Wno-unused-function
+-CXXFLAGS += -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function
++GOPIPER_CFLAGS   += -Wall -Wextra -Wpedantic -Wcast-qual -Wdouble-promotion -Wshadow -Wstrict-prototypes -Wpointer-arith -Wno-unused-function
++GOPIPER_CXXFLAGS += -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function
+ #
+ # Print build information
+ #
+@@ -27,13 +27,13 @@ piper.o:
+ 	cp piper/build/CMakeFiles/piper.dir/src/cpp/piper.cpp.o piper.o
+ 
+ gopiper.o: piper.o
+-	$(CXX) $(CXXFLAGS) gopiper.cpp -o gopiper.o -c $(LDFLAGS)
++	$(CXX) $(GOPIPER_CXXFLAGS) gopiper.cpp -o gopiper.o -c $(GOPIPER_LDFLAGS)
+ 
+ libpiper_binding.a: piper.o gopiper.o
+ 	ar src libpiper_binding.a piper.o
+ 
+ example/main: libpiper_binding.a
+-	CGO_CXXFLAGS="${CXXFLAGS}" CGO_LDFLAGS="${LDFLAGS}" LIBRARY_PATH=${LIBRARY_PATH} go build -buildvcs=false -x -o example/main ./example
++	CGO_CXXFLAGS="${GOPIPER_CXXFLAGS}" CGO_LDFLAGS="${GOPIPER_LDFLAGS}" LIBRARY_PATH=${LIBRARY_PATH} go build -buildvcs=false -x -o example/main ./example
+ 
+ clean:
+ 	rm -rf *.o

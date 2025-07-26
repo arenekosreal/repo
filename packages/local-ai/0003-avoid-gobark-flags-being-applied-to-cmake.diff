@@ -1,0 +1,32 @@
+diff --git a/backend/go/bark-cpp/Makefile b/backend/go/bark-cpp/Makefile
+index 1bff58c4..69549faf 100644
+--- a/backend/go/bark-cpp/Makefile
++++ b/backend/go/bark-cpp/Makefile
+@@ -7,15 +7,15 @@ CMAKE_ARGS?=-DGGML_NATIVE=OFF
+ BUILD_TYPE?=
+ GOCMD=go
+ # keep standard at C11 and C++11
+-CXXFLAGS = -I. -I$(INCLUDE_PATH)/sources/bark.cpp/examples -I$(INCLUDE_PATH)/sources/bark.cpp/encodec.cpp/ggml/include -I$(INCLUDE_PATH)/sources/bark.cpp/spm-headers -I$(INCLUDE_PATH)/sources/bark.cpp -O3 -DNDEBUG -std=c++17 -fPIC
+-LDFLAGS  = -L$(LIBRARY_PATH) -L$(LIBRARY_PATH)/sources/bark.cpp/build/examples -lbark -lstdc++ -lm
++GOBARK_CXXFLAGS = -I. -I$(INCLUDE_PATH)/sources/bark.cpp/examples -I$(INCLUDE_PATH)/sources/bark.cpp/encodec.cpp/ggml/include -I$(INCLUDE_PATH)/sources/bark.cpp/spm-headers -I$(INCLUDE_PATH)/sources/bark.cpp -O3 -DNDEBUG -std=c++17 -fPIC
++GOBARK_LDFLAGS  = -L$(LIBRARY_PATH) -L$(LIBRARY_PATH)/sources/bark.cpp/build/examples -L$(LIBRARY_PATH)/sources/bark.cpp/build -lbark -lstdc++ -lm
+ 
+ # bark.cpp
+ BARKCPP_REPO?=https://github.com/PABannier/bark.cpp.git
+ BARKCPP_VERSION?=5d5be84f089ab9ea53b7a793f088d3fbf7247495
+ 
+ # warnings
+-CXXFLAGS += -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function
++GOBARK_CXXFLAGS += -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function
+ 
+ ## bark.cpp
+ sources/bark.cpp:
+@@ -32,7 +32,7 @@ sources/bark.cpp/build/libbark.a: sources/bark.cpp
+ 	cmake --build . --config Release
+ 
+ gobark.o:
+-	$(CXX) $(CXXFLAGS) gobark.cpp -o gobark.o -c $(LDFLAGS)
++	$(CXX) $(GOBARK_CXXFLAGS) gobark.cpp -o gobark.o -c $(GOBARK_LDFLAGS)
+ 
+ libbark.a: sources/bark.cpp/build/libbark.a gobark.o
+ 	cp $(INCLUDE_PATH)/sources/bark.cpp/build/libbark.a ./
