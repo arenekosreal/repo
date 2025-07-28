@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 2457102..bd0da40 100755
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -15,7 +15,7 @@ sha256sums=(8cafa4a812079020839beaf0b133e08be6e47d6ffa1cf90f3417efdc7589c7a1)
+ build() {
+   cd $pkgname-v$pkgver
+ 
+-  cmake -B build -DCMAKE_INSTALL_PREFIX="/usr"
++  cmake -B build -DCMAKE_INSTALL_PREFIX="/usr" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+   cmake --build build
+ }
+ 
