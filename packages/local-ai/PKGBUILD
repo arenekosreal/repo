@@ -2,7 +2,7 @@
 
 pkgname=local-ai
 pkgver=3.2.3
-pkgrel=1
+pkgrel=2
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
