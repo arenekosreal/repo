@@ -1,8 +1,8 @@
 # Contributor: robertfoster
 
 pkgname=local-ai
-pkgver=3.2.3
-pkgrel=2
+pkgver=3.3.1
+pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
@@ -16,7 +16,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0002-fix-whisper-ggml-path.diff"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
-sha256sums=('b99a5f1f05f51440cb184fd59b3f76cd677dd4614025d8b5c4a27f4894e36637'
+sha256sums=('1d6d8898294a441a70bc0a030beb09b973f18c5587b8dfab40dbcbe80cbdcb9f'
             'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'b692e7cce0d6ff9ac2e81685d7f4298a5a83f69dd5ff92ac1f0a4359b64cd60e'
@@ -86,12 +86,24 @@ package() {
             "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/$backend"
         install -Dvm755 "backend/go/$backend/run.sh" \
             "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/run.sh"
+        case "$backend" in
+            piper)
+                local pi_lib="backend/go/piper/sources/go-piper/piper-phonemize/pi/lib"
+                find "$pi_lib" -maxdepth 1 -type f -exec \
+                    install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
+                find "$pi_lib" -maxdepth 1 -type l -exec \
+                    cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
+                cp -rfv backend/go/piper/espeak-ng-data "$pkgdir/usr/lib/$pkgname/backend/go/piper/package"
+                ;;
+            silero-vad)
+                local onnx_lib="backend/go/silero-vad/sources/onnxruntime/lib"
+                find "$onnx_lib" -maxdepth 1 -type f -exec \
+                    install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/silero-vad/package/lib" {} +
+                find "$onnx_lib" -maxdepth 1 -type l -exec \
+                    cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/silero-vad/package/lib" {} +
+                ;;
+        esac
     done
-    find backend/go/piper/sources/go-piper/piper-phonemize/pi/lib -maxdepth 1 -type f -exec \
-        install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
-    find backend/go/piper/sources/go-piper/piper-phonemize/pi/lib -maxdepth 1 -type l -exec \
-        cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
-    cp -r backend/go/piper/espeak-ng-data "$pkgdir/usr/lib/$pkgname/backend/go/piper/package"
     mkdir -p "$pkgdir/usr/bin"
     ln -srfv "$pkgdir/usr/lib/$pkgname/$pkgname" "$pkgdir/usr/bin/$pkgname"
     install -Dvm755 $pkgname "$pkgdir/usr/lib/$pkgname/$pkgname"
