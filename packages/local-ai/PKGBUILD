@@ -118,10 +118,10 @@ package_local-ai-backend-llama-cpp-openblas() {
     for variant in "${_llama_cpp_variants[@]}"
     do
         install -Dvm755 "backend/cpp/llama-cpp/llama-cpp-$variant" \
-            "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/llama-cpp-$variant"
-        _strip_file "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/llama-cpp-$variant"
+            "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/llama-cpp-$variant"
+        _strip_file "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/llama-cpp-$variant"
     done
-    install -Dvm755 "backend/cpp/llama-cpp/run.sh" "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/run.sh"
+    install -Dvm755 "backend/cpp/llama-cpp/run.sh" "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/run.sh"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -130,10 +130,10 @@ package_local-ai-backend-bark-cpp() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/bark-cpp/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/bark-cpp/" \
         "backend/go/bark-cpp/bark-cpp" \
         "backend/go/bark-cpp/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/bark-cpp/bark-cpp"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/bark-cpp/bark-cpp"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -142,10 +142,10 @@ package_local-ai-backend-huggingface() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/huggingface/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/huggingface/" \
         "backend/go/huggingface/huggingface" \
         "backend/go/huggingface/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/huggingface/huggingface"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/huggingface/huggingface"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 
 }
 
@@ -154,10 +154,10 @@ package_local-ai-backend-local-store() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/local-store/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/local-store/" \
         "backend/go/local-store/local-store" \
         "backend/go/local-store/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/local-store/local-store"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/local-store/local-store"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -166,20 +166,20 @@ package_local-ai-backend-piper() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/piper/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/piper/" \
         "backend/go/piper/piper" \
         "backend/go/piper/run.sh"
     local pi_lib="backend/go/piper/sources/go-piper/piper-phonemize/pi/lib"
     find "$pi_lib" -mindepth 1 -maxdepth 1 -type f -exec \
-        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backend/piper/lib/" {} +
+        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backends/piper/lib/" {} +
     find "$pi_lib" -mindepth 1 -maxdepth 1 -type l -exec \
-        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backend/piper/lib/" {} +
+        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backends/piper/lib/" {} +
     local f
     while read -r f
     do
         _strip_file "$f"
-    done < <(find "$pkgdir/usr/lib/$pkgbase/backend/piper" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
-    cp -avf "backend/go/piper/espeak-ng-data" "$pkgdir/usr/lib/$pkgbase/backend/piper/" 
+    done < <(find "$pkgdir/usr/lib/$pkgbase/backends/piper" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
+    cp -avf "backend/go/piper/espeak-ng-data" "$pkgdir/usr/lib/$pkgbase/backends/piper/" 
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -188,19 +188,19 @@ package_local-ai-backend-silero-vad() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/" \
         "backend/go/silero-vad/silero-vad" \
         "backend/go/silero-vad/run.sh"
     local onnx_lib="backend/go/silero-vad/sources/onnxruntime/lib"
     find "$onnx_lib" -mindepth 1 -maxdepth 1 -type f -exec \
-        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/lib/" {} +
+        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/lib/" {} +
     find "$onnx_lib" -mindepth 1 -maxdepth 1 -type l -exec \
-        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/lib/" {} +
+        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/lib/" {} +
     local f
     while read -r f
     do
         _strip_file "$f"
-    done < <(find "$pkgdir/usr/lib/$pkgbase/backend/silero-vad" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
+    done < <(find "$pkgdir/usr/lib/$pkgbase/backends/silero-vad" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -209,10 +209,10 @@ package_local-ai-backend-stablediffusion-ggml() {
     groups=(local-ai-backend)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/stablediffusion-ggml/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/stablediffusion-ggml/" \
         "backend/go/stablediffusion-ggml/stablediffusion-ggml" \
         "backend/go/stablediffusion-ggml/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/stablediffusion-ggml/stablediffusion-ggml"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/stablediffusion-ggml/stablediffusion-ggml"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
@@ -224,9 +224,9 @@ package_local-ai-backend-whisper-openblas() {
     depends+=(openblas)
 
     cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/whisper/" \
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/whisper/" \
         "backend/go/whisper/whisper" \
         "backend/go/whisper/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/whisper/whisper"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/whisper/whisper"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
