@@ -1,22 +1,32 @@
 # Contributor: robertfoster
 
-pkgname=local-ai
-pkgver=3.3.1
+pkgbase=local-ai
+pkgname=(local-ai
+         local-ai-backend-llama-cpp-openblas
+         local-ai-backend-bark-cpp
+         local-ai-backend-huggingface
+         local-ai-backend-local-store
+         local-ai-backend-piper
+         local-ai-backend-silero-vad
+         local-ai-backend-stablediffusion-ggml
+         local-ai-backend-whisper-openblas)
+pkgver=3.3.2
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
 license=(MIT)
-depends=(gcc-libs glibc grpc protobuf abseil-cpp bash openblas)
-makedepends=(cmake git go go.rice protoc-gen-go protoc-gen-go-grpc blas-openblas blas64-openblas)
-install=$pkgname.install
+depends=(gcc-libs glibc bash)
+makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
+             blas-openblas blas64-openblas)
+optdepends=("local-ai-backend: Packaged backends")
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
         "0002-fix-whisper-ggml-path.diff"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
-sha256sums=('1d6d8898294a441a70bc0a030beb09b973f18c5587b8dfab40dbcbe80cbdcb9f'
+sha256sums=('4f685361b597fe2bfe0ad0641eb053a730b479c4d0652bff279afc29974d90c4'
             'c62647f59de40858cafe68da0495ca1e4158160d006ca56b4bbd0efa34d41737'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'b692e7cce0d6ff9ac2e81685d7f4298a5a83f69dd5ff92ac1f0a4359b64cd60e'
@@ -27,6 +37,19 @@ options=(!strip)
 
 _llama_cpp_variants=(avx avx2 avx512 fallback grpc rpc-server)
 _golang_backends=(bark-cpp piper local-store huggingface silero-vad stablediffusion-ggml whisper)
+
+_strip_file() {
+    case "$(file -Sib "$1")" in
+        application/x-sharedlib\;*)        # Libraries (.so)
+            strip -v $STRIP_SHARED "$1" ;;
+        application/x-archive\;*)          # Libraries (.a)
+            strip -v $STRIP_STATIC "$1" ;;
+        application/x-executable\;*)       # Binaries
+            strip -v $STRIP_BINARIES "$1" ;;
+        application/x-pie-executable\;*)   # Relocatable binaries
+            strip -v $STRIP_SHARED "$1" ;;
+    esac
+}
 
 prepare() {
     cd "$srcdir/LocalAI"
@@ -71,57 +94,139 @@ build() {
     done
 }
 
-package() {
+package_local-ai() {
+    install=$pkgname.install
+
     cd "$srcdir/LocalAI"
-    local variant backend
+    mkdir -p "$pkgdir/usr/bin"
+    ln -srfv "$pkgdir/usr/lib/$pkgbase/$pkgname" "$pkgdir/usr/bin/$pkgname"
+    install -Dvm755 "$pkgname" "$pkgdir/usr/lib/$pkgbase/$pkgname"
+    install -Dvm644 "$srcdir/$pkgbase.service" "$pkgdir/usr/lib/systemd/system/$pkgbase.service"
+    install -Dvm644 ".env" "$pkgdir/usr/share/doc/$pkgbase/$pkgbase.env"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgbase/LICENSE"
+}
+
+package_local-ai-backend-llama-cpp-openblas() {
+    pkgdesc+=" (llama-cpp backend with openblas optimization)"
+    groups=(local-ai-backend)
+    provides=(local-ai-backend-llama-cpp)
+    conflicts=(local-ai-backend-llama-cpp)
+    depends+=(abseil-cpp grpc openblas protobuf)
+
+    cd "$srcdir/LocalAI"
+    local variant
     for variant in "${_llama_cpp_variants[@]}"
     do
         install -Dvm755 "backend/cpp/llama-cpp/llama-cpp-$variant" \
-            "$pkgdir/usr/lib/$pkgname/backend/cpp/llama-cpp/package/llama-cpp-$variant"
+            "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/llama-cpp-$variant"
+        _strip_file "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/llama-cpp-$variant"
     done
-    install -Dvm755 backend/cpp/llama-cpp/run.sh "$pkgdir/usr/lib/$pkgname/backend/cpp/llama-cpp/package/run.sh"
-    for backend in "${_golang_backends[@]}"
+    install -Dvm755 "backend/cpp/llama-cpp/run.sh" "$pkgdir/usr/lib/$pkgbase/backend/llama-cpp/run.sh"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-bark-cpp() {
+    pkgdesc+=" (bark-cpp backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/bark-cpp/" \
+        "backend/go/bark-cpp/bark-cpp" \
+        "backend/go/bark-cpp/run.sh"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/bark-cpp/bark-cpp"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-huggingface() {
+    pkgdesc+=" (huggingface backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/huggingface/" \
+        "backend/go/huggingface/huggingface" \
+        "backend/go/huggingface/run.sh"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/huggingface/huggingface"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 
+}
+
+package_local-ai-backend-local-store() {
+    pkgdesc+=" (local-store backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/local-store/" \
+        "backend/go/local-store/local-store" \
+        "backend/go/local-store/run.sh"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/local-store/local-store"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-piper() {
+    pkgdesc+=" (piper backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/piper/" \
+        "backend/go/piper/piper" \
+        "backend/go/piper/run.sh"
+    local pi_lib="backend/go/piper/sources/go-piper/piper-phonemize/pi/lib"
+    find "$pi_lib" -mindepth 1 -maxdepth 1 -type f -exec \
+        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backend/piper/lib/" {} +
+    find "$pi_lib" -mindepth 1 -maxdepth 1 -type l -exec \
+        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backend/piper/lib/" {} +
+    local f
+    while read -r f
     do
-        install -Dvm755 "backend/go/$backend/$backend" \
-            "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/$backend"
-        install -Dvm755 "backend/go/$backend/run.sh" \
-            "$pkgdir/usr/lib/$pkgname/backend/go/$backend/package/run.sh"
-        case "$backend" in
-            piper)
-                local pi_lib="backend/go/piper/sources/go-piper/piper-phonemize/pi/lib"
-                find "$pi_lib" -maxdepth 1 -type f -exec \
-                    install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
-                find "$pi_lib" -maxdepth 1 -type l -exec \
-                    cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/piper/package/lib" {} +
-                cp -rfv backend/go/piper/espeak-ng-data "$pkgdir/usr/lib/$pkgname/backend/go/piper/package"
-                ;;
-            silero-vad)
-                local onnx_lib="backend/go/silero-vad/sources/onnxruntime/lib"
-                find "$onnx_lib" -maxdepth 1 -type f -exec \
-                    install -Dvm644 -t "$pkgdir/usr/lib/$pkgname/backend/go/silero-vad/package/lib" {} +
-                find "$onnx_lib" -maxdepth 1 -type l -exec \
-                    cp -P -t "$pkgdir/usr/lib/$pkgname/backend/go/silero-vad/package/lib" {} +
-                ;;
-        esac
-    done
-    mkdir -p "$pkgdir/usr/bin"
-    ln -srfv "$pkgdir/usr/lib/$pkgname/$pkgname" "$pkgdir/usr/bin/$pkgname"
-    install -Dvm755 $pkgname "$pkgdir/usr/lib/$pkgname/$pkgname"
-    install -Dvm644 "$srcdir/$pkgname.service" "$pkgdir/usr/lib/systemd/system/$pkgname.service"
-    install -Dvm644 .env "$pkgdir/usr/share/doc/$pkgname/$pkgname.env"
-    install -Dvm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-    local file
-    while read -r file
+        _strip_file "$f"
+    done < <(find "$pkgdir/usr/lib/$pkgbase/backend/piper" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
+    cp -avf "backend/go/piper/espeak-ng-data" "$pkgdir/usr/lib/$pkgbase/backend/piper/" 
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-silero-vad() {
+    pkgdesc+=" (silero-vad backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/" \
+        "backend/go/silero-vad/silero-vad" \
+        "backend/go/silero-vad/run.sh"
+    local onnx_lib="backend/go/silero-vad/sources/onnxruntime/lib"
+    find "$onnx_lib" -mindepth 1 -maxdepth 1 -type f -exec \
+        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/lib/" {} +
+    find "$onnx_lib" -mindepth 1 -maxdepth 1 -type l -exec \
+        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backend/silero-vad/lib/" {} +
+    local f
+    while read -r f
     do
-        case "$(file -Sib "$file")" in
-            application/x-sharedlib\;*)      # Libraries (.so)
-                strip -v $STRIP_SHARED "$file" ;;
-            application/x-archive\;*)        # Libraries (.a)
-                strip -v $STRIP_STATIC "$file" ;;
-            application/x-executable\;*)     # Binaries
-                strip -v $STRIP_BINARIES "$file" ;;
-            application/x-pie-executable\;*) # Relocatable binaries
-                strip -v $STRIP_SHARED "$file" ;;
-        esac
-    done < <(find "$pkgdir/usr/lib/$pkgname/backend" -type f -executable -o -name "*.so*" -a ! -name "*.sh")
+        _strip_file "$f"
+    done < <(find "$pkgdir/usr/lib/$pkgbase/backend/silero-vad" -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-stablediffusion-ggml() {
+    pkgdesc+=" (stablediffusion-ggml backend)"
+    groups=(local-ai-backend)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/stablediffusion-ggml/" \
+        "backend/go/stablediffusion-ggml/stablediffusion-ggml" \
+        "backend/go/stablediffusion-ggml/run.sh"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/stablediffusion-ggml/stablediffusion-ggml"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-whisper-openblas() {
+    pkgdesc+=" (whisper backend with openblas optimization)"
+    groups=(local-ai-backend)
+    provides=(local-ai-backend-whisper)
+    conflicts=(local-ai-backend-whisper)
+    depends+=(openblas)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backend/whisper/" \
+        "backend/go/whisper/whisper" \
+        "backend/go/whisper/run.sh"
+    _strip_file "$pkgdir/usr/lib/$pkgbase/backend/whisper/whisper"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

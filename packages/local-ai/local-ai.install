@@ -25,13 +25,21 @@ post_upgrade() {
     if [[ "$(vercmp "$2" 3.2.0)" == -1 ]]
     then
         __print_backend_notice
-    elif [[ "$(vercmp "$1" 3.2.0)" == 1 ]]
+    elif [[ "$(vercmp "$1" 3.3.2)" == -1 ]]
     then
         echo "Do not forget upgrading installed backends by removing and installing again."
         echo "They should be installed into \$WORKDIR/backends by default."
+    else
+        echo "Backends are splitted into several packages. Please select which you need."
     fi
 }
 
 post_install() {
-    __print_backend_notice
+    if [[ "$(vercmp "$1" 3.2.0)" != -1 ]] && [[ "$(vercmp "$1" 3.3.2)" == -1 ]]
+    then
+        __print_backend_notice
+    elif [[ "$(vercmp "$1" 3.3.2)" != -1 ]]
+    then
+        echo "Backends are splitted into several packages. Please select which you need."
+    fi
 }
