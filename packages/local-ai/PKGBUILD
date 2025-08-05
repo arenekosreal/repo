@@ -11,7 +11,7 @@ pkgname=(local-ai
          local-ai-backend-stablediffusion-ggml
          local-ai-backend-whisper-openblas)
 pkgver=3.3.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
@@ -19,7 +19,6 @@ license=(MIT)
 depends=(gcc-libs glibc bash)
 makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
              blas-openblas blas64-openblas)
-optdepends=("local-ai-backend: Packaged backends")
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
@@ -96,6 +95,7 @@ build() {
 
 package_local-ai() {
     install=$pkgname.install
+    optdepends=("local-ai-backend: Packaged backends")
 
     cd "$srcdir/LocalAI"
     mkdir -p "$pkgdir/usr/bin"
