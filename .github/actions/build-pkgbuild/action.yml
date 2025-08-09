@@ -51,12 +51,10 @@ runs:
         pkgbase="$(grep pkgbase startdir/.SRCINFO | cut -d = -f 2- | xargs)"
         if [[ -d "patches/$pkgbase" ]]
         then
-          find "patches/$pkgbase" -maxdepth 1 -type f -name '*.patch' -o -name '*.diff' | \
-          while read -r p
-          do
-            echo "Applying patch $p..."
-            patch -Np1 -d startdir -i "../$p"
-          done
+          ls -l "patches/$pkgbase"
+          find "patches/$pkgbase" -maxdepth 1 -type f -name '*.patch' -o -name '*.diff' \
+            -printf "Applying patch %p...\n" \
+            -exec patch -Np1 -d startdir -i '../{}' \;
         fi
 
     - name: Update .SRCINFO
