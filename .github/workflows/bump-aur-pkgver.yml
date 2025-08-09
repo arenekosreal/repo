@@ -83,13 +83,13 @@ jobs:
           target_sha256="${{ steps.target-sha256.outputs.sha256 }}"
           sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
-          if git --no-pager diff 2>&1
+          if git --no-pager diff --exit-code 2>&1
           then
-            echo "Updated PKGBUILD."
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          else
             echo "PKGBUILD is not updated."
             echo "updated=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Updated PKGBUILD."
+            echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Update .SRCINFO
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
