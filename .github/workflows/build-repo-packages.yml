@@ -21,6 +21,7 @@ on:
 jobs:
   independent-packages:
     strategy:
+      fail-fast: false
       matrix:
         pkgbuild-repo:
           - git+https://aur.archlinux.org/ares-decrypt.git
@@ -1212,6 +1213,7 @@ jobs:
     # aarch64 is not supported on Open Build Service
     if: ${{ ! endsWith(inputs.runs-on, 'arm') }}
     strategy:
+      fail-fast: false
       matrix:
         package:
           - home:ZhangHua/ungoogled-chromium-xdg
@@ -1263,6 +1265,7 @@ jobs:
     name: Get packages on GitHub
     runs-on: ${{ inputs.runs-on }}
     strategy:
+      fail-fast: false
       matrix:
         repo:
           - arenekosreal/firefox-xdg
