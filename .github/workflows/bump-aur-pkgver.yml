@@ -83,7 +83,7 @@ jobs:
           target_sha256="${{ steps.target-sha256.outputs.sha256 }}"
           sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
-          if git --no-pager diff --exit-code 2>&1
+          if git -C ruffle-nightly --no-pager diff --exit-code
           then
             echo "PKGBUILD is not updated."
             echo "updated=false" >> "$GITHUB_OUTPUT"
@@ -105,14 +105,9 @@ jobs:
       - name: Patch source
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         run: |
-          find "patches/ruffle-nightly" \
-            -maxdepth 1 -mindepth 1 -type f \
-            -name '*.patch' -o -name '*.diff' |\
-          while read -r p
-          do
-            echo "Applying patch $p..."
-            patch -Np1 -d ruffle-nightly -i "../$p"
-          done
+          find "patches/ruffle-nightly" -maxdepth 1 -mindepth 1 -type f -name '*.patch' -o -name '*.diff' \
+            -printf "Applying patch %p...\n" \
+            -exec patch -Np1 -d ruffle-nightly -i '../{}' \;
       - name: Try build
         if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
         uses: arenekosreal/makepkg-action@v0.2.3
