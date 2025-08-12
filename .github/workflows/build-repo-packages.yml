@@ -118,7 +118,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -142,7 +142,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -168,7 +168,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}     
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -191,7 +191,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -208,7 +208,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libvgm
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libvgm-git.outputs.artifact-name }}
 
@@ -233,7 +233,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -256,7 +256,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -273,7 +273,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get osu-mime
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.osu-mime.outputs.artifact-name }}
 
@@ -298,7 +298,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -321,7 +321,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -338,7 +338,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get dotnet-install
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.dotnet-install.outputs.artifact-name }}
 
@@ -363,7 +363,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -386,7 +386,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifacts
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -403,7 +403,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libglibutil
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
 
@@ -428,7 +428,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -446,12 +446,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libglibutil
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
 
       - name: Get libgbinder
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
 
@@ -476,7 +476,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -495,17 +495,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libglibutil
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libglibutil.outputs.artifact-name }}
 
       - name: Get libgbinder
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libgbinder.outputs.artifact-name }}
 
       - name: Get python-gbinder
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-gbinder.outputs.artifact-name }}
 
@@ -530,7 +530,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -553,7 +553,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -570,7 +570,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libbase58
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libbase58.outputs.artifact-name }}
 
@@ -595,7 +595,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -613,12 +613,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get libbase58
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libbase58.outputs.artifact-name }}
 
       - name: Get libblkmaker
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.libblkmaker.outputs.artifact-name }}
 
@@ -643,7 +643,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -666,7 +666,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -689,7 +689,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -706,7 +706,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get protoc-gen-go
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
 
@@ -731,7 +731,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -750,17 +750,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get go.rice
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.gorice.outputs.artifact-name }}
 
       - name: Get protoc-gen-go
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.protoc-gen-go.outputs.artifact-name }}
 
       - name: Get protoc-gen-go-grpc
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.protoc-gen-go-grpc.outputs.artifact-name }}
 
@@ -785,7 +785,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -808,7 +808,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -825,7 +825,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get web-ext
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.web-ext.outputs.artifact-name }}
 
@@ -850,7 +850,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -873,7 +873,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -896,7 +896,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -914,12 +914,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get cubeb
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.cubeb.outputs.artifact-name }}
 
       - name: Get ctre
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.ctre.outputs.artifact-name }}
 
@@ -944,7 +944,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -967,7 +967,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -990,7 +990,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1007,7 +1007,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get python-setuptools-reproducible
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
 
@@ -1032,7 +1032,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1055,7 +1055,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1078,7 +1078,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1101,7 +1101,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1124,7 +1124,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1147,37 +1147,37 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get icoextract
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.icoextract.outputs.artifact-name }}
 
       - name: Get python-setuptools-reproducible
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-setuptools-reproducible.outputs.artifact-name }}
 
       - name: Get patool
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.patool.outputs.artifact-name }}
 
       - name: Get python-fvs
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-fvs.outputs.artifact-name }}
 
       - name: Get python-pathvalidate
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-pathvalidate.outputs.artifact-name }}
 
       - name: Get python-steamgriddb
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.python-steamgriddb.outputs.artifact-name }}
 
       - name: Get vkbasalt-cli
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.vkbasalt-cli.outputs.artifact-name }}
 
@@ -1202,7 +1202,7 @@ jobs:
             PACKAGER=${{ vars.PACKAGER }}
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
@@ -1256,7 +1256,7 @@ jobs:
             "$(uname -m)" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.download.outputs.artifact-name }}
           path: pkgdest
@@ -1313,7 +1313,7 @@ jobs:
           >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
+        uses: arenekosreal/upload-artifact@v5
         with:
           name: ${{ steps.gen-meta-info.outputs.artifact-name }}
           path: pkgdest
@@ -1343,7 +1343,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download artifact
-        uses: arenekosreal/download-artifact@v4
+        uses: arenekosreal/download-artifact@v5
         with:
           merge-multiple: true
 
