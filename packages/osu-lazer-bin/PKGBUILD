@@ -19,9 +19,11 @@ _tag=$pkgver-lazer
 source=("osu-lazer-$pkgver.AppImage::https://github.com/ppy/osu/releases/download/$_tag/osu.AppImage"
         "osu-lazer-LICENSE::https://github.com/ppy/osu/raw/refs/tags/$_tag/LICENCE"
         # Basically stolen from aur/osu-mime, but changed icon name to osu to use icon in this package.
+        "osu!"
 		"osu!.xml")
 sha256sums=('4df9bbe7e8e4480ab234190dddc56bc77872c3e022de529ae99228e3bc76467b'
             '2e73c7c4295cc3da18697ac982f64a4ec449e0781e8f4c59318216e13998864a'
+            'a7451bab08bc49114e22f1fcbbdd80459ae12f9739a26eb24d14ba149f95f098'
             'e87eb744005e6f193240526aea88d9555d5ee8a7a837f39bcdfa9a05ef6ab7e7')
 
 package() {
@@ -30,8 +32,7 @@ package() {
     cp -a --no-preserve=ownership squashfs-root/usr "$pkgdir/"
     mkdir -p "$pkgdir/usr/lib"
     mv "$pkgdir/usr/bin" "$pkgdir/usr/lib/osu-lazer"
-    mkdir -p "$pkgdir/usr/bin"
-    ln -srfv "$pkgdir/usr/lib/osu-lazer/osu!" "$pkgdir/usr/bin/"
+    install -Dm755 osu! "$pkgdir/usr/bin/osu!"
     install -Dm644 squashfs-root/osu!.desktop "$pkgdir/usr/share/applications/osu!.desktop"
     install -Dm644 osu!.xml "$pkgdir/usr/share/mime/packages/osu!.xml"
     install -Dm644 osu-lazer-LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
