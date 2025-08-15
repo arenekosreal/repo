@@ -103,6 +103,7 @@ jobs:
           - git+https://aur.archlinux.org/linux-pf.git
           - git+https://aur.archlinux.org/ayugram-desktop.git
           - git+https://aur.archlinux.org/thrive.git
+          - ./packages/osu-lazer-bin
     runs-on: ${{ inputs.runs-on }}
     name: Build packages without any customization
     steps:
@@ -238,71 +239,6 @@ jobs:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
 
-  osu-mime:
-    runs-on: ${{ inputs.runs-on }}
-    name: Build osu-mime for packages depends on it
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build packages
-        id: build
-        uses: ./.github/actions/build-pkgbuild
-        with:
-          where: git+https://aur.archlinux.org/osu-mime.git
-          env: |
-            PACKAGER=${{ vars.PACKAGER }}
-
-      - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest
-
-  osu-lazer-bin:
-    needs:
-      - osu-mime
-    runs-on: ${{ inputs.runs-on }}
-    name: Build osu-lazer-bin which has aur depends
-    outputs:
-      artifact-name: ${{ steps.build.outputs.artifact-name }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get osu-mime
-        uses: arenekosreal/download-artifact@v5
-        with:
-          name: ${{ needs.osu-mime.outputs.artifact-name }}
-
-      - name: Install pacman-package-manager
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y pacman-package-manager libarchive-tools
-
-      - name: Setup repository
-        run: |
-          mv -v pkgdest repo
-          ls -l repo
-          find repo -maxdepth 1 -type f -name '*.pkg.tar.*' -exec repo-add repo/repo.db.tar.gz {} +
-
-      - name: Build package
-        id: build
-        uses: ./.github/actions/build-pkgbuild
-        with:
-          where: git+https://aur.archlinux.org/osu-lazer-bin.git
-          repo: repo
-          env: |
-            PACKAGER=${{ vars.PACKAGER }}
-
-      - name: Upload artifact
-        uses: arenekosreal/upload-artifact@v4
-        with:
-          name: ${{ steps.build.outputs.artifact-name }}
-          path: pkgdest
-  
   dotnet-install:
     runs-on: ${{ inputs.runs-on }}
     name: Build dotnet-install for package depends on it
@@ -1324,7 +1260,6 @@ jobs:
       - cinny
       - spotube
       - fooyin
-      - osu-lazer-bin
       - watt-toolkit-git
       - waydroid
       - bfgminer-git

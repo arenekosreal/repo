@@ -1,0 +1,44 @@
+_system_libs=true
+
+pkgname=osu-lazer-bin
+pkgver=2025.710.0
+pkgrel=3
+pkgdesc="rhythm is just a *click* away!"
+arch=(x86_64)
+url=https://osu.ppy.sh
+license=("MIT AND CC-BY-NC-4.0")
+depends=(gcc-libs glibc hicolor-icon-theme libz.so)
+if $_system_libs
+then
+	depends+=(ffmpeg4.4 sdl2 sdl3)
+fi
+optdepends=("lttng-ust2.12: CoreCLR tracing")
+provides=(osu-lazer)
+conflicts=(osu-lazer)
+_tag=$pkgver-lazer
+source=("osu-lazer-$pkgver.AppImage::https://github.com/ppy/osu/releases/download/$_tag/osu.AppImage"
+        "osu-lazer-LICENSE::https://github.com/ppy/osu/raw/refs/tags/$_tag/LICENCE"
+        # Basically stolen from aur/osu-mime, but changed icon name to osu to use icon in this package.
+		"osu!.xml")
+sha256sums=('4df9bbe7e8e4480ab234190dddc56bc77872c3e022de529ae99228e3bc76467b'
+            '2e73c7c4295cc3da18697ac982f64a4ec449e0781e8f4c59318216e13998864a'
+            'e87eb744005e6f193240526aea88d9555d5ee8a7a837f39bcdfa9a05ef6ab7e7')
+
+package() {
+	chmod +x ./osu-lazer-$pkgver.AppImage
+    ./osu-lazer-$pkgver.AppImage --appimage-extract
+    cp -a --no-preserve=ownership squashfs-root/usr "$pkgdir/"
+    mkdir -p "$pkgdir/usr/lib"
+    mv "$pkgdir/usr/bin" "$pkgdir/usr/lib/osu-lazer"
+    mkdir -p "$pkgdir/usr/bin"
+    ln -srfv "$pkgdir/usr/lib/osu-lazer/osu!" "$pkgdir/usr/bin/"
+    install -Dm644 squashfs-root/osu!.desktop "$pkgdir/usr/share/applications/osu!.desktop"
+    install -Dm644 osu!.xml "$pkgdir/usr/share/mime/packages/osu!.xml"
+    install -Dm644 osu-lazer-LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    if $_system_libs
+    then
+        rm "$pkgdir/usr/lib/osu-lazer/libavcodec.so.58" "$pkgdir/usr/lib/osu-lazer/libavformat.so.58" \
+           "$pkgdir/usr/lib/osu-lazer/libavutil.so.56" "$pkgdir/usr/lib/osu-lazer/libswscale.so.5" \
+           "$pkgdir/usr/lib/osu-lazer/libSDL2.so" "$pkgdir/usr/lib/osu-lazer/libSDL3.so"
+    fi
+}

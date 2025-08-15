@@ -1,0 +1,7 @@
+[osu-lazer-bin]
+source = "github"
+github = "ppy/osu"
+exclude_regex = '-tachyon$'
+from_pattern = '(\d{4}\.\d{3,4}\.\d)-lazer$'
+to_pattern = '\1'
+use_latest_release = true
