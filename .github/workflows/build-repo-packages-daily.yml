@@ -2,7 +2,7 @@ name: Trigger building regularly
 
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 22 * * *'
 
 jobs:
   trigger-build:
