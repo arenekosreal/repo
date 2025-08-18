@@ -1,0 +1,23 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index bcc303b..27120ff 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -9,6 +9,10 @@ url="https://www.fooyin.org/"
+ _ghurl="https://github.com/ludouzi/fooyin"
+ license=('GPL-3.0-only')
+ depends=(
++    'icu'
++    'glibc'
++    'gcc-libs'
++    'hicolor-icon-theme'
+     'qt6-base'
+     'alsa-lib'
+     'taglib'
+@@ -22,7 +26,6 @@ makedepends=(
+     'ninja'
+     'cmake'
+     'libpipewire'
+-    'icu'
+     'libopenmpt'
+     'libsndfile'
+     'libebur128'
