@@ -1,0 +1,39 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index c024388..76cb325 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -9,9 +9,11 @@ url="https://www.fooyin.org/"
+ _ghurl="https://github.com/ludouzi/fooyin"
+ license=('GPL-3.0-only')
+ depends=(
++    'gcc-libs'
++    'glibc'
++    'icu'
++    'hicolor-icon-theme'
+     'qt6-base'
+-    'qt6-svg'
+-    'qt6-tools'
+     'alsa-lib'
+     'taglib'
+     'ffmpeg'
+@@ -19,18 +21,16 @@ depends=(
+     'libvgm-player-git'
+ )
+ makedepends=(
+-    'gcc'
+     'ninja'
+-    'pkgconf'
+     'cmake'
+     'libpipewire'
+-    'icu'
+     'libopenmpt'
+     'libsndfile'
+-    'git'
+     'libebur128'
+     'libarchive'
+     'libgme'
++    'qt6-svg'
++    'qt6-tools'
+ )
+ optdepends=(
+     'sdl2: For the SDL2 audio output plugin'
