@@ -24,7 +24,13 @@ runs:
         case "$where" in
           git+*)
             echo "Cloning repository with git..."
-            git clone "${where#git+}" startdir
+            if ! git clone "${where#git+}" startdir && [[ "$where" = git+https://aur.archlinux.org/* ]]
+            then
+              echo "::warning::Unable to clone AUR repository, using GitHub mirror as fallback..."
+              branch="${where##*/}"
+              branch="${branch%.git}"
+              git clone --branch "$branch" --single-branch https://github.com/archlinux/aur.git startdir
+            fi
             ;;
           *)
             if [[ -d "$where" ]]
