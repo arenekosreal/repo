@@ -35,6 +35,8 @@ RestrictRealtime=yes
 # Environment
 ## /run/local-ai
 Environment=LOCALAI_BACKEND_ASSETS_PATH=%t/local-ai
+## /usr/lib/local-ai/backends
+Environment=LOCALAI_BACKENDS_SYSTEM_PATH=/usr/lib/local-ai/backends
 ## /var/lib/local-ai/generated/images
 Environment=LOCALAI_IMAGE_PATH=generated/images
 ## /var/lib/local-ai/generated/audio

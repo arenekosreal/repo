@@ -1,45 +1,10 @@
-__print_backend_notice() {
-    echo "Backend needs to be converted into \`docker save\` format to be installed."
-	echo "For example, to install llama-cpp backend:"
-	echo 
-	echo "Using docker/podman to create archive:"
-	echo "cat << EOF > Dockerfile"
-	echo "FROM scratch"
-	echo "COPY /usr/lib/local-ai/backend/cpp/llama-cpp/package/. ./"
-	echo "EOF"
-	echo "docker build -t llama-cpp:latest"
-	echo "docker save llama-cpp:latest -o llama-cpp-latest.tar"
-    echo "docker image rm llama-cpp:latest"
-	echo
-	echo "Using buildah to create archive:"
-	echo "container=\"\$(buildah from scratch)\""
-	echo "buildah copy \"\$container\" /usr/lib/local-ai/backend/cpp/llama-cpp/package/. ./"
-	echo "buildah commit \"\$container\" llama-cpp:latest"
-	echo "buildah push --rm llama-cpp:latest docker-archive:./llama-cpp-latest.tar:llama-cpp:latest"
-	echo
-	echo "Install archive:"
-	echo "local-ai backends install ocifile://./llama-cpp-latest.tar"
-}
-
 post_upgrade() {
-    if [[ "$(vercmp "$2" 3.2.0)" == -1 ]]
+    if [[ "$(vercmp "$2" 3.5.0)" != "1" ]] && [[ "$(vercmp "$1" 3.5.0)" != "-1" ]]
     then
-        __print_backend_notice
-    elif [[ "$(vercmp "$1" 3.3.2)" == -1 ]]
-    then
-        echo "Do not forget upgrading installed backends by removing and installing again."
-        echo "They should be installed into \$WORKDIR/backends by default."
-    else
-        echo "Backends are splitted into several packages. Please select which you need."
+        echo "System backends are supported since 3.5.0, please see upstream release note for more info."
     fi
 }
 
 post_install() {
-    if [[ "$(vercmp "$1" 3.2.0)" != -1 ]] && [[ "$(vercmp "$1" 3.3.2)" == -1 ]]
-    then
-        __print_backend_notice
-    elif [[ "$(vercmp "$1" 3.3.2)" != -1 ]]
-    then
-        echo "Backends are splitted into several packages. Please select which you need."
-    fi
+    echo "Backends are splitted into several packages. Please select which you need."
 }
