@@ -22,13 +22,11 @@ makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
-        "0002-fix-whisper-ggml-path.diff"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
 sha256sums=('82af843582bf970114d95d6f924e47852915c8604d71fea17061cc3c757343ee'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
-            'b692e7cce0d6ff9ac2e81685d7f4298a5a83f69dd5ff92ac1f0a4359b64cd60e'
             '24e3895abb97aebf94bb2af4203922a6480974be88947a5826a2fffda9e6c29e'
             'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3')
 # static resources are embedded into binary and cannot be stripped.
@@ -59,7 +57,6 @@ prepare() {
     make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
     make -C backend/go/whisper sources/whisper.cpp
     patch -Np1 -i ../0001-disable-installing-extra-tools.diff
-    #patch -Np1 -i ../0002-fix-whisper-ggml-path.diff
     patch -Np1 -i ../0003-avoid-gobark-flags-being-applied-to-cmake.diff
     patch -Np1 -d backend/go/piper/sources/go-piper -i "$srcdir/0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
 }
@@ -71,6 +68,7 @@ build() {
     export CGO_CXXFLAGS="${CXXFLAGS}"
     export CGO_LDFLAGS="${LDFLAGS}"
     export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+    # -ldfalgs=-linkmode=external is not supported when CGO_ENABLED=0
     echo "Building main program..."
     make GO_TAGS=stablediffusion,tts,p2p \
          build
@@ -220,7 +218,6 @@ package_local-ai-backend-whisper-openblas() {
     groups=(local-ai-backend)
     provides=(local-ai-backend-whisper)
     conflicts=(local-ai-backend-whisper)
-    depends+=(openblas)
 
     cd "$srcdir/LocalAI"
     install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/whisper/" \
