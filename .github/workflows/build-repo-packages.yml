@@ -104,6 +104,7 @@ jobs:
           - git+https://aur.archlinux.org/ayugram-desktop.git
           - git+https://aur.archlinux.org/thrive.git
           - ./packages/osu-lazer-bin
+          - ./packages/easytier
     runs-on: ${{ inputs.runs-on }}
     name: Build packages without any customization
     steps:
