@@ -1,0 +1,33 @@
+pkgname=wsdd-native
+pkgver=1.21
+pkgrel=1
+pkgdesc="Make your Linux/macOS/BSD/illumos machine visible in Network view of Windows Explorer."
+arch=(aarch64 x86_64)
+url=https://github.com/gershnik/wsdd-native
+license=(BSD-3-Clause)
+depends=(gcc-libs glibc libxml2)
+makedepends=(cmake python systemd asio fmt spdlog tomlplusplus)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/gershnik/wsdd-native/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('4fb32b86835361e16b8402f15b21b9a41e5c2ceeae9cb6f6ce45367fd94b86b8')
+
+build() {
+    cmake -B build -S "$pkgname-$pkgver" \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=None \
+        -DBUILD_SHARED_LIBS=ON \
+        -DWSDDN_PREFER_SYSTEM=ON
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    # firewall rules
+    install -Dvm0644 -t "$pkgdir/usr/lib/firewalld/services" "$pkgname-$pkgver/config/firewalls/etc/firewalld/services/"*.xml
+    install -Dvm0644 -t "$pkgdir/etc/ufw/applications.d" "$pkgname-$pkgver/config/firewalls/etc/ufw/applications.d/"*
+    # metadata
+    install -Dvm0644 -t "$pkgdir/usr/share/$pkgname/metadata" "$pkgname-$pkgver/config/metadata/"*
+    # systemd service
+    install -Dvm0644 -t "$pkgdir/usr/lib/systemd/system" "$pkgname-$pkgver/config/systemd/usr/lib/systemd/system/"*.service
+    # license
+    install -Dvm0644 -t "$pkgdir/usr/share/licenses/$pkgname" "$pkgname-$pkgver/LICENSE"
+}
