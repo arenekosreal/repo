@@ -1,14 +1,20 @@
 pkgname=wsdd-native
 pkgver=1.21
-pkgrel=1
+pkgrel=2
 pkgdesc="Make your Linux/macOS/BSD/illumos machine visible in Network view of Windows Explorer."
 arch=(aarch64 x86_64)
 url=https://github.com/gershnik/wsdd-native
 license=(BSD-3-Clause)
-depends=(gcc-libs glibc libxml2)
-makedepends=(cmake python systemd asio fmt spdlog tomlplusplus)
-source=("$pkgname-$pkgver.tar.gz::https://github.com/gershnik/wsdd-native/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('4fb32b86835361e16b8402f15b21b9a41e5c2ceeae9cb6f6ce45367fd94b86b8')
+depends=(gcc-libs glibc fmt libxml2 libspdlog.so libsystemd.so tomlplusplus)
+makedepends=(cmake python asio)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/gershnik/wsdd-native/archive/refs/tags/v$pkgver.tar.gz"
+        "0001-system-dependencies.diff")
+sha256sums=('4fb32b86835361e16b8402f15b21b9a41e5c2ceeae9cb6f6ce45367fd94b86b8'
+            '62c698edbbcf2e248f0790aff26af6949397b7f7a70debe009f7347f1021ce89')
+
+prepare() {
+    patch -Np1 -d "$pkgname-$pkgver" -i "$srcdir/0001-system-dependencies.diff"
+}
 
 build() {
     cmake -B build -S "$pkgname-$pkgver" \

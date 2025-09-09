@@ -1,0 +1,68 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 65e0b03..37f553a 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -82,8 +82,12 @@ endif()
+ if (TARGET modern-uuid-static)
+     set_target_properties(modern-uuid-static PROPERTIES FOLDER "Dependencies")
+ endif()
++if (TARGET spdlog)
+ set_target_properties(spdlog PROPERTIES FOLDER "Dependencies")
++endif()
++if (TARGET fmt)
+ set_target_properties(fmt PROPERTIES FOLDER "Dependencies")
++endif()
+ 
+ 
+ set_target_properties(wsddn PROPERTIES
+diff --git a/cmake/dependencies.cmake b/cmake/dependencies.cmake
+index 24b362b..a639663 100644
+--- a/cmake/dependencies.cmake
++++ b/cmake/dependencies.cmake
+@@ -39,6 +39,14 @@ fetch_dependency(modern-uuid)
+ 
+ if (WSDDN_PREFER_SYSTEM)
+     find_package(LibXml2)
++    find_package(spdlog)
++    find_package(fmt)
++    find_package(tomlplusplus)
++    find_package(PkgConfig REQUIRED)
++    pkg_check_modules(asio asio)
++    if (asio_FOUND)
++        pkg_get_variable(asio_SOURCE_DIR asio prefix)
++    endif()
+ endif()
+ 
+ if (NOT LibXml2_FOUND)
+@@ -62,19 +70,31 @@ if (NOT LibXml2_FOUND)
+ endif()
+ 
+ 
++if (NOT fmt_FOUND)
++message(STATUS "fmt will be built from sources and statically linked")
+ set(FMT_INSTALL OFF)
+ fetch_dependency(fmt)
++endif()
+ 
++if (NOT spdlog_FOUND)
++message(STATUS "spdlog will be built from source and statically linked")
+ set(SPDLOG_NO_ATOMIC_LEVELS ON CACHE BOOL "prevent spdlog from using of std::atomic log levels (use only if your code never modifies log levels concurrently)")
+ set(SPDLOG_NO_TLS ON CACHE BOOL "prevent spdlog from using thread local storage")
+ set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Use external fmt library instead of bundled")
+ fetch_dependency(spdlog)
++endif()
+ 
++if (NOT tomlplusplus_FOUND)
++message(STATUS "tomlplusplus will be built from source and statically linked")
+ fetch_dependency(tomlplusplus)
++endif()
+ fetch_dependency(outcome
+     SOURCE_SUBDIR   include #we don't really want to build it
+ )
++if (NOT asio_FOUND)
++message(STATUS "asio will be built from source and statically linked")
+ fetch_dependency(asio)
++endif()
+ 
+ #################################################
+ 

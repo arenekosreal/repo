@@ -2,3 +2,4 @@
 !PKGBUILD
 !.nvchecker.toml
 !.gitignore
+!*.diff
