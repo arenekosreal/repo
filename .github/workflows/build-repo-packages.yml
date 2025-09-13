@@ -1319,7 +1319,7 @@ jobs:
             echo 'Usage:'
             echo 'Setup a domain which webserver can redirect any request which url contains `:` in filename to `.`.'
             echo "For example, see [cloudflare-worker](../../../tree/os/$(uname -m)/cloudflare-worker)"
-            echo 'Set REPO_URL to ${{ github.server_url }} and set PREFIX to ${{ github.repository_owner }} in build environment.'
+            echo 'Set `REPO_URL` to `${{ github.server_url }}` and set `PREFIX` to `/${{ github.repository_owner }}` in build environment.'
             echo 'Set deploy command to `pnpm run wrangler deploy --var REPO_URL:$REPO_URL --var PREFIX:$PREFIX` and deploy the worker.'
             echo 'We assume the domain you chosen before is `<DOMAIN>` below.'
             echo '`pacman.conf` example if using cloudflare worker:'
