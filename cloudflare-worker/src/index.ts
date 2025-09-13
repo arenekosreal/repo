@@ -13,16 +13,29 @@
 
 export interface Env {
 	REPO_URL: string;
+	PREFIX: string | undefined;
 }
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const REDIRECT_CODE = 301;
-		const FILE_NAME = request.url.substring(request.url.lastIndexOf("/"), request.url.length);
-		console.debug("Extracted filename:", FILE_NAME);
-		const PATH = request.url.substring(request.url.indexOf("/os"), request.url.lastIndexOf(FILE_NAME));
-		console.debug("Extracted path:", PATH);
-		let url = env.REPO_URL + PATH + FILE_NAME.replaceAll(":", ".");
-		return Response.redirect(url, REDIRECT_CODE);
+		const PATH_NAME = URL.parse(request.url)?.pathname;
+		if (PATH_NAME && (env.PREFIX?.startsWith("/") ? PATH_NAME.startsWith(env.PREFIX) : true)) {
+			const TAG_START = PATH_NAME.indexOf("/os");
+			if (TAG_START > 0) {
+				const FILE_NAME_START = PATH_NAME.lastIndexOf("/");
+				if (FILE_NAME_START > TAG_START) {
+					const TAG = PATH_NAME.substring(TAG_START, FILE_NAME_START);
+					console.debug("Extracted tag:", TAG);
+					const FILE_NAME = PATH_NAME.substring(FILE_NAME_START, PATH_NAME.length);
+					console.debug("Extracted file name:", FILE_NAME);
+					const URL = env.REPO_URL + "/releases/download" + (env.PREFIX ?? "") + TAG + FILE_NAME.replaceAll(":", ".");
+					console.debug("Target URL:", URL);
+					return Response.redirect(URL, REDIRECT_CODE);
+				}
+			}
+		}
+		console.debug("Invalid request found, redirecting to repo...");
+		return Response.redirect(env.REPO_URL, REDIRECT_CODE);
 	},
 } satisfies ExportedHandler<Env>;
