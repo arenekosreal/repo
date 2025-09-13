@@ -29,8 +29,8 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	"vars": {
-		"REPO_URL": "https://github.com/arenekosreal/repo",
-		"PREFIX": "/arenekosreal"
+		"REPO_URL": "https://example.com/user/repo",
+		"PREFIX": "/user"
 	}
 	/**
 	 * Note: Use secrets to store sensitive data.
