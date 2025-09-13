@@ -29,7 +29,7 @@ export default {
 					console.debug("Extracted tag:", TAG);
 					const FILE_NAME = PATH_NAME.substring(FILE_NAME_START, PATH_NAME.length);
 					console.debug("Extracted file name:", FILE_NAME);
-					const URL = env.REPO_URL + "/releases/download" + (env.PREFIX ?? "") + TAG + FILE_NAME.replaceAll(":", ".");
+					const URL = env.REPO_URL + "/releases/download" + TAG + FILE_NAME.replaceAll(":", ".");
 					console.debug("Target URL:", URL);
 					return Response.redirect(URL, REDIRECT_CODE);
 				}
