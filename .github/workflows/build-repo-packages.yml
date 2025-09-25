@@ -31,7 +31,6 @@ jobs:
           - git+https://aur.archlinux.org/basedpyright.git
           - git+https://aur.archlinux.org/bcache-tools.git
           - git+https://aur.archlinux.org/binder_linux-dkms.git
-          - git+https://aur.archlinux.org/btrfs-assistant.git
           - git+https://aur.archlinux.org/btrfsmaintenance.git
           - git+https://aur.archlinux.org/caddy-trojan.git
           - git+https://aur.archlinux.org/carapace.git
