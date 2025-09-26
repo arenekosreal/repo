@@ -1,0 +1,5 @@
+[easytier]
+prefix = "v"
+source = "github"
+github = "EasyTier/EasyTier"
+use_latest_release = true
