@@ -1,0 +1,5 @@
+[caddy-cloudflare]
+prefix = "v"
+source = "github"
+github = "caddyserver/caddy"
+use_latest_release = true

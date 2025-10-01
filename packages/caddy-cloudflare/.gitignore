@@ -1,0 +1,8 @@
+pkg
+src
+*.pkg.tar.*
+*.tar.gz
+*.log
+*.service
+Caddyfile
+index.html
