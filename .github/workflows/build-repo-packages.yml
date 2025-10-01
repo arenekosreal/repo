@@ -32,7 +32,6 @@ jobs:
           - git+https://aur.archlinux.org/bcache-tools.git
           - git+https://aur.archlinux.org/binder_linux-dkms.git
           - git+https://aur.archlinux.org/btrfsmaintenance.git
-          - git+https://aur.archlinux.org/caddy-trojan.git
           - git+https://aur.archlinux.org/carapace.git
           - git+https://aur.archlinux.org/cgtproxy.git
           - git+https://aur.archlinux.org/chromium-extension-plasma-integration.git
@@ -105,6 +104,7 @@ jobs:
           - ./packages/osu-lazer-bin
           - ./packages/easytier
           - ./packages/wsdd-native
+          - ./packages/caddy-cloudflare
     runs-on: ${{ inputs.runs-on }}
     name: Build packages without any customization
     steps:
