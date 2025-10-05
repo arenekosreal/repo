@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 0d915fa..5b2e95e 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -3,7 +3,7 @@
+ 
+ pkgname=qcm
+ pkgver=1.2.0_qsql
+-pkgrel=4
++pkgrel=5
+ pkgdesc="Qt client for netease cloud music"
+ arch=('x86_64')
+ url="https://github.com/hypengw/Qcm"
