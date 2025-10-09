@@ -1,6 +1,6 @@
 pkgname=wsdd-native
 pkgver=1.21
-pkgrel=2
+pkgrel=3
 pkgdesc="Make your Linux/macOS/BSD/illumos machine visible in Network view of Windows Explorer."
 arch=(aarch64 x86_64)
 url=https://github.com/gershnik/wsdd-native
