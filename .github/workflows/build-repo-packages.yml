@@ -1396,7 +1396,7 @@ jobs:
             gh release delete "$tag" --cleanup-tag --yes
           fi
           echo "Creating new release..."
-          gh release create "$tag" --notes-file notes.md --target '${{ github.sha }}' --title "Release for $tag" --draft
+          gh release create "$tag" --notes-file notes.md --title "Release for $tag" --draft
           echo "Uploading files..."
           # https://github.com/cli/cli/issues/9586
           for f in '${{ github.repository_owner }}'/*
