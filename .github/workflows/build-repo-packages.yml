@@ -836,10 +836,34 @@ jobs:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
 
+  qcmbackend:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build qcmbackend for packages depends on it
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build package
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/qcmbackend-git.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        uses: arenekosreal/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest
+
   qcm:
     needs:
       - cubeb
       - ctre
+      - qcmbackend
     runs-on: ${{ inputs.runs-on }}
     name: Build qcm which has aur depends
     outputs:
