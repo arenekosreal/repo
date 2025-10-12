@@ -882,6 +882,11 @@ jobs:
         with:
           name: ${{ needs.ctre.outputs.artifact-name }}
 
+      - name: Get qcmbackend
+        uses: arenekosreal/download-artifact@v5
+        with:
+          name: ${{ needs.qcmbackend.outputs.artifact-name }}
+
       - name: Install pacman-package-manager
         run: |
           sudo apt-get update -y
