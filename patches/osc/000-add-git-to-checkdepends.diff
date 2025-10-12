@@ -1,0 +1,12 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index a765eb0..e95defe 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -33,6 +33,7 @@ optdepends=(
+ 	'python-keyring: keyring support'
+ 	'python-progressbar: progressbar support for operations like uploading and services'
+ )
++checkdepends=('git')
+ conflicts=(
+ 	'osc-git'
+ 	'osc-bash-completion'
