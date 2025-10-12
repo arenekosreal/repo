@@ -78,6 +78,7 @@ jobs:
           - git+https://aur.archlinux.org/plasma6-wallpapers-wallpaper-engine-git.git
           - git+https://aur.archlinux.org/python-pyclip.git
           - git+https://aur.archlinux.org/q4wine.git
+          - git+https://aur.archlinux.org/qcm-ncm-plugin-git.git
           - git+https://aur.archlinux.org/rclone-aliyundrive-git.git
           - git+https://aur.archlinux.org/realitlscanner.git
           - git+https://aur.archlinux.org/ruffle-nightly.git
