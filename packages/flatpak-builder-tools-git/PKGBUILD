@@ -1,0 +1,246 @@
+pkgbase=flatpak-builder-tools-git
+# flatpak-cpan-generator: Missing MetaCPAN::Client
+# flatpak-go-modules-generator: Not available in the repository
+pkgname=(flatpak-cargo-generator-git flatpak-deno-generator-git
+         flatpak-dotnet-generator-git flatpak-dub-generator-git flatpak-go-get-generator-git
+         flatpak-gradle-generator-git flatpak-node-generator-git flatpak-npm-generator-git
+         flatpak-opam-generator-git flatpak-pip-generator-git flatpak-poetry-generator-git
+         flatpak-rubygems-generator-git flatpak-spm-generator-git flatpak-yarn-generator-git)
+pkgver=r573.gea92dc2
+pkgrel=1
+pkgdesc="Various helper tools for flatpak-builder"
+arch=(any)
+url=https://github.com/flatpak/flatpak-builder-tools
+makedepends=(git deno poetry python-installer)
+source=("git+https://github.com/flatpak/flatpak-builder-tools.git")
+sha256sums=('SKIP')
+
+prepare() {
+    cd "$srcdir/flatpak-builder-tools/deno"
+    deno install --frozen --entrypoint ./src/main.ts
+}
+
+pkgver() {
+    cd "$srcdir/flatpak-builder-tools"
+    echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+    cd "$srcdir/flatpak-builder-tools/deno"
+    deno compile --cached-only --frozen --output flatpak-deno-generator ./src/main.ts
+    cd "$srcdir/flatpak-builder-tools/node"
+    poetry build
+}
+
+package_flatpak-cargo-generator-git() {
+    license=(MIT)
+    provides=(flatpak-cargo-generator)
+    conflicts=(flatpak-cargo-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest json from a Cargo.lock."
+    depends=(python python-tomlkit python-aiohttp)
+    optdepends=("python-yaml>=6.0.2: for YAML output instead of JSON")
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/cargo/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/cargo/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/cargo/flatpak-cargo-generator.py" \
+        "$pkgdir/usr/bin/flatpak-cargo-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-cargo-generator"
+}
+
+package_flatpak-deno-generator-git() {
+    license=(MIT)
+    provides=(flatpak-deno-generator)
+    conflicts=(flatpak-deno-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest json from a deno.lock."
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/deno/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/deno/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/deno/flatpak-deno-generator" \
+        "$pkgdir/usr/bin/flatpak-deno-generator"
+}
+
+package_flatpak-dotnet-generator-git() {
+    license=(MIT)
+    provides=(flatpak-dotnet-generator)
+    conflicts=(flatpak-dotnet-generator)
+    pkgdesc="Tool to automatically generate a flatpak-builder sources file from a .NET Core .csproj file."
+    depends=(python)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/dotnet/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/dotnet/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/dotnet/flatpak-dotnet-generator.py" \
+        "$pkgdir/usr/bin/flatpak-dotnet-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-dotnet-generator"
+}
+
+package_flatpak-dub-generator-git() {
+    license=(MIT)
+    provides=(flatpak-dub-generator)
+    conflicts=(flatpak-dub-generator)
+    pkgdesc="Tool to automatically generate a flatpak-builder sources file from a dub.selections.json file."
+    depends=(python python-aiohttp)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/dub/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/dub/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/dub/flatpak-dub-generator.py" \
+        "$pkgdir/usr/bin/flatpak-dub-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-dub-generator"
+}
+
+package_flatpak-go-get-generator-git() {
+    license=(LicenseRef-Unknown)
+    provides=(flatpak-go-get-generator)
+    conflicts=(flatpak-go-get-generator)
+    pkgdesc="Tool to automatically create the source list for a Go module (legacy)."
+    depends=(python)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/go-get/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/go-get/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/go-get/flatpak-go-get-generator.py" \
+        "$pkgdir/usr/bin/flatpak-go-get-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-go-get-generator"
+    install -Dm755 "$srcdir/flatpak-builder-tools/go-get/flatpak-go-vendor-generator.py" \
+        "$pkgdir/usr/bin/flatpak-go-vendor-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-go-vendor-generator"
+    sed -n '2,21p' "$srcdir/flatpak-builder-tools/go-get/flatpak-go-get-generator.py" | \
+        install -Dm644 /dev/stdin "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_flatpak-gradle-generator-git() {
+    license=(MIT)
+    provides=(flatpak-gradle-generator)
+    conflicts=(flatpak-gradle-generator)
+    pkgdesc="Tool to automatically generate a flatpak-builder sources file from a Gradle log."
+    depends=(python)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/gradle/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/gradle/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/gradle/flatpak-gradle-generator.py" \
+        "$pkgdir/usr/bin/flatpak-gradle-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-gradle-generator"
+}
+
+package_flatpak-node-generator-git() {
+    license=(MIT)
+    provides=(flatpak-node-generator)
+    conflicts=(flatpak-node-generator)
+    pkgdesc="A more modern successor for flatpak-npm-generator and flatpak-yarn-generator, for Node 10+ only."
+    depends=(python python-aiohttp)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/node/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/node/README.md"
+    python -m installer --destdir="$pkgdir" "$srcdir/flatpak-builder-tools/node/dist/"*.whl
+    install -Dm755 -t "$pkgdir/usr/lib/flatpak-builder-tools/node/" \
+        "$srcdir/flatpak-builder-tools/node/tools/"*.sh
+}
+
+package_flatpak-npm-generator-git() {
+    license=(LicenseRef-Unknown)
+    provides=(flatpak-npm-generator)
+    conflicts=(flatpak-npm-generator)
+    pkgdesc="A tool to take npm5 package-lock.json lock files and generate flatpak-builder sources for this that let you build the npm-using app in flatpak-builder without network access."
+    depends=(python)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/npm/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/npm/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/npm/flatpak-npm-generator.py" \
+        "$pkgdir/usr/bin/flatpak-npm-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-npm-generator"
+}
+
+package_flatpak-opam-generator-git() {
+    license=(LicenseRef-Unknown)
+    provides=(flatpak-opam-generator)
+    conflicts=(flatpak-opam-generator)
+    pkgdesc="This tool automatically generates flatpak-builder sources files from a .json file generated by \`opam tree --json=deps.json [PACKAGE]\`."
+    depends=(python python-requests)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/opam/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/opam/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/opam/flatpak-opam-generator.py" \
+        "$pkgdir/usr/bin/flatpak-opam-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-opam-generator"
+}
+
+package_flatpak-pip-generator-git() {
+    license=(MIT)
+    provides=(flatpak-pip-generator)
+    conflicts=(flatpak-pip-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest json from a pip package-name."
+    depends=(python python-requirements-parser)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/pip/readme.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/pip/readme.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/pip/flatpak-pip-generator.py" \
+        "$pkgdir/usr/bin/flatpak-pip-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-pip-generator"
+}
+
+package_flatpak-poetry-generator-git() {
+    license=(MIT)
+    provides=(flatpak-poetry-generator)
+    conflicts=(flatpak-poetry-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest json from a poetry.lock file."
+    depends=(python python-toml)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/poetry/readme.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/poetry/readme.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/poetry/flatpak-poetry-generator.py" \
+        "$pkgdir/usr/bin/flatpak-poetry-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-poetry-generator"
+}
+
+package_flatpak-rubygems-generator-git() {
+    license=(MIT)
+    provides=(flatpak-rubygems-generator)
+    conflicts=(flatpak-rubygems-generator)
+    pkgdesc="Tool to generate flatpak-builder manifest json from Gemfile."
+    depends=(ruby ruby-optparse ruby-net-http ruby-uri ruby-json)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/rubygems/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/rubygems/README.md"
+    install -Dm644 "$srcdir/flatpak-builder-tools/rubygems/LICENSE" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm755 "$srcdir/flatpak-builder-tools/rubygems/flatpak_rubygems_generator.rb" \
+        "$pkgdir/usr/bin/flatpak-rubygems-generator"
+    sed -i '1 i #!/usr/bin/ruby' "$pkgdir/usr/bin/flatpak-rubygems-generator"
+}
+
+package_flatpak-spm-generator-git() {
+    license=(LicenseRef-Unknown)
+    provides=(flatpak-spm-generator)
+    conflicts=(flatpak-spm-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest JSON from a Swift package."
+    depends=(swift-language)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/spm/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/spm/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/spm/flatpak-spm-generator.swift" \
+        "$pkgdir/usr/bin/flatpak-spm-generator"
+    sed -i '1 i #!/usr/bin/swift' "$pkgdir/usr/bin/flatpak-spm-generator"
+}
+
+package_flatpak-yarn-generator-git() {
+    license=(MIT)
+    provides=(flatpak-yarn-generator)
+    conflicts=(flatpak-yarn-generator)
+    pkgdesc="Tool to automatically generate flatpak-builder manifest JSON from a yarn v1 lock file."
+    depends=(python)
+
+    install -Dm644 "$srcdir/flatpak-builder-tools/yarn/README.md" \
+        "$pkgdir/usr/share/doc/flatpak-builder-tools/yarn/README.md"
+    install -Dm755 "$srcdir/flatpak-builder-tools/yarn/flatpak-yarn-generator.py" \
+        "$pkgdir/usr/bin/flatpak-yarn-generator"
+    sed -i 's|#!/usr/bin/env python3|#!/usr/bin/python3|' \
+        "$pkgdir/usr/bin/flatpak-yarn-generator"
+}

@@ -105,6 +105,7 @@ jobs:
           - ./packages/easytier
           - ./packages/wsdd-native
           - ./packages/caddy-cloudflare
+          - ./packages/flatpak-builder-tools-git
     runs-on: ${{ inputs.runs-on }}
     name: Build packages without any customization
     steps:
