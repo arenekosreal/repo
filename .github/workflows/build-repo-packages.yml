@@ -40,7 +40,7 @@ jobs:
           - git+https://aur.archlinux.org/crow-translate.git
           - git+https://aur.archlinux.org/csharp-ls.git
           - git+https://aur.archlinux.org/dendrite.git
-          - git+https://aur.archlinux.org/dockerfile-language-server.git
+          - git+https://aur.archlinux.org/docker-language-server.git
           - git+https://aur.archlinux.org/downgrade.git
           - git+https://aur.archlinux.org/fcitx5-pinyin-custom-pinyin-dictionary.git
           - git+https://aur.archlinux.org/fcitx5-pinyin-moegirl.git
