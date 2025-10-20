@@ -107,6 +107,7 @@ jobs:
           - ./packages/caddy-cloudflare
           - ./packages/flatpak-builder-tools-git
           - ./packages/pyrefly
+          - ./packages/zuban
     runs-on: ${{ inputs.runs-on }}
     name: Build packages without any customization
     steps:

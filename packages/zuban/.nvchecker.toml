@@ -1,0 +1,5 @@
+[zuban]
+source = "github"
+github = "zubanls/zuban"
+prefix = "v"
+use_max_tag = true

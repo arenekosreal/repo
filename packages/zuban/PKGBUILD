@@ -1,0 +1,46 @@
+_typeshed_commit=0e9b8c99ba01717d737de8b01ed647ef2f2ac9e5
+_mypy_commit=991bca53f18e43f24e5a2f46b572f75c1e2043c3
+
+pkgname=zuban
+pkgver=0.1.1
+pkgrel=1
+pkgdesc="Python Type Checker / Language Server"
+arch=(x86_64)
+url=https://zubanls.com/
+license=(AGPL-3.0-only)
+depends=(gcc-libs glibc)
+makedepends=(cargo cargo-about maturin python python-installer)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/zubanls/zuban/archive/refs/tags/v$pkgver.tar.gz"
+		"typeshed-$_typeshed_commit.tar.gz::https://github.com/python/typeshed/archive/$_typeshed_commit.tar.gz"
+		"mypy-$_mypy_commit.tar.gz::https://github.com/davidhalter/mypy/archive/$_mypy_commit.tar.gz")
+sha256sums=('b3a874084ee2553bb0945366709da60a4f3d6bc2ad2f45515e71e76878a14836'
+            '8f1ab8e6bb78da727159acad2369dc0c63d9fc96db19d24ad4fdd9536796d0fb'
+            '229d37f41379acb3f2408cd666d7cdcc1749005b92ab8b52580c6b94aa0e2881')
+
+prepare() {
+    cp -r "$srcdir/typeshed-$_typeshed_commit/." "$srcdir/$pkgname-$pkgver/typeshed/"
+    cp -r "$srcdir/mypy-$_mypy_commit/." "$srcdir/$pkgname-$pkgver/crates/zuban_python/tests/mypylike/mypy/"
+    cd "$srcdir/$pkgname-$pkgver"
+    export RUSTUP_TOOLCHAIN=stable
+    cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver/deploy/pypi/zuban"
+    export RUSTUP_TOOLCHAIN=stable
+    export CARGO_TARGET_DIR=target
+    # deploy/pypi/zuban/pre-maturin-build.sh
+    cargo about generate -o licenses.html about.hbs --fail --manifest-path ../../../Cargo.toml
+    maturin build --frozen --release --all-features --out dist --ignore-rust-version
+}
+
+check() {
+    cd "$srcdir/$pkgname-$pkgver"
+    export RUSTUP_TOOLCHAIN=stable
+    cargo test --frozen --all-features
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver/deploy/pypi/zuban"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+}
