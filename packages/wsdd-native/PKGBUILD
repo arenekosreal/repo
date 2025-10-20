@@ -1,27 +1,51 @@
+_argum_ver=2.6
+_isptr_ver=1.9
+_modern_uuid_ver=2.1
+_outcome_ver=2.2.13
+_ptl_ver=1.7
+_sys_string_ver=2.22
+
 pkgname=wsdd-native
-pkgver=1.21
-pkgrel=3
+pkgver=1.22
+pkgrel=1
 pkgdesc="Make your Linux/macOS/BSD/illumos machine visible in Network view of Windows Explorer."
 arch=(aarch64 x86_64)
 url=https://github.com/gershnik/wsdd-native
 license=(BSD-3-Clause)
-depends=(gcc-libs glibc fmt libxml2 libspdlog.so libsystemd.so tomlplusplus)
+depends=(gcc-libs glibc fmt libxml2 spdlog systemd-libs tomlplusplus)
 makedepends=(cmake python asio)
 source=("$pkgname-$pkgver.tar.gz::https://github.com/gershnik/wsdd-native/archive/refs/tags/v$pkgver.tar.gz"
-        "0001-system-dependencies.diff")
-sha256sums=('4fb32b86835361e16b8402f15b21b9a41e5c2ceeae9cb6f6ce45367fd94b86b8'
-            '62c698edbbcf2e248f0790aff26af6949397b7f7a70debe009f7347f1021ce89')
-
-prepare() {
-    patch -Np1 -d "$pkgname-$pkgver" -i "$srcdir/0001-system-dependencies.diff"
-}
+        "argum-$_argum_ver.tar.gz::https://github.com/gershnik/argum/archive/refs/tags/v$_argum_ver.tar.gz"
+        "intrusive_shared_ptr-$_isptr_ver.tar.gz::https://github.com/gershnik/intrusive_shared_ptr/archive/refs/tags/v$_isptr_ver.tar.gz"
+        "modern-uuid-$_modern_uuid_ver.tar.gz::https://github.com/gershnik/modern-uuid/archive/refs/tags/v$_modern_uuid_ver.tar.gz"
+        "outcome-$_outcome_ver.tar.gz::https://github.com/ned14/outcome/archive/refs/tags/v$_outcome_ver.tar.gz"
+        "ptl-$_ptl_ver.tar.gz::https://github.com/gershnik/ptl/archive/refs/tags/v$_ptl_ver.tar.gz"
+        "sys_string-$_sys_string_ver.tar.gz::https://github.com/gershnik/sys_string/archive/refs/tags/v$_sys_string_ver.tar.gz")
+sha256sums=('a836fdd8d31415c831f53c79bddc391bc63ca791cc429af7586e08659618d737'
+            'b95b179847eea422778899ee7f10e9af9849230c4577ecce6bf23feef183b727'
+            'e01e309f42cdea656e36070492edbb74f26cf74e0c1ed563cd150541f15e8eaa'
+            '27a2ae72303496561cb0b06a9d68c0765391ac4c59d8587a2d0fd3604a2a71ff'
+            'd5538ea8d563fbd6307605a85cf465e396e9d0f0a25d80c2da6b816285b5d204'
+            '40a6e2c1c347f79efa50c7a88097e2f27e210095277d1b7dc992f959864499b4'
+            '78e95c8a8255935f0fee48c8f9eb676fff0b6398a434e296543fde42a5377335')
 
 build() {
     cmake -B build -S "$pkgname-$pkgver" \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=None \
         -DBUILD_SHARED_LIBS=ON \
-        -DWSDDN_PREFER_SYSTEM=ON
+        -DWSDDN_PREFER_SYSTEM_LIBXML2=ON \
+        -DWSDDN_PREFER_SYSTEM_SPDLOG=ON \
+        -DWSDDN_PREFER_SYSTEM_FMT=ON \
+        -DWSDDN_PREFER_SYSTEM_TOMLPLUSPLUS=ON \
+        -DWSDDN_PREFER_SYSTEM_ASIO=ON \
+        -DFETCHCONTENT_SOURCE_DIR_ARGUM="$srcdir/argum-$_argum_ver" \
+        -DFETCHCONTENT_SOURCE_DIR_ISPTR="$srcdir/intrusive_shared_ptr-$_isptr_ver" \
+        -DFETCHCONTENT_SOURCE_DIR_MODERN-UUID="$srcdir/modern-uuid-$_modern_uuid_ver" \
+        -DFETCHCONTENT_SOURCE_DIR_OUTCOME="$srcdir/outcome-$_outcome_ver" \
+        -DFETCHCONTENT_SOURCE_DIR_PTL="$srcdir/ptl-$_ptl_ver" \
+        -DFETCHCONTENT_SOURCE_DIR_SYS_STRING="$srcdir/sys_string-$_sys_string_ver" \
+        -DFETCHCONTENT_FULLY_DISCONNECTED=ON
     cmake --build build
 }
 
