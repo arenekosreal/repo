@@ -1,0 +1,5 @@
+[neocmakelsp]
+source = "github"
+github = "neocmakelsp/neocmakelsp"
+prefix = "v"
+use_latest_release = true
