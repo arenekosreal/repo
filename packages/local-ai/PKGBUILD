@@ -10,7 +10,7 @@ pkgname=(local-ai
          local-ai-backend-silero-vad
          local-ai-backend-stablediffusion-ggml
          local-ai-backend-whisper-openblas)
-pkgver=3.6.0
+pkgver=3.7.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -23,12 +23,14 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
-        "0004-avoid-gopiper-flags-being-applied-to-cmake.diff")
-sha256sums=('d4412859c114f6714223ff4bf8050323fb1d1d05e4436256532fc9be116e3f6e'
+        "0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
+        "0005-do-not-clean-build-dir-in-whisper.diff")
+sha256sums=('407f1002810c2f69e9c9e3525d5cfc660383f89d52a5299903c99c1080cdb0a4'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             '24e3895abb97aebf94bb2af4203922a6480974be88947a5826a2fffda9e6c29e'
-            'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3')
+            'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3'
+            '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip)
 
@@ -59,6 +61,7 @@ prepare() {
     patch -Np1 -i ../0001-disable-installing-extra-tools.diff
     patch -Np1 -i ../0003-avoid-gobark-flags-being-applied-to-cmake.diff
     patch -Np1 -d backend/go/piper/sources/go-piper -i "$srcdir/0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
+    patch -Np1 -i ../0005-do-not-clean-build-dir-in-whisper.diff
 }
 
 build() {
