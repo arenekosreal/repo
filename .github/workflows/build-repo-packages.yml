@@ -99,7 +99,6 @@ jobs:
           - git+https://aur.archlinux.org/waylyrics.git
           - git+https://aur.archlinux.org/xdg-ninja.git
           - git+https://aur.archlinux.org/linux-pf.git
-          - git+https://aur.archlinux.org/ayugram-desktop.git
           - git+https://aur.archlinux.org/thrive.git
           - ./packages/osu-lazer-bin
           - ./packages/easytier
