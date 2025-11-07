@@ -219,24 +219,6 @@ runs:
         sudo docker image prune --force --filter=label!=com.github.actions.required=true
         sudo docker builder prune --force --all
 
-        sudo swapoff -a
-        sudo rm -f /mnt/swapfile
-        # Set a zram to help with removed swapfile
-        sudo apt-get update -y
-        sudo apt-get install -y systemd-zram-generator
-        {
-          echo "[zram0]"
-          echo "zram-size = ram * 1.5"
-          echo "compression-algorithm = zstd"
-        } | sudo install -Dm644 /dev/stdin /etc/systemd/zram-generator.conf.d/00-zram0.conf
-        sudo systemctl daemon-reload
-        echo N | sudo tee /sys/module/zswap/parameters/enabled > /dev/null
-        sudo sysctl vm.swappiness=180 \
-                    vm.watermark_boost_factor=0 \
-                    vm.watermark_scale_factor=125 \
-                    vm.page-cluster=0
-        sudo systemctl start systemd-zram-setup@zram0.service
-
         echo "::notice::After cleanup:"
         sudo df -ah
       shell: bash
