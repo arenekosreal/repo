@@ -45,7 +45,7 @@ runs:
         esac
 
     - name: Gen .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.3
+      uses: arenekosreal/makepkg-action@v0.3.0
       with:
         builddir: startdir
         args: --printsrcinfo
@@ -64,7 +64,7 @@ runs:
         fi
 
     - name: Update .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.3
+      uses: arenekosreal/makepkg-action@v0.3.0
       with:
         builddir: startdir
         args: --printsrcinfo
@@ -152,7 +152,7 @@ runs:
 
     - name: Bump pkgver
       if: endsWith(steps.pkgbase.outputs.value, '-git')
-      uses: arenekosreal/makepkg-action@v0.2.3
+      uses: arenekosreal/makepkg-action@v0.3.0
       with:
         builddir: startdir
         env: ${{ inputs.env }}
@@ -161,7 +161,7 @@ runs:
         repo: ${{ inputs.repo }}
 
     - name: Generate final .SRCINFO
-      uses: arenekosreal/makepkg-action@v0.2.3
+      uses: arenekosreal/makepkg-action@v0.3.0
       with:
         builddir: startdir
         args: --printsrcinfo
@@ -223,7 +223,7 @@ runs:
 
     - name: Build package
       if: steps.cache.outputs.cache-hit != 'true'
-      uses: arenekosreal/makepkg-action@v0.2.3
+      uses: arenekosreal/makepkg-action@v0.3.0
       with:
         builddir: startdir
         env: ${{ inputs.env }}
