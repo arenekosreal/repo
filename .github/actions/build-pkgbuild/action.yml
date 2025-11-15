@@ -192,7 +192,7 @@ runs:
         key: ${{ steps.meta.outputs.artifact-name }}
 
     - name: Free space
-      if: contains(fromJSON('["linux-pf", "ayugram-desktop"]'), steps.pkgbase.outputs.value) && ( steps.cache.outputs.cache-hit != 'true' ) && ! github.event.act.local
+      if: contains(fromJSON('["linux-pf", "ayugram-desktop", "ruffle-nightly"]'), steps.pkgbase.outputs.value) && ( steps.cache.outputs.cache-hit != 'true' ) && ! github.event.act.local
       # Modified from https://github.com/jlumbroso/free-disk-space
       run: |
         echo "::notice::Before cleanup:"
