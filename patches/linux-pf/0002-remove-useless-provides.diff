@@ -1,0 +1,21 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 120203a..afa270e 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -56,7 +56,7 @@ _package() {
+ 				'scx-scheds: to use sched-ext schedulers'
+ 				'v4l2loopback-utils: v4l2-loopback device utilities'
+ 				'wireless-regdb: to set the correct wireless channels of your country')
+-	provides=(linux-pf KSMBD-MODULE NTFS3-MODULE NTSYNC-MODULE OVPN-MODULE V4L2LOOPBACK-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
++	provides=(KSMBD-MODULE NTFS3-MODULE NTSYNC-MODULE OVPN-MODULE V4L2LOOPBACK-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
+ 	replaces=(virtualbox-guest-modules-arch wireguard-arch)
+ 
+ 	cd linux
+@@ -81,7 +81,6 @@ _package() {
+ _package-headers() {
+ 	pkgdesc="Headers and scripts for building modules for the ${pkgdesc}"
+ 	depends=(pahole)
+-	provides=(linux-pf-headers)
+ 
+ 	cd linux
+ 	local builddir="${pkgdir}"/usr/lib/modules/$(<version)/build
