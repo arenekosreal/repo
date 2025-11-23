@@ -192,7 +192,7 @@ runs:
         key: ${{ steps.meta.outputs.artifact-name }}
 
     - name: Free space
-      if: contains(fromJSON('["linux-pf", "ayugram-desktop", "ruffle-nightly"]'), steps.pkgbase.outputs.value) && ( steps.cache.outputs.cache-hit != 'true' ) && ! github.event.act.local
+      if: contains(fromJSON('["linux-pf", "ayugram-desktop", "ruffle-nightly", "thrive"]'), steps.pkgbase.outputs.value) && ( steps.cache.outputs.cache-hit != 'true' ) && ! github.event.act.local
       uses: ./.github/actions/clean-runner
 
     - name: Check if requires --ignorearch
