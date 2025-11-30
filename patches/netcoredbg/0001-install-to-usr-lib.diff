@@ -1,0 +1,24 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index f6077bf..7b0838c 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -28,15 +28,15 @@ build() {
+     -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+     -DCMAKE_BUILD_TYPE=None \
+     -DDOTNET_DIR=/usr/share/dotnet \
+-    -DCORECLR_DIR="$(realpath "runtime-$_runtime_tag")/src/coreclr" \
+-    -DCMAKE_INSTALL_PREFIX=/
++    -DCORECLR_DIR="$srcdir/runtime-$_runtime_tag/src/coreclr" \
++    -DCMAKE_INSTALL_PREFIX="/usr/lib/netcoredbg"
+ 
+   cmake --build build
+ }
+ 
+ package() {
+-  DESTDIR="$pkgdir/opt/netcoredbg" cmake --install build
++  DESTDIR="$pkgdir" cmake --install build
+   install -d "$pkgdir/usr/bin"
+-  ln -s /opt/netcoredbg/netcoredbg "$pkgdir/usr/bin"
++  ln -srf "$pkgdir/usr/lib/netcoredbg/netcoredbg" "$pkgdir/usr/bin/netcoredbg"
+   install -Dm644 "$pkgname-$_pkgver/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname"
+ }

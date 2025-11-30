@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index f6077bf..5b695eb 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -6,7 +6,7 @@
+ pkgname=netcoredbg
+ _pkgver=3.1.2-1054
+ pkgver="${_pkgver//-/_}"
+-pkgrel=5
++pkgrel=6
+ pkgdesc='Debugger for .NET Core runtime'
+ url='https://github.com/Samsung/netcoredbg'
+ license=('MIT')
