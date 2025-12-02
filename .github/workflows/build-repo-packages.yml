@@ -113,7 +113,7 @@ jobs:
     name: Build packages without any customization
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -136,7 +136,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -160,7 +160,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -185,7 +185,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -210,7 +210,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get libvgm
         uses: arenekosreal/download-artifact@v5
@@ -250,7 +250,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -275,7 +275,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get dotnet-install
         uses: arenekosreal/download-artifact@v5
@@ -315,7 +315,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -340,7 +340,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get libbase58
         uses: arenekosreal/download-artifact@v5
@@ -383,7 +383,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get libbase58
         uses: arenekosreal/download-artifact@v5
@@ -428,7 +428,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -451,7 +451,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -476,7 +476,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get protoc-gen-go
         uses: arenekosreal/download-artifact@v5
@@ -520,7 +520,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get go.rice
         uses: arenekosreal/download-artifact@v5
@@ -570,7 +570,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -595,7 +595,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get web-ext
         uses: arenekosreal/download-artifact@v5
@@ -635,7 +635,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -658,7 +658,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -681,7 +681,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -708,7 +708,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get cubeb
         uses: arenekosreal/download-artifact@v5
@@ -758,7 +758,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -781,7 +781,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -806,7 +806,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get python-setuptools-reproducible
         uses: arenekosreal/download-artifact@v5
@@ -846,7 +846,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -869,7 +869,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -892,7 +892,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -915,7 +915,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build package
         id: build
@@ -946,7 +946,7 @@ jobs:
       artifact-name: ${{ steps.build.outputs.artifact-name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get icoextract
         uses: arenekosreal/download-artifact@v5
@@ -1021,7 +1021,7 @@ jobs:
           - home:ZhangHua/ungoogled-chromium-xdg
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install python-yq
         run: |
@@ -1073,7 +1073,7 @@ jobs:
           - arenekosreal/firefox-xdg
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install gh-cli
         if: github.event.act.local
@@ -1140,7 +1140,7 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download artifact
         uses: arenekosreal/download-artifact@v5
