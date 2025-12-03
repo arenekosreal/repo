@@ -1,5 +1,0 @@
-[wsdd-native]
-prefix = "v"
-source = "github"
-github = "gershnik/wsdd-native"
-use_latest_release = true

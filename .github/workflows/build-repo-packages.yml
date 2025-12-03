@@ -103,7 +103,6 @@ jobs:
           - git+https://aur.archlinux.org/thrive.git
           - ./packages/osu-lazer-bin
           - ./packages/easytier
-          - ./packages/wsdd-native
           - ./packages/caddy-cloudflare
           - ./packages/flatpak-builder-tools-git
           - ./packages/pyrefly
