@@ -696,11 +696,35 @@ jobs:
           name: ${{ steps.build.outputs.artifact-name }}
           path: pkgdest
 
+  qmlmaterial:
+    runs-on: ${{ inputs.runs-on }}
+    name: Build qmlmaterial for packages depends on it.
+    outputs:
+      artifact-name: ${{ steps.build.outputs.artifact-name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build
+        id: build
+        uses: ./.github/actions/build-pkgbuild
+        with:
+          where: git+https://aur.archlinux.org/qmlmaterial.git
+          env: |
+            PACKAGER=${{ vars.PACKAGER }}
+
+      - name: Upload artifact
+        uses: arenekosreal/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: pkgdest
+
   qcm:
     needs:
       - cubeb
       - ctre
       - qcmbackend
+      - qmlmaterial
     runs-on: ${{ inputs.runs-on }}
     name: Build qcm which has aur depends
     outputs:
@@ -723,6 +747,11 @@ jobs:
         uses: arenekosreal/download-artifact@v5
         with:
           name: ${{ needs.qcmbackend.outputs.artifact-name }}
+
+      - name: Get qmlmaterial
+        uses: arenekosreal/download-artifact@v5
+        with:
+          name: ${{ needs.qmlmaterial.outputs.artifact-name }}
 
       - name: Install pacman-package-manager
         run: |
