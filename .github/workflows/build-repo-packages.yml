@@ -101,6 +101,7 @@ jobs:
           - git+https://aur.archlinux.org/linux-pf.git
           - git+https://aur.archlinux.org/ayugram-desktop.git
           - git+https://aur.archlinux.org/thrive.git
+          - git+https://aur.archlinux.org/roslyn-ls.git
           - ./packages/osu-lazer-bin
           - ./packages/easytier
           - ./packages/caddy-cloudflare
