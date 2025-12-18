@@ -106,7 +106,6 @@ jobs:
           - ./packages/easytier
           - ./packages/caddy-cloudflare
           - ./packages/flatpak-builder-tools-git
-          - ./packages/pyrefly
           - ./packages/zuban
           - ./packages/neocmakelsp
     runs-on: ${{ inputs.runs-on }}

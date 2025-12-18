@@ -1,4 +1,0 @@
-[pyrefly]
-source = "github"
-github = "facebook/pyrefly"
-use_latest_release = true
