@@ -10,7 +10,7 @@ pkgname=(local-ai
          local-ai-backend-silero-vad
          local-ai-backend-stablediffusion-ggml
          local-ai-backend-whisper-openblas)
-pkgver=3.8.0
+pkgver=3.9.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -25,7 +25,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
         "0005-do-not-clean-build-dir-in-whisper.diff")
-sha256sums=('624b696fccd96ed5edc75ccdaba34397a06b4f1521107381a5bf89975cf2ab36'
+sha256sums=('82b1af5988f07ba4821b68a968ddee2a33b8c9b20be25aa3753f2895ca8cf37f'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             '24e3895abb97aebf94bb2af4203922a6480974be88947a5826a2fffda9e6c29e'
