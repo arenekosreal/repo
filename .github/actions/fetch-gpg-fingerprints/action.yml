@@ -20,7 +20,7 @@ runs:
     - name: Add keyserver
       shell: bash
       run: |
-        mkdir -p ~/.gnupg
+        mkdir -p -m 700 ~/.gnupg
         sed 's/^/keyserver /' >> ~/.gnupg/dirmngr.conf <<< '${{ inputs.keyserver }}'
         systemctl --user stop dirmngr.service
     - name: Print GnuPG version
