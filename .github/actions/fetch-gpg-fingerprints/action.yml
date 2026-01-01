@@ -21,8 +21,11 @@ runs:
       shell: bash
       run: |
         mkdir -p -m 700 ~/.gnupg
-        sed 's/^/keyserver /' >> ~/.gnupg/dirmngr.conf <<< '${{ inputs.keyserver }}'
-        systemctl --user reload dirmngr.service
+        sed 's/^/keyserver /' <<< '${{ inputs.keyserver }}' | tee ~/.gnupg/dirmngr.conf
+        if systemctl --user is-active dirmngr.service > /dev/null
+        then
+          systemctl --user reload dirmngr.service
+        fi
     - name: Print GnuPG version
       shell: bash
       run: gpg --version
