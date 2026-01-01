@@ -17,7 +17,7 @@ runs:
     - name: Download PKGBUILD from AUR
       shell: bash
       run: |
-        git clone 'https:://aur.archlinux.org/${{ inputs.pkgbase }}.git' '${{ inputs.dest }}'
+        git clone 'https://aur.archlinux.org/${{ inputs.pkgbase }}.git' '${{ inputs.dest }}'
 
     - name: Download PKGBUILD from GitHub mirror
       if: failure() && inputs.fallback == 'true'
