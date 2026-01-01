@@ -16,6 +16,7 @@ runs:
   steps:
     - name: Download PKGBUILD from AUR
       shell: bash
+      continue-on-error: true
       run: |
         git clone 'https://aur.archlinux.org/${{ inputs.pkgbase }}.git' '${{ inputs.dest }}'
 
