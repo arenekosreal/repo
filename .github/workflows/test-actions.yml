@@ -2,10 +2,12 @@ name: Test actions
 on:
   push:
     paths:
-      - /.github/actions/**
+      - .github/actions/**
+      - .github/workflows/test-actions.yml
   pull_request:
     paths:
-      - /.github/actions/**
+      - .github/actions/**
+      - .github/workflows/test-actions.yml
 jobs:
   test-clean-runner:
     name: Test clean-runner action when changed
