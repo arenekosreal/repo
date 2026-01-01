@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: |
         mkdir -p -m 700 ~/.gnupg
-        sed 's/^/keyserver /' <<< '${{ inputs.keyserver }}' | tee ~/.gnupg/dirmngr.conf
+        sed 's/^/keyserver /' <<< '${{ inputs.keyservers }}' | tee ~/.gnupg/dirmngr.conf
         if systemctl --user is-active dirmngr.service > /dev/null
         then
           systemctl --user reload dirmngr.service
