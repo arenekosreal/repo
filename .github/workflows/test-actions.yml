@@ -42,7 +42,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Test fetchh-gpg-fingerprints
+      - name: Test fetch-gpg-fingerprints
         uses: ./.github/actions/fetch-gpg-fingerprints
         with:
           fingerprints: |
