@@ -1,0 +1,53 @@
+name: Test actions
+on:
+  push:
+    paths:
+      - /.github/actions/**
+  pull_request:
+    paths:
+      - /.github/actions/**
+jobs:
+  test-clean-runner:
+    name: Test clean-runner action when changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test clean-runner
+        uses: ./.github/actions/clean-runner
+
+  test-download-aur-pkgbase:
+    name: Test download-aur-pkgbase action when changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test download-aur-pkgbase
+        uses: ./.github/actions/download-aur-pkgbase
+        with:
+          pkgbase: yay
+          dest: startdir
+
+      - name: Check result
+        run: test -f startdir/PKGBUILD
+
+  test-fetch-gpg-fingerprints:
+    name: Test fetch-gpg-fingerprints action when changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test fetchh-gpg-fingerprints
+        uses: ./.github/actions/fetch-gpg-fingerprints
+        with:
+          fingerprints: |
+            3F59043BE267E1B1177688AC8F6DE3D614FCFD7A
+            E1096BCBFF6D418796DE78515384CE82BA52C83A
+
+      - name: Check result
+        run: |
+          test -f keys/pgp/E1096BCBFF6D418796DE78515384CE82BA52C83A.asc
+          test -f keys/pgp/3F59043BE267E1B1177688AC8F6DE3D614FCFD7A.asc

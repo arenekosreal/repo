@@ -1,0 +1,39 @@
+name: Fetch GPG fingerprints
+description: Fetch GPG public keys by their fingerprints
+inputs:
+  fingerprints:
+    description: The fingerprints splitted by newline.
+    required: true
+  dest:
+    description: Where to storage public keys.
+    required: false
+    default: keys/pgp
+  keyservers:
+    description: The keyservers used for searching fingerprints splitted by newline.
+    required: false
+    default: |
+      hkps://keyserver.ubuntu.com
+      hkps://keys.openpgp.org
+runs:
+  using: composite
+  steps:
+    - name: Add keyserver
+      shell: bash
+      run: |
+        sed 's/^/keyserver /' >> ~/.gnupg/dirmngr.conf <<< '${{ inputs.keyserver }}'
+        systemctl --user stop dirmngr.service
+    - name: Print GnuPG version
+      shell: bash
+      run: gpg --version
+    - name: Fetch keys
+      shell: bash
+      run: xargs gpg --batch --yes --recv-keys <<< '${{ inputs.fingerprints }}'
+    - name: Export keys
+      shell: bash
+      run: |
+        mkdir -p '${{ inputs.dest }}'
+        while read -r fingerprint
+        do
+          gpg --batch --yes --export --armor --output '${{ inputs.dest }}'"/$fingerprint.asc" "$fingerprint"
+        done <<< '${{ inputs.fingerprints }}'
+  

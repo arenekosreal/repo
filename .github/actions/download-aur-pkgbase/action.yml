@@ -1,0 +1,28 @@
+name: Download AUR pkgbase
+description: Clone repository of AUR pkgbase
+inputs:
+  pkgbase:
+    description: The pkgbase to download
+    required: true
+  dest:
+    description: Where to download pkgbase
+    required: true
+  fallback:
+    description: If fallback to GitHub mirror
+    required: false
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - name: Download PKGBUILD from AUR
+      shell: bash
+      run: |
+        git clone 'https:://aur.archlinux.org/${{ inputs.pkgbase }}.git' '${{ inputs.dest }}'
+
+    - name: Download PKGBUILD from GitHub mirror
+      if: failure() && inputs.fallback == 'true'
+      shell: bash
+      run: |
+        echo ::warning::Unable to clone AUR repository, cloning from GitHub mirror instead...
+        rm -rf '${{ inputs.dest }}'
+        git clone --branch '${{ inputs.pkgbase }}' --single-branch https://github.com/archlinux/aur.git '${{ inputs.dest }}'
