@@ -31,7 +31,9 @@ runs:
       run: gpg --version
     - name: Fetch keys
       shell: bash
-      run: xargs --verbose gpg --batch --yes --recv-keys <<< '${{ inputs.fingerprints }}'
+      run: |
+        xargs --replace='<fingerprint>' --verbose \
+          gpg --batch --yes --recv-keys '<fingerprint>' <<< '${{ inputs.fingerprints }}'
     - name: Export keys
       shell: bash
       run: |
