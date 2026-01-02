@@ -37,5 +37,5 @@ runs:
       run: |
         mkdir -p '${{ inputs.dest }}'
         xargs --replace='<fingerprint>' --verbose \
-          gpg --barch --yes --export --armor --output '${{ inputs.dest }}/<fingerprint>.asc' '<fingerprint>' <<< '${{ inputs.fingerprints }}'
+          gpg --batch --yes --export --armor --output '${{ inputs.dest }}/<fingerprint>.asc' '<fingerprint>' <<< '${{ inputs.fingerprints }}'
   
