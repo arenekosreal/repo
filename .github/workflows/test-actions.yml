@@ -79,7 +79,7 @@ jobs:
           name: temp-upload
 
       - name: Check result
-        run: test -f temp.tar
+        run: test -f temp-upload.tar
 
       # https://github.com/actions/upload-artifact/issues/290#issuecomment-1374207010
       - name: Cleanup
