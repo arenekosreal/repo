@@ -70,13 +70,13 @@ jobs:
         uses: ./.github/actions/upload-artifacts
         id: upload
         with:
-          name: temp
+          name: temp-upload
           path: temp:invalid.txt
 
       - name: Download artifacts
         uses: actions/download-artifact@v7
         with:
-          name: temp
+          name: temp-upload
 
       - name: Check result
         run: test -f temp.tar
@@ -107,13 +107,13 @@ jobs:
         uses: actions/upload-artifact@v4
         id: upload
         with:
-          name: temp
+          name: temp-download
           path: temp.tar
 
       - name: Test download-artifacts(by name)
         uses: ./.github/actions/download-artifacts
         with:
-          names: temp
+          names: temp-download
           path: by-name
 
       - name: Test download-artifacts(by id)
