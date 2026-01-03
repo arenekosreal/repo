@@ -1,0 +1,64 @@
+name: Download artifacts
+description: Download artifacts with any filename
+inputs:
+  names:
+    description: Newline-separated artifacts names
+    required: false
+  artifact-ids:
+    description: Comma-separated artifacts ids
+    required: false
+  path:
+    description: Destination path
+    required: false
+    default: ${{ github.workspace }}
+  github-token:
+    description: The GitHub token used to authenticate with the GitHub API
+    required: false
+    default: ${{ github.token }}
+  run-id:
+    description: The id of the workflow run where the artifacts were uploaded from
+    required: false
+    default: ${{ github.run_id }}
+outputs:
+  download-path:
+    description: Path of artifact download
+    value: ${{ steps.download-artifact.outputs.download-path }}
+runs:
+  using: composite
+  steps:
+    - name: Download artifact
+      id: download-artifact
+      if: inputs.artifact-ids
+      uses: actions/download-artifact@v5
+      with:
+        artifact-ids: ${{ inputs.artifact-ids }}
+        path: ${{ inputs.path }}
+        merge-multiple: true
+        github-token: ${{ inputs.github-token }}
+        run-id: ${{ inputs.run-id }}
+    - name: Download artifact
+      id: download-artifact
+      if: inputs.names
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        mkdir -p '${{ inputs.path }}'
+        declare -a ARGS
+        while read -r line
+        do
+          if [[ -n "$line" ]]
+          then
+            ARGS+=("-n $line")
+          fi
+        done <<< '${{ inputs.names }}'
+        gh run download --dir '${{ inputs.path }}' "${ARGS[@]}"
+        echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
+    - name: Unpack files
+      shell: bash
+      run: |
+        find '${{ inputs.path }}' -type f -name '*.tar' \
+          -printf "Extracting %f...\n" \
+          -execdir tar -xvpf {} \; \
+          -printf "Removing %f...\n" \
+          -delete

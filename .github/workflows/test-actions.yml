@@ -53,3 +53,84 @@ jobs:
         run: |
           test -f keys/pgp/E1096BCBFF6D418796DE78515384CE82BA52C83A.asc
           test -f keys/pgp/3F59043BE267E1B1177688AC8F6DE3D614FCFD7A.asc
+
+  test-upload-artifacts:
+    name: Test upload-artifacts action when changed
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate data to upload
+        run: touch temp:invalid.txt
+
+      - name: Test upload-artifacts
+        uses: ./.github/actions/upload-artifacts
+        id: upload
+        with:
+          name: temp
+          path: temp:invalid.txt
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: temp
+
+      - name: Check result
+        run: test -f temp.tar
+
+      # https://github.com/actions/upload-artifact/issues/290#issuecomment-1374207010
+      - name: Cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method DELETE -H 'Accept: application/vnd.github+json' \
+            '/repos/${{ github.repository }}/actions/artifacts/${{ steps.upload.outputs.artifact-id }}'
+
+  test-download-artifacts:
+    name: Test download-artifacts action when changed
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate data to upload
+        run: |
+          touch temp:invalid.txt
+          tar -cvpf temp.tar temp:invalid.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: temp
+          path: temp.tar
+
+      - name: Test download-artifacts(by name)
+        uses: ./.github/actions/download-artifacts
+        with:
+          names: temp
+          path: by-name
+
+      - name: Test download-artifacts(by id)
+        uses: ./.github/actions/download-artifacts
+        with:
+          artifact-ids: ${{ steps.upload.outputs.artifact-id }}
+          path: by-id
+
+      - name: Check result
+        run: |
+          test -f by-name/temp:invalid.txt
+          test -f by-id/temp:invalid.txt
+
+      - name: Cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method DELETE -H 'Accept: application/vnd.github+json' \
+            '/repos/${{ github.repository }}/actions/artifacts/${{ steps.upload.outputs.artifact-id }}'
+        
