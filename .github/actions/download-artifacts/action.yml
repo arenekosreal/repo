@@ -26,8 +26,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Download artifact
-      id: download-artifact
+    - name: Download artifact by id
+      id: download-artifact-by-id
       if: ${{ !! inputs.artifact-ids }}
       uses: actions/download-artifact@v5
       with:
@@ -36,8 +36,8 @@ runs:
         merge-multiple: true
         github-token: ${{ inputs.github-token }}
         run-id: ${{ inputs.run-id }}
-    - name: Download artifact
-      id: download-artifact
+    - name: Download artifact by name
+      id: download-artifact-by-name
       if: ${{ !! inputs.names && ! inputs.artifact-ids }}
       shell: bash
       env:
@@ -54,6 +54,20 @@ runs:
         done <<< '${{ inputs.names }}'
         gh run download --dir '${{ inputs.path }}' "${ARGS[@]}"
         echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
+    - name: Generate output
+      id: download-artifact
+      shell: bash
+      run: |
+        if '${{ !! inputs.artifact-ids }}'
+        then
+          echo 'download-path=${{ steps.download-artifact-by-id.outputs.download-path }}' >> "$GITHUB_OUTPUT"
+        elif '${{ !! inputs.names }}'
+        then
+          echo 'download-path=${{ steps.download-artifact-by-name.outputs.download-path }}' >> "$GITHUB_OUTPUT"
+        else
+          echo "::error::Unable to download artifacts by name or id."
+          exit 1
+        fi
     - name: Unpack files
       shell: bash
       run: |
