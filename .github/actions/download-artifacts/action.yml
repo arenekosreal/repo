@@ -44,15 +44,7 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       run: |
         mkdir -p '${{ inputs.path }}'
-        declare -a ARGS
-        while read -r line
-        do
-          if [[ -n "$line" ]]
-          then
-            ARGS+=("-n $line")
-          fi
-        done <<< '${{ inputs.names }}'
-        gh run download --dir '${{ inputs.path }}' "${ARGS[@]}"
+        sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs gh run download --dir '${{ inputs.path }}'
         echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
     - name: Generate output
       id: download-artifact
