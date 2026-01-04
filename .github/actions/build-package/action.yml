@@ -1,0 +1,70 @@
+# WARN: Needs `ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}` is ready by building.
+
+name: Build PKGBUILD
+description: Build PKGBUILD
+inputs:
+  where:
+    description: The directory contains PKGBUILD
+    required: false
+    default: ${{ github.workspace }}
+  preserve-env:
+    description: The comma seperated environment variables names
+    required: false
+  repo:
+    description: The directory contains dependencies not in official repositories
+    required: false
+  extra-makepkg-args:
+    description: Extra arguments passed to makepkg
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Generate .SRCINFO
+      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
+      working-directory: ${{ inputs.where }}
+      with:
+        args: ${{ inputs.extra-makepkg-args }} --printsrcinfo
+        preserve_env: ${{ inputs.preserve-env }}
+        repo: ${{ inputs.repo }}
+        stdout: .SRCINFO
+    - name: Apply patch
+      shell: bash
+      run: |
+        pkgbase="$(grep pkgbase '${{ inputs.where }}/.SRCINFO' | cut -d = -f 2- | xargs)"
+        if [[ -d "patches/$pkgbase" ]]
+        then
+          find "patches/$pkgbase" -maxdepth 1 -type f \( -name '*.patch' -o -name '*.diff' \) \
+            -printf "Applying patch %f...\n" \
+            -exec patch -Np1 -d '${{ inputs.where }}' -i "$PWD/{}" \;
+        fi
+    - name: Update .SRCINFO
+      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
+      working-directory: ${{ inputs.where }}
+      with:
+        args: ${{ inputs.extra-makepkg-args }} --printsrcinfo
+        preserve_env: ${{ inputs.preserve-env }}
+        repo: ${{ inputs.repo }}
+        stdout: .SRCINFO
+    - name: Get GPG fingerprints
+      id: gpg-fingerprints
+      shell: bash
+      run: |
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "fingerprints<<$EOF"
+          grep validppgpkeys '${{ inputs.where }}/.SRCINFO' | cut -d = -f 2
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
+    - name: Fetch GPG public keys
+      if: steps.gpg-fingerprints.outputs.fingerprints
+      uses: ./.github/actions/fetch-gpg-fingerprints
+      with:
+        fingerprints: ${{ steps.gpg-fingerprints.outputs.fingerprints }}
+        dest: ${{ inputs.where }}/keys/pgp
+    - name: Run makepkg
+      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
+      working-directory: ${{ inputs.where }}
+      with:
+        args: ${{ inputs.extra-makepkg-args }}
+        preserve_env: ${{ inputs.preserve-env }}
+        repo: ${{ inputs.repo }}
