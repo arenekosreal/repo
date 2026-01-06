@@ -26,10 +26,13 @@ runs:
       run: |
         temp='${{ runner.temp }}'/"$(uuidgen)"
         mkdir -p "$temp"
-        {
-          echo "temp=$temp"
-          echo "where=$(realpath -m '${{ inputs.where }}')"
-        } >> "$GITHUB_OUTPUT"
+        echo "temp=$temp" >> "$GITHUB_OUTPUT"
+
+    - name: Copy startdir
+      shell: bash
+      run: |
+        cp -a --no-preserve=ownership \
+          '${{ inputs.where }}' '${{ steps.prepare.outputs.temp }}/startdir'
 
     - name: Copy srcdest
       shell: bash
@@ -55,7 +58,7 @@ runs:
         env | sudo docker run --workdir /startdir --rm \
           --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
           --env-file=/dev/stdin \
-          --volume '${{ steps.prepare.outputs.where }}:/startdir' \
+          --volume '${{ steps.prepare.outputs.temp }}/startdir:/startdir' \
           --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
           --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
           --volume '${{ steps.prepare.outputs.temp }}/srcdest:/input/srcdest' \
@@ -70,3 +73,6 @@ runs:
           '${{ steps.prepare.outputs.temp }}/srcdest' \
           '${{ steps.prepare.outputs.temp }}/pkgdest' \
           '${{ steps.prepare.outputs.temp }}/logdest'
+        cp -a --no-preserve=ownership \
+          '${{ steps.prepare.outputs.temp }}/startdir/PKGBUILD' \
+          '${{ inputs.where }}'
