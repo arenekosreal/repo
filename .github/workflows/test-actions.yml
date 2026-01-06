@@ -8,6 +8,7 @@ on:
     paths:
       - .github/actions/**
       - .github/workflows/test-actions.yml
+  workflow_dispatch:
 jobs:
   test-clean-runner:
     name: Test clean-runner action when changed
