@@ -41,3 +41,4 @@ cp -a --no-preserve=ownership /input /
 "${MAKEPKG[@]}" "$@"
 
 cp -a --no-preserve=ownership /pkgdest /logdest /output
+cp -a --no-preserve=ownership /srcdest /input
