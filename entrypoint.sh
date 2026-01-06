@@ -36,7 +36,7 @@ then
     } | tee -a /etc/pacman.conf
 fi
 
-cp -a --no-preserve=ownership /input /
+cp -a --no-preserve=ownership /input/srcdest /
 
 "${MAKEPKG[@]}" "$@"
 
