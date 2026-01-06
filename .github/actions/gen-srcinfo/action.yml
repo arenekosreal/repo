@@ -65,6 +65,8 @@ runs:
             --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
             --env-file=/dev/stdin \
             --volume '${{ steps.prepare.outputs.temp }}/startdir:/startdir' \
+            --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
+            --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
             --volume '${{ steps.prepare.outputs.temp }}/srcdest:/input/srcdest' \
             --volume '${{ steps.prepare.outputs.temp }}/repo:/repo' \
             '${{ inputs.makepkg-image }}' ${{ inputs.extra-makepkg-args }}
