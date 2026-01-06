@@ -1,0 +1,26 @@
+name: Apply patches
+description: Apply patches to pkgbase
+inputs:
+  where:
+    description: The directory contains PKGBUILD
+    required: true
+  pkgbase:
+    description: The pkgbase to apply
+    required: true
+  patches:
+    description: Where is the directory contains patches for pkgbase
+    required: false
+    default: ${{ github.workspace }}/patches
+runs:
+  using: composite
+  steps:
+    - name: Apply patches
+      shell: bash
+      run: |
+        if [[ -d '${{ inputs.patches }}/${{ inputs.pkgbase }}' ]]
+        then
+          find "$(realpath '${{ inputs.patches }}/${{ inputs.pkgbase }}')" -maxdepth 1 -type f \
+            \( -name '*.diff' -o -name '*.patch' \) \
+            -printf "Applying patch %p...\n" \
+            -exec patch -Np1 -i '{}' \;
+        fi
