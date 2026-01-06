@@ -3,6 +3,10 @@
 name: Build PKGBUILD
 description: Build PKGBUILD
 inputs:
+  makepkg-image:
+    description: The docker image of makepkg
+    required: false
+    default: ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
   where:
     description: The directory contains PKGBUILD
     required: false
@@ -10,61 +14,56 @@ inputs:
   preserve-env:
     description: The comma seperated environment variables names
     required: false
-  repo:
-    description: The directory contains dependencies not in official repositories
-    required: false
   extra-makepkg-args:
     description: Extra arguments passed to makepkg
     required: false
 runs:
   using: composite
   steps:
-    - name: Generate .SRCINFO
-      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
-      working-directory: ${{ inputs.where }}
-      with:
-        args: ${{ inputs.extra-makepkg-args }} --printsrcinfo
-        preserve_env: ${{ inputs.preserve-env }}
-        repo: ${{ inputs.repo }}
-        stdout: .SRCINFO
-    - name: Apply patch
+    - name: Prepare temp directory
+      id: prepare-temp
       shell: bash
       run: |
-        pkgbase="$(grep pkgbase '${{ inputs.where }}/.SRCINFO' | cut -d = -f 2- | xargs)"
-        if [[ -d "patches/$pkgbase" ]]
+        temp='${{ runner.temp }}'/"$(uuidgen)"
+        mkdir -p "$temp"
+        echo "temp=$temp" >> "$GITHUB_OUTPUT"
+
+    - name: Copy srcdest
+      shell: bash
+      run: |
+        if [[ -d srcdest ]]
         then
-          find "patches/$pkgbase" -maxdepth 1 -type f \( -name '*.patch' -o -name '*.diff' \) \
-            -printf "Applying patch %f...\n" \
-            -exec patch -Np1 -d '${{ inputs.where }}' -i "$PWD/{}" \;
+          cp -a --no-preserve=ownership \
+            srcdest '${{ steps.prepare-temp.outputs.temp }}'
         fi
-    - name: Update .SRCINFO
-      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
-      working-directory: ${{ inputs.where }}
-      with:
-        args: ${{ inputs.extra-makepkg-args }} --printsrcinfo
-        preserve_env: ${{ inputs.preserve-env }}
-        repo: ${{ inputs.repo }}
-        stdout: .SRCINFO
-    - name: Get GPG fingerprints
-      id: gpg-fingerprints
+
+    - name: Copy repository
       shell: bash
       run: |
-        {
-          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-          echo "fingerprints<<$EOF"
-          grep validppgpkeys '${{ inputs.where }}/.SRCINFO' | cut -d = -f 2
-          echo "$EOF"
-        } >> "$GITHUB_OUTPUT"
-    - name: Fetch GPG public keys
-      if: steps.gpg-fingerprints.outputs.fingerprints
-      uses: ./.github/actions/fetch-gpg-fingerprints
-      with:
-        fingerprints: ${{ steps.gpg-fingerprints.outputs.fingerprints }}
-        dest: ${{ inputs.where }}/keys/pgp
+        if [[ -d repo ]]
+        then
+          cp -a --no-preserve=ownership \
+            repo '${{ steps.prepare-temp.outputs.temp }}'
+        fi
+
     - name: Run makepkg
-      uses: docker://ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
-      working-directory: ${{ inputs.where }}
-      with:
-        args: ${{ inputs.extra-makepkg-args }}
-        preserve_env: ${{ inputs.preserve-env }}
-        repo: ${{ inputs.repo }}
+      shell: bash
+      run: |
+        sudo -E docker run --workdir /startdir --rm \
+          --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
+          --env-host \
+          --volume '${{ inputs.where }}:/startdir' \
+          --volume '${{ steps.prepare-temp.outputs.temp }}/pkgdest:/output/pkgdest' \
+          --volume '${{ steps.prepare-temp.outputs.temp }}/logdest:/output/logdest' \
+          --volume '${{ steps.prepare-temp.outputs.temp }}/srcdest:/input/srcdest' \
+          --volume '${{ steps.prepare-temp.outputs.temp }}/repo:/repo' \
+          '${{ inputs.makepkg-image }}' ${{ inputs.extra-makepkg-args }} --log
+
+    - name: Copy generated files
+      shell: bash
+      run: |
+        sudo rm -rf srcdest pkgdest logdest
+        cp -a --no-preserve=ownership -t . \
+          '${{ steps.prepare-temp.outputs.temp }}/srcdest' \
+          '${{ steps.prepare-temp.outputs.temp }}/pkgdest' \
+          '${{ steps.prepare-temp.outputs.temp }}/logdest'

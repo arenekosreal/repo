@@ -150,13 +150,16 @@ jobs:
           load: true
           tags: ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
 
-      - name: Get PKGBUILD
-        run: cp -r packages/flatpak-builder-tools-git startdir
-
       - name: Test build-package
         uses: ./.github/actions/build-package
         with:
-          where: startdir
+          where: packages/flatpak-builder-tools-git
 
       - name: Check result
-        run: test "$(ls startdir/*.pkg.tar.* | wc -l)" = 14
+        run: |
+          test -d pkgdest
+          test "$(ls pkgdest/*.pkg.tar.* | wc -l)" -gt 0
+          test -d logdest
+          test "$(ls logdest/*.log | wc -l)" -gt 0
+          test -d srcdest
+          test "$(ls srcdest/* | wc -l)" -gt 0

@@ -2,13 +2,14 @@
 
 set -e
 
-export BUILDDIR=/build PKGDEST=/pkgdest SRCDEST=/srcdest
+export BUILDDIR=/build PKGDEST=/pkgdest SRCDEST=/srcdest LOGDEST=/logdest
 
-SUDO=(sudo -u builder)
+preserve_env="BUILDDIR,PKGDEST,SRCDEST,LOGDEST,PACKAGER"
 if [[ -n "$INPUT_PRESERVE_ENV" ]]
 then
-    SUDO+=(--preserve-env="$INPUT_PRESERVE_ENV")
+    preserve_env+=",$INPUT_PRESERVE_ENV"
 fi
+SUDO=(sudo -u builder --preserve-env="$preserve_env")
 GPG=("${SUDO[@]}" gpg --batch --yes)
 MAKEPKG=("${SUDO[@]}" makepkg --syncdeps --noconfirm)
 
@@ -25,23 +26,18 @@ then
         -exec "${GPG[@]}" --import {} \;
 fi
 
-if [[ -n "$INPUT_REPO" ]]
+if [[ -e /repo/repo.db ]] && ! pacman-conf --repo=repo > /dev/null 2>&1
 then
-    REPO="$(basename "$INPUT_REPO")"
-    if [[ -e "$GITHUB_WORKSPACE/$INPUT_REPO/$REPO.db" ]] && ! pacman-conf --repo="$REPO"
-    then
-        echo "Adding custom repository:"
-        {
-            echo "[$REPO]"
-            echo "Server = file://$GITHUB_WORKSPACE/$INPUT_REPO"
-            echo "SigLevel = Optional TrustAll"
-        } | tee -a /etc/pacman.conf
-    fi
+    echo "Adding custom repository:"
+    {
+        echo "[repo]"
+        echo "Server = file:///repo"
+        echo "SigLevel = Optional TrustAll"
+    } | tee -a /etc/pacman.conf
 fi
 
-if [[ -n "$INPUT_STDOUT" ]]
-then
-    "${MAKEPKG[@]}" "$@" > "$INPUT_STDOUT"
-else
-    "${MAKEPKG[@]}" "$@"
-fi
+cp -a --no-preserve=ownership /input /
+
+"${MAKEPKG[@]}" "$@"
+
+cp -a --no-preserve=ownership /pkgdest /logdest /output
