@@ -186,4 +186,4 @@ jobs:
 
       - name: Check result
         working-directory: ruffle-nightly
-        run: ! git --no-pager diff --exit-code
+        run: '! git --no-pager diff --exit-code'
