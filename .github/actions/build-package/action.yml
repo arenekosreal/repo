@@ -26,7 +26,10 @@ runs:
       run: |
         temp='${{ runner.temp }}'/"$(uuidgen)"
         mkdir -p "$temp"
-        echo "temp=$temp" >> "$GITHUB_OUTPUT"
+        {
+          echo "temp=$temp"
+          echo "where=$(realpath -m '${{ inputs.where }}')"
+        } >> "$GITHUB_OUTPUT"
 
     - name: Copy srcdest
       shell: bash
@@ -52,11 +55,11 @@ runs:
         env | sudo docker run --workdir /startdir --rm \
           --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
           --env-file=/dev/stdin \
-          --volume '${{ inputs.where }}:/startdir' \
-          --volume '${{ steps.prepare-temp.outputs.temp }}/pkgdest:/output/pkgdest' \
-          --volume '${{ steps.prepare-temp.outputs.temp }}/logdest:/output/logdest' \
-          --volume '${{ steps.prepare-temp.outputs.temp }}/srcdest:/input/srcdest' \
-          --volume '${{ steps.prepare-temp.outputs.temp }}/repo:/repo' \
+          --volume '${{ steps.prepare.outputs.where }}:/startdir' \
+          --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/srcdest:/input/srcdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/repo:/repo' \
           '${{ inputs.makepkg-image }}' ${{ inputs.extra-makepkg-args }} --log
 
     - name: Copy generated files
