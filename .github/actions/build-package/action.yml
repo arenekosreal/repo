@@ -67,6 +67,6 @@ runs:
       run: |
         sudo rm -rf srcdest pkgdest logdest
         cp -a --no-preserve=ownership -t . \
-          '${{ steps.prepare-temp.outputs.temp }}/srcdest' \
-          '${{ steps.prepare-temp.outputs.temp }}/pkgdest' \
-          '${{ steps.prepare-temp.outputs.temp }}/logdest'
+          '${{ steps.prepare.outputs.temp }}/srcdest' \
+          '${{ steps.prepare.outputs.temp }}/pkgdest' \
+          '${{ steps.prepare.outputs.temp }}/logdest'
