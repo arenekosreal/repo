@@ -40,7 +40,12 @@ fi
 
 cp -a --no-preserve=ownership /input/srcdest /
 
-"${MAKEPKG[@]}" "$@"
+if [[ -n "$INPUT_STDOUT" ]]
+then
+    "${MAKEPKG[@]}" "$@" > "$INPUT_STDOUT"
+else
+    "${MAKEPKG[@]}" "$@"
+fi
 
 cp -a --no-preserve=ownership /pkgdest /logdest /output
 cp -a --no-preserve=ownership /srcdest /input
