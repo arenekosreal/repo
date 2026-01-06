@@ -60,19 +60,19 @@ runs:
       run: |
         env | sudo docker run --workdir /startdir --rm \
           --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
-          --env INPUT_STDOUT='/output/.SRCINFO' \
+          --env INPUT_STDOUT='/output/stdout/.SRCINFO' \
           --env-file=/dev/stdin \
           --volume '${{ steps.prepare.outputs.temp }}/startdir:/startdir' \
           --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
           --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
-          --volume '${{ steps.prepare.outputs.temp }}/.SRCINFO:/output/.SRCINFO' \
+          --volume '${{ steps.prepare.outputs.temp }}/stdout:/output/stdout' \
           --volume '${{ steps.prepare.outputs.temp }}/srcdest:/input/srcdest' \
           --volume '${{ steps.prepare.outputs.temp }}/repo:/repo' \
           '${{ inputs.makepkg-image }}' ${{ inputs.extra-makepkg-args }}
         {
           EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
           echo "srcinfo<<$EOF"
-          cat '${{ steps.prepare.outputs.temp }}/.SRCINFO'
+          cat '${{ steps.prepare.outputs.temp }}/stdout/.SRCINFO'
           echo "$EOF"
         }  >> "$GITHUB_OUTPUT"
 
