@@ -49,9 +49,9 @@ runs:
     - name: Run makepkg
       shell: bash
       run: |
-        sudo -E docker run --workdir /startdir --rm \
+        env | sudo docker run --workdir /startdir --rm \
           --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
-          --env-host \
+          --env-file=/dev/stdin \
           --volume '${{ inputs.where }}:/startdir' \
           --volume '${{ steps.prepare-temp.outputs.temp }}/pkgdest:/output/pkgdest' \
           --volume '${{ steps.prepare-temp.outputs.temp }}/logdest:/output/logdest' \
