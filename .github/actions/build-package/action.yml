@@ -37,7 +37,7 @@ runs:
         if [[ -d srcdest ]]
         then
           cp -a --no-preserve=ownership \
-            srcdest '${{ steps.prepare-temp.outputs.temp }}'
+            srcdest '${{ steps.prepare.outputs.temp }}'
         fi
 
     - name: Copy repository
@@ -46,7 +46,7 @@ runs:
         if [[ -d repo ]]
         then
           cp -a --no-preserve=ownership \
-            repo '${{ steps.prepare-temp.outputs.temp }}'
+            repo '${{ steps.prepare.outputs.temp }}'
         fi
 
     - name: Run makepkg
