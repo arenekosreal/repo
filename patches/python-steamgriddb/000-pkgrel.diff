@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index adae67c..60bb3f6 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -2,7 +2,7 @@
+ 
+ pkgname=python-steamgriddb
+ pkgver=1.0.5
+-pkgrel=4
++pkgrel=5
+ pkgdesc="Python API wrapper for SteamGridDB.com"
+ arch=(any)
+ url="https://github.com/ZebcoWeb/python-steamgriddb"

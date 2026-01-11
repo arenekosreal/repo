@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 4c68053..e06b315 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -3,7 +3,7 @@
+ _module="setuptools-reproducible"
+ pkgname="python-${_module}"
+ pkgver=0.1
+-pkgrel=1
++pkgrel=2
+ pkgdesc="Extension of setuptools to support reproducible builds"
+ arch=("any")
+ url="https://github.com/wimglenn/setuptools-reproducible"

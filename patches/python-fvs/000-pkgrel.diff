@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index d5f6e38..fb450f3 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -2,7 +2,7 @@
+ 
+ pkgname=python-fvs
+ pkgver=0.3.4
+-pkgrel=4
++pkgrel=5
+ pkgdesc="File Versioning System with hash comparison, deduplication and data storage to create unlinked states that can be deleted"
+ arch=(any)
+ url="https://github.com/mirkobrombin/FVS"
