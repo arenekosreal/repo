@@ -28,7 +28,7 @@ runs:
   steps:
     - name: Download artifact by id
       id: download-artifact-by-id
-      if: ${{ !! inputs.artifact-ids }}
+      if: inputs.artifact-ids
       uses: actions/download-artifact@v5
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
@@ -36,9 +36,10 @@ runs:
         merge-multiple: true
         github-token: ${{ inputs.github-token }}
         run-id: ${{ inputs.run-id }}
+
     - name: Download artifact by name
       id: download-artifact-by-name
-      if: ${{ !! inputs.names && ! inputs.artifact-ids }}
+      if: inputs.names && ! inputs.artifact-ids
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
@@ -46,6 +47,7 @@ runs:
         mkdir -p '${{ inputs.path }}'
         sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs gh run download --dir '${{ inputs.path }}'
         echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
+
     - name: Generate output
       id: download-artifact
       shell: bash
@@ -60,6 +62,7 @@ runs:
           echo "::error::Unable to download artifacts by name or id."
           exit 1
         fi
+
     - name: Unpack files
       shell: bash
       run: |
