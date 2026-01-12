@@ -157,3 +157,17 @@ jobs:
       - name: Check result
         working-directory: ruffle-nightly
         run: '! git --no-pager diff --exit-code'
+
+  test-build-makepkg:
+    name: Test build-makepkg action when changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test build-makepkg
+        id: build
+        uses: ./.github/actions/build-makepkg
+
+      - name: Check result
+        run: test -f '${{ steps.build.outputs.image-path }}'

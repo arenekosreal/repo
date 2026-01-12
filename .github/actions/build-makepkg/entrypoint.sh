@@ -12,12 +12,13 @@ fi
 SUDO=(sudo -u builder --preserve-env="$preserve_env")
 GPG=("${SUDO[@]}" gpg --batch --yes)
 MAKEPKG=("${SUDO[@]}" makepkg --syncdeps --noconfirm)
+CP=("${SUDO[@]}" cp -a --no-preserve=ownership)
 
-if [[ -e /repo/repo.db ]] && ! pacman-conf --repo=repo > /dev/null 2>&1
+if [[ -e "/repo/$INPUT_REPO_NAME.db" ]] && ! pacman-conf --repo="$INPUT_REPO_NAME" > /dev/null 2>&1
 then
     echo "Adding custom repository:"
     {
-        echo "[repo]"
+        echo "[$INPUT_REPO_NAME]"
         echo "Server = file:///repo"
         echo "SigLevel = Optional TrustAll"
     } | tee -a /etc/pacman.conf
@@ -38,7 +39,7 @@ then
         -exec "${GPG[@]}" --import {} \;
 fi
 
-cp -a --no-preserve=ownership /input/srcdest /
+"${CP[@]}" /input/srcdest /
 
 if [[ -n "$INPUT_STDOUT" ]]
 then
