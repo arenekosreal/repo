@@ -56,6 +56,9 @@ runs:
         temp='${{ runner.temp }}'/"$(uuidgen)"
         mkdir -p "$temp"
         echo "temp=$temp" >> "$GITHUB_OUTPUT"
+    - name: Copy inputs
+      shell: bash
+      run: |
         echo 'Copying ${{ inputs.where }}...'
         cp -a --no-preserve=ownership \
           '${{ inputs.where }}' '${{ steps.prepare.outputs.temp }}/startdir'
