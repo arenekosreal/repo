@@ -58,7 +58,7 @@ runs:
         echo "temp=$temp" >> "$GITHUB_OUTPUT"
         echo 'Copying ${{ inputs.where }}...'
         cp -a --no-preserve=ownership \
-          '${{ inputs.where }}' '${{ steps.prepere.outputs.temp }}/startdir'
+          '${{ inputs.where }}' '${{ steps.prepare.outputs.temp }}/startdir'
         if [[ -d '${{ inputs.srcdest }}' ]]
         then
           echo 'Copying ${{ inputs.srcdest }} to speed up downloading sources...'
