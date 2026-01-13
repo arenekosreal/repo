@@ -74,23 +74,6 @@ runs:
           cp -a --no-preserve=ownership \
             '${{ inputs.repo }}' '${{ steps.prepare.outputs.temp }}/repo'
         fi
-        if [[ -n "$(sudo docker images -q '${{ inputs.makepkg-image }}')" ]]
-        then
-          echo 'image-exists=true' >> "$GITHUB_OUTPUT"
-        else
-          echo 'image-exists=false' >> "$GITHUB_OUTPUT"
-          echo '::warning::makepkg image ${{ inputs.makepkg-image }} is not found.'
-        fi
-    - name: Setup Docker Buildx
-      if: steps.prepare.outputs.image-exists != 'true'
-      uses: docker/setup-buildx-action@v3
-    - name: Build makepkg
-      if: steps.prepare.outputs.image-exists != 'true'
-      uses: docker/build-push-action@v6
-      with:
-        tags: ${{ inputs.makepkg-image }}
-        load: true
-        context: ${{ github.action_path }}
     - name: Run makepkg
       shell: bash
       run: |
