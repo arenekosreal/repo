@@ -259,3 +259,37 @@ jobs:
 
       - name: Check result
         run: test ! -f '${{ steps.build.outputs.image-path }}'
+
+  test-setup-repo:
+    name: Test setup-repo action when changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Prepare GPG keys
+        id: gpg
+        env:
+          NAME: ${{ github.repository_owner }}
+          EMAIL: ${{ github.repository_owner_id }}+${{ github.repository_owner }}@users.noreply.github.com
+        run: |
+          gpg --batch --yes --gen-key - <<-EOF
+          %no-protection
+          Key-Type: default
+          Subkey-Type: default
+          Name-Real: $NAME
+          Name-Email: $EMAIL
+          Expire-Date: 1d
+          %commit
+          %echo done
+          EOF
+          gpg --batch --yes --list-secret-keys
+          echo "fingerprint=$(gpg --list-secret-keys --with-colons "$EMAIL" | grep "^sec" | cut -d : -f 5)" >> "$GITHUB_OUTPUT"
+
+      - name: Test setup-repo
+        uses: ./.github/actions/setup-repo
+        with:
+          gpg-fingerprint: ${{ steps.gpg.outputs.fingerprint }}
+
+      - name: Check result
+        run: ls -l repo      

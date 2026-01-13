@@ -1,0 +1,90 @@
+name: Setup repo
+description: Setup repository
+inputs:
+  artifact-ids:
+    description: Comma-seperated artifact ids of packages
+    required: false
+  packages-path:
+    description: The path in artifact contains packages
+    required: false
+    default: pkgdest
+  where:
+    description: Where to storage repository
+    required: false
+    default: ${{ github.workspace }}
+  repo-name:
+    description: The name of final repo
+    required: false
+    default: repo
+  repo-suffix:
+    description: The suffix of repo files and db
+    required: false
+    default: .tar.gz
+  gpg-fingerprint:
+    description: The GPG fingerprint to sign packages and repository
+    required: false
+  gpg-password:
+    description: The password of private key of gpg fingerprint given.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Prepare
+      id: prepare
+      shell: bash
+      run: echo 'temp=${{ runner.temp }}/'"$(uuidgen)" >> "$GITHUB_OUTPUT"
+
+    - name: Install pacman
+      shell: bash
+      run: |
+        if ! command -v repo-add > /dev/null
+        then
+          sudo apt-get update -y
+          sudo apt-get install -y pacman-package-manager libarchive-tools
+        fi
+
+    - name: Get packages
+      if: inputs.artifact-ids
+      uses: ./.github/actions/download-artifacts
+      with:
+        artifact-ids: ${{ inputs.artifact-ids }}
+        path: ${{ steps.prepare.outputs.temp }}
+
+    - name: Copy packages
+      shell: bash
+      run: |
+        mkdir -p '${{ inputs.where }}' '${{ steps.prepare.outputs.temp }}/${{ inputs.packages-path }}'
+        cp -av --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/${{ inputs.packages-path }}/.' \
+                                       '${{ inputs.where }}'
+        ls -l '${{ inputs.where }}'
+
+    - name: Sign packages
+      if: inputs.gpg-fingerprint
+      shell: bash
+      run: |
+        find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/.+.pkg.tar.[0-9a-zA-Z]+$' \
+          -exec gpg --batch --yes --passprase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
+                    --detach-sign --local-user '${{ inputs.gpg-fingerprint }}' --output '{}.sig' '{}' \;
+
+    - name: Generate repository
+      shell: bash
+      run: |
+        repo-add '${{ inputs.where }}/${{ inputs.repo-name }}.db${{ inputs.repo-suffix }}'
+        find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/.+.pkg.tar.[0-9a-zA-Z]+$' \
+          -exec repo-add --include-sigs '${{ inputs.where }}/${{ inputs.repo-name }}.db${{ inputs.repo-suffix }}' '{}' +
+
+    - name: Sign repository
+      if: inputs.gpg-fingerprint
+      shell: bash
+      run: |
+        find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/${{ inputs.repo-name }}.\(db\|files\)${{ inputs.repo-suffix }}$' \
+          -exec gpg --batch --yes --passprase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
+                    --detach-sign --local-user '${{ inputs.gpg-fingerprint }}' --output '{}.sig' '{}' \;
+        if '${{ !! inputs.repo-suffix }}'
+        then
+          for item in db files
+          do
+            ln -srfv '${{ inputs.where }}/${{ inputs.repo-name }}.'"$item"'${{ inputs.repo-suffix }}.sig' \
+                     '${{ inputs.where }}/${{ inputs.repo-name }}.'"$item"'.sig'
+          done
+        fi
