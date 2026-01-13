@@ -205,3 +205,37 @@ jobs:
 
       - name: Check result
         run: diff -u '${{ github.workspace }}/aria2cd/.SRCINFO' '${{ steps.makepkg.outputs.stdout-path }}'
+
+  test-get-package-status:
+    name: Test get-package-status action when changed
+    needs: test-download-aur-pkgbase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get PKGBUILD
+        uses: ./.github/actions/download-aur-pkgbase
+        with:
+          pkgbase: aria2cd
+          dest: ${{ github.workspace }}/aria2cd
+
+      - name: Get srcinfo
+        id: srcinfo
+        run: |
+          {
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "srcinfo<<$EOF"
+            cat '${{ github.workspace }}/aria2cd/.SRCINFO'
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Get package status
+        id: status
+        uses: ./.github/actions/get-package-status
+        with:
+          srcinfo: ${{ steps.srcinfo.outputs.srcinfo }}
+
+      - name: Check result
+        if: steps.status.outputs.built == 'true'
+        run: ls -l pkgdest/*.pkg.tar.*

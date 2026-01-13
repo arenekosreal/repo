@@ -1,0 +1,33 @@
+name: Get package status
+description: Get package status from srcinfo and try recovering cache.
+inputs:
+  srcinfo:
+    required: true
+    description: The srcinfo to check
+outputs:
+  artifact-name:
+    description: The target artifact name of package
+    value: ${{ steps.meta.outputs.artifact-name }}
+  built:
+    description: If the package is found in cache
+    value: ${{ steps.cache.outputs.cache-hit }}
+runs:
+  using: composite
+  steps:
+    - name: Get artifact name
+      id: meta
+      shell: bash
+      run: |
+        printf "artifact-name=%s %s-%d %s\n" \
+          "$(grep pkgbase <<< '${{ inputs.srcinfo }}' | cut -d = -f 2 | xargs)" \
+          "$(grep pkgver <<< '${{ inputs.srcinfo }}' | cut -d = -f 2 | xargs)" \
+          "$(grep pkgrel <<< '${{ inputs.srcinfo }}' | cut -d = -f 2 | xargs)" \
+          "$(uname -m)" \
+        >> "$GITHUB_OUTPUT"
+
+    - name: Try recovering cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: pkgdest
+        key: ${{ steps.meta.outputs.artifact-name }}
