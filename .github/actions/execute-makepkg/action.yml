@@ -1,0 +1,124 @@
+name: Execute makepkg
+description: Execute makepkg in a container
+
+inputs:
+  makepkg-image:
+    description: The docker image of makepkg
+    required: false
+    default: ghcr.io/${{ github.repository_owner }}/makepkg:${{ github.sha }}
+  where:
+    description: The directory contains PKGBUILD
+    required: false
+    default: ${{ github.workspace }}
+  preserve-env:
+    description: The comma seperated environment variables names
+    required: false
+  args:
+    description: The arguments passed to makepkg
+    required: false
+    default: --log
+  srcdest:
+    description: Where is the directory keeps sources
+    required: false
+    default: ${{ github.workspace }}/srcdest
+  logdest:
+    description: Where is the directory keeps logging
+    required: false
+    default: ${{ github.workspace }}/logdest
+  pkgdest:
+    description: Where is the directory keeps built packages
+    required: false
+    default: ${{ github.workspace }}/pkgdest
+  repo:
+    description: Where is the directory keeps external packages required for building package
+    required: false
+    default: ${{ github.workspace }}/repo
+  repo-name:
+    description: The name of the repository
+    required: false
+    default: repo
+
+outputs:
+  stdout:
+    description: The stdout of makepkg
+    value: ${{ steps.output.outputs.stdout }}
+  stdout-path:
+    description: The path of text file contains makepkg's stdout
+    value: ${{ steps.output.outputs.stdout-path }}
+  
+runs:
+  using: composite
+  steps:
+    - name: Prepare
+      id: prepare
+      shell: bash
+      run: |
+        temp='${{ runner.temp }}'/"$(uuidgen)"
+        mkdir -p "$temp"
+        echo "temp=$temp" >> "$GITHUB_OUTPUT"
+        echo 'Copying ${{ inputs.where }}...'
+        cp -a --no-preserve=ownership \
+          '${{ inputs.where }}' '${{ steps.prepere.outputs.temp }}/startdir'
+        if [[ -d '${{ inputs.srcdest }}' ]]
+        then
+          echo 'Copying ${{ inputs.srcdest }} to speed up downloading sources...'
+          cp -a --no-preserve=ownership \
+            '${{ inputs.srcdest }}' '${{ steps.prepare.outputs.temp }}/srcdest'
+        fi
+        if [[ -d '${{ inputs.repo }}' ]]
+        then
+          echo 'Copying ${{ inputs.repo }} to provide external packages...'
+          cp -a --no-preserve=ownership \
+            '${{ inputs.repo }}' '${{ steps.prepare.outputs.temp }}/repo'
+        fi
+        if [[ -n "$(sudo docker images -q '${{ inputs.makepkg-image }}')" ]]
+        then
+          echo 'image-exists=true' >> "$GITHUB_OUTPUT"
+        else
+          echo 'image-exists=false' >> "$GITHUB_OUTPUT"
+          echo '::warning::makepkg image ${{ inputs.makepkg-image }} is not found.'
+        fi
+    - name: Setup Docker Buildx
+      if: steps.prepare.outputs.image-exists != 'true'
+      uses: docker/setup-buildx-action@v3
+    - name: Build makepkg
+      if: steps.prepare.outputs.image-exists != 'true'
+      uses: docker/build-push-action@v6
+      with:
+        tags: ${{ inputs.makepkg-image }}
+        load: true
+        context: ${{ github.action_path }}
+    - name: Run makepkg
+      shell: bash
+      run: |
+        env | sudo docker run --workdir /startdir --rm \
+          --env INPUT_PRESERVE_ENV='${{ inputs.preserve-env }}' \
+          --env INPUT_STDOUT='/output/stdout/makepkg' \
+          --env INPUT_REPO_NAME='${{ inputs.repo-name }}' \
+          --env-file /dev/stdin \
+          --volume '${{ steps.prepare.outputs.temp }}/startdir:/startdir' \
+          --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/stdout:/output/stdout' \
+          --volume '${{ steps.prepare.outputs.temp }}/srcdest:/input/srcdest' \
+          --volume '${{ steps.prepare.outputs.temp }}/repo:/repo' \
+        '${{ inputs.makepkg-image }}' ${{ inputs.args }}
+    - name: Copy generated files
+      shell: bash
+      run: |
+        sudo rm -rf '${{ inputs.srcdest }}'
+        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/srcdest' '${{ inputs.srcdest }}'
+        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/pkgdest' '${{ inputs.pkgdest }}'
+        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/logdest' '${{ inputs.logdest }}'
+        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/startdir/.' '${{ inputs.where }}'
+    - name: Generate output
+      id: output
+      shell: bash
+      run: |
+        {
+          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+          echo "stdout<<$EOF"
+          cat '${{ steps.prepare.outputs.temp }}/stdout/makepkg'
+          echo "$EOF"
+        } >> "$GITHUB_OUTPUT"
+        echo 'stdout-path=${{ steps.prepare.outputs.temp }}/stdout/makepkg' >> "$GITHUB_OUTPUT"
