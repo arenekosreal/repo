@@ -291,7 +291,8 @@ jobs:
       - name: Test setup-repo
         uses: ./.github/actions/setup-repo
         with:
+          where: ${{ github.workspace }}/repo
           gpg-fingerprint: ${{ steps.gpg.outputs.fingerprint }}
 
       - name: Check result
-        run: ls -l repo      
+        run: ls -l '${{ github.workspace }}/repo'
