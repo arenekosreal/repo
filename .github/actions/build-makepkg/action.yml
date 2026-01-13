@@ -24,7 +24,7 @@ runs:
       run: echo "native-platform=$(sudo docker info --format '{{ .Host.OsArch }}')" >> "$GITHUB_OUTPUT"
       
     - name: Setup QEMU
-      if: inputs.platforms != steps.native-platform.outputs.native-platfom
+      if: ${{ contains(['', '${{ steps.native-platform.outputs.native-platform }}'], inputs.platforms) }}
       uses: docker/setup-qemu-action@v3
   
     - name: Setup Docker Buildx
