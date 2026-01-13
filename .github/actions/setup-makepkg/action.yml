@@ -1,0 +1,33 @@
+name: Setup makepkg
+description: Setup container image of makepkg
+inputs:
+  image-path:
+    description: The path to exported tarball file
+    required: true
+  remove-tarball:
+    description: If remove tarball after image imported
+    required: false
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - name: Get platform
+      id: platform
+      shell: bash
+      run: echo "platform=$(sudo docker info --format '{{ .Host.OsArch }}')" >> "$GITHUB_OUTPUT"
+
+    - name: Load image
+      shell: bash
+      run: |
+        sudo docker load \
+          --platform '${{ steps.platform.outputs.platform }}' \
+          --input '${{ inputs.image-path }}'
+
+    - name: List images
+      shell: bash
+      run: sudo docker image ls -a
+
+    - name: Remove tarball        
+      if: inputs.remove-tarball == 'true'
+      shell: bash
+      run: rm --verbose '${{ inputs.image-path }}'

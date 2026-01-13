@@ -239,3 +239,23 @@ jobs:
       - name: Check result
         if: steps.status.outputs.built == 'true'
         run: ls -l pkgdest/*.pkg.tar.*
+
+  test-setup-makepkg:
+    name: Test setup-makepkg action when changed
+    needs: test-build-makepkg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build makepkg
+        id: build
+        uses: ./.github/actions/build-makepkg
+
+      - name: Test setup-makepkg
+        uses: ./.github/actions/setup-makepkg
+        with:
+          image-path: ${{ steps.build.outputs.image-path }}
+
+      - name: Check result
+        run: test ! -f '${{ steps.build.outputs.image-path }}'
