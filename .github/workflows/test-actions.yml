@@ -276,7 +276,9 @@ jobs:
           gpg --batch --yes --gen-key - <<-EOF
           %no-protection
           Key-Type: default
+          Key-Curve: Ed25519
           Subkey-Type: default
+          Subkey-Curve: Ed25519
           Name-Real: $NAME
           Name-Email: $EMAIL
           Expire-Date: 1d
