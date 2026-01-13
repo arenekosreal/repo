@@ -96,7 +96,7 @@ runs:
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/srcdest' '${{ inputs.srcdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/pkgdest' '${{ inputs.pkgdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/logdest' '${{ inputs.logdest }}'
-        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/startdir/.' '${{ inputs.where }}'
+        cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/startdir/PKGBUILD' '${{ inputs.where }}'
     - name: Generate output
       id: output
       shell: bash
