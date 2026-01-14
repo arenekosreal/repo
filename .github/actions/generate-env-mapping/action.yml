@@ -20,10 +20,10 @@ runs:
         do
           if [[ -n "$name" ]]
           then
-            value="$(jq -r ".$name" <<< '${{ toJSON(vars) }}')"
+            value="$(jq -r ".${name^^}" <<< '${{ toJSON(vars) }}')"
             if [[ -z "$value" ]]
             then
-              value="$(jq -r ".$name" <<< '${{ toJSON(secrets) }}')"
+              value="$(jq -r ".${name^^}" <<< '${{ toJSON(secrets) }}')"
             fi
             if [[ -n "$value" ]]
             then
