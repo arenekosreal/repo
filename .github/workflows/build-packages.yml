@@ -1,0 +1,673 @@
+name: Build packages
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        required: true
+        type: choice
+        description: The runner name use to build packages
+        options:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+  #schedule:
+  #  - cron: '0 22 * * *'
+env:
+  PACKAGER: ${{ vars.PACKAGER }}
+jobs:
+  prepare:
+    name: Prepare contents required by building
+    runs-on: ubuntu-latest
+    outputs:
+      runs-on: ${{ steps.generate.outputs.runs-on }}
+      image-filename: ${{ steps.build.outputs.image-filename }}
+      image-artifact-id: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - name: Generate information
+        id: generate
+        run: |
+          case '${{ github.event_name }}' in
+            "schedule")
+              # Add more runners for triggering by schedule here.
+              echo 'runs-on=["ubuntu-24.04"]' >> "$GITHUB_OUTPUT"
+              platforms='linux/amd64'
+              ;;
+            "workflow_dispatch")
+              echo 'runs-on=["${{ inputs.runs-on }}"]' >> "$GITHUB_OUTPUT"
+              case '${{ inputs.runs-on }}' in
+                *-arm)
+                  platforms='linux/arm64'
+                  ;;
+                *)
+                  platforms='linux/amd64'
+                  ;;
+              esac
+              ;;
+            *)
+              echo '::error::Unable to generate information.'
+              exit 1
+              ;;
+          esac
+          if [[ -z "$platforms" ]]
+          then
+            echo '::error::Generated platform invalid.'
+            exit 1
+          fi
+          echo "platforms=$platforms" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build makepkg
+        id: build
+        uses: ./.github/actions/build-makepkg
+        with:
+          platforms: ${{ steps.generate.outputs.platforms }}
+
+      - name: Upload image
+        id: upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: ghcr.io-${{ github.repository_owner }}-makepkg-${{ github.sha }}
+          path: ${{ steps.build.outputs.image-path }}
+          
+  
+  tier0-packages:
+    needs: prepare
+    outputs:
+      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
+        package:
+          - type: aur
+            pkgbase: ares-decrypt
+          - type: aur
+            pkgbase: aria2cd
+          - type: aur
+            pkgbase: ariang-git
+          - type: aur
+            pkgbase: ariang-native-git
+          - type: aur
+            pkgbase: ayugram-desktop
+            clean-runner: true
+          - type: aur
+            pkgbase: basedpyright
+          - type: aur
+            pkgbase: binder_linux-dkms
+          - type: local
+            pkgbase: caddy-cloudflare
+          - type: aur
+            pkgbase: carapace
+          - type: aur
+            pkgbase: cgtproxy
+          - type: aur
+            pkgbase: chromium-extension-plasma-integration
+          - type: aur
+            pkgbase: chromium-extension-web-store
+          - type: aur
+            pkgbase: cinny
+            env:
+              cinnyBase: /cinny
+            preserve-env: cinnyBase
+          - type: aur
+            pkgbase: cleanmedia
+          - type: aur
+            pkgbase: cloudflarespeedtest
+          - type: aur
+            pkgbase: crow-translate
+          - type: aur
+            pkgbase: csharp-ls
+          - type: aur
+            pkgbase: ctre
+          - type: aur
+            pkgbase: cubeb
+          - type: aur
+            pkgbase: dendrite
+          - type: aur
+            pkgbase: docker-language-server
+          - type: aur
+            pkgbase: dotnet-install
+          - type: aur
+            pkgbase: downgrade
+          - type: local
+            pkgbase: easytier
+          - type: aur
+            pkgbase: fcitx5-pinyin-custom-pinyin-dictionary
+          - type: aur
+            pkgbase: fcitx5-pinyin-moegirl
+          - type: aur
+            pkgbase: ffmpeg-audio-thumbnailer
+          - type: aur
+            pkgbase: find-the-command
+          - type: aur
+            pkgbase: firefox-extension-adguard
+          - type: aur
+            pkgbase: firefox-extension-localcdn
+          - type: local
+            pkgbase: flatpak-builder-tools-git
+          - type: aur
+            pkgbase: gorice
+          - type: aur
+            pkgbase: gpt4all-chat
+          - type: aur
+            pkgbase: hath-rust
+          - type: aur
+            pkgbase: icalingua++-git
+          - type: aur
+            pkgbase: icecream
+          - type: aur
+            pkgbase: icoextract
+          - type: aur
+            pkgbase: kde-thumbnailer-apk
+          - type: aur
+            pkgbase: ksmbd-tools
+          - type: aur
+            pkgbase: libbase58
+          - type: aur
+            pkgbase: libvgm-git
+          - type: aur
+            pkgbase: linux-pf
+            clean-runner: true
+          - type: aur
+            pkgbase: lyrica
+          - type: aur
+            pkgbase: mpv-memo-git
+          - type: aur
+            pkgbase: mpv-thumbfast-noenabled-git
+          - type: aur
+            pkgbase: mpv-uosc
+          - type: aur
+            pkgbase: naiveproxy
+          - type: aur
+            pkgbase: needrestart
+          - type: local
+            pkgbase: neocmakelsp
+          - type: aur
+            pkgbase: netcoredbg
+          - type: aur
+            pkgbase: nodejs-jsonlint
+          - type: aur
+            pkgbase: ntfysh
+          - type: aur
+            pkgbase: nvidia-580xx-utils
+          - type: aur
+            pkgbase: obs-pipewire-audio-capture
+          - type: aur
+            pkgbase: oh-my-posh
+          - type: aur
+            pkgbase: openwrt-devel
+          - type: aur
+            pkgbase: osc
+          - type: local
+            pkgbase: osu-lazer-bin
+          - type: aur
+            pkgbase: paccache-hook
+          - type: aur
+            pkgbase: paru
+          - type: aur
+            pkgbase: pay-respects
+          - type: aur
+            pkgbase: phonon-mpv
+          - type: aur
+            pkgbase: pipewire-module-xrdp
+          - type: aur
+            pkgbase: pipewire-module-xrdp-git
+          - type: aur
+            pkgbase: plasma-gamemode-git
+          - type: aur
+            pkgbase: plasma6-applets-caraoke-git
+          - type: aur
+            pkgbase: plasma6-wallpapers-wallpaper-engine-git
+          - type: aur
+            pkgbase: protoc-gen-go
+          - type: aur
+            pkgbase: python-fvs
+          - type: aur
+            pkgbase: python-pathvalidate
+          - type: aur
+            pkgbase: python-pyclip
+          - type: aur
+            pkgbase: python-setuptools-reproducible
+          - type: aur
+            pkgbase: python-steamgriddb
+          - type: aur
+            pkgbase: q4wine
+          - type: aur
+            pkgbase: qcm-ncm-plugin-git
+          - type: aur
+            pkgbase: qmlbackend-git
+          - type: aur
+            pkgbase: qmlmaterial
+          - type: aur
+            pkgbase: rclone-aliyundrive-git
+          - type: aur
+            pkgbase: realitlscanner
+          - type: aur
+            pkgbase: roslyn-ls
+          - type: aur
+            pkgbase: ruffle-nightly
+          - type: aur
+            pkgbase: sing-box
+          - type: aur
+            pkgbase: sing-geoip
+          - type: aur
+            pkgbase: sing-geosite
+          - type: aur
+            pkgbase: spicetify-cli
+          - type: aur
+            pkgbase: spicetify-extensions-rxri-git
+          - type: aur
+            pkgbase: spicetify-theme-nord-git
+          - type: aur
+            pkgbase: spicetify-themes-git
+          - type: aur
+            pkgbase: spotube
+            env:
+              MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
+              MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+          - type: aur
+            pkgbase: systemd-boot-pacman-hook
+          - type: aur
+            pkgbase: systemd-cron
+          - type: aur
+            pkgbase: tcp-brutal-dkms
+          - type: aur
+            pkgbase: thrive
+            clean-runner: true
+          - type: aur
+            pkgbase: unblockneteasemusic-golang-git
+          - type: aur
+            pkgbase: usbguard-notifier-git
+          - type: aur
+            pkgbase: vkbasalt-cli
+          - type: aur
+            pkgbase: vnt
+          - type: aur
+            pkgbase: watt-toolkit-bin
+          - type: aur
+            pkgbase: waylyrics
+          - type: aur
+            pkgbase: xdg-ninja
+          - type: local
+            pkgbase: zuban
+    runs-on: ${{ matrix.runs-on }}
+    name: Build ${{ matrix.package.pkgbase }}
+    steps: &steps
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get PKGBUILD from AUR
+        if: matrix.package.type == 'aur'
+        uses: ./.github/actions/download-aur-pkgbase
+        with:
+          pkgbase: ${{ matrix.package.pkgbase }}
+          dest: packages/${{ matrix.package.pkgbase }}
+
+      - name: Get makepkg image
+        id: download-image
+        uses: actions/download-artifact@v7
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.image-artifact-id }}
+          path: ${{ runner.temp }}
+
+      - name: Import makepkg image
+        uses: ./.github/actions/setup-makepkg
+        with:
+          image-path: ${{ steps.download-image.outputs.download-path }}/${{ needs.prepare.outputs.image-filename }}
+
+      - name: Apply patches
+        uses: ./.github/actions/apply-patches
+        with:
+          where: packages/${{ matrix.package.pkgbase }}
+          pkgbase: ${{ matrix.package.pkgbase }}
+
+      - name: Get srcinfo
+        id: srcinfo
+        env: ${{ matrix.package.env }}
+        uses: ./.github/actions/execute-makepkg
+        with:
+          where: packages/${{ matrix.package.pkgbase }}
+          preserve-env: ${{ matrix.package.preserve-env }}
+          args: --printsrcinfo
+
+      - name: Get required gpg keys
+        id: gpg
+        run: |
+          {
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "validpgpkeys<<$EOF"
+            grep validpgpkeys '${{ steps.srcinfo.outputs.stdout-path }}' | cut -d = -f 2
+            echo "$EOF"  
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Fetch required gpg keys
+        if: steps.gpg.outputs.validpgpkeys
+        uses: ./.github/actions/fetch-gpg-fingerprints
+        with:
+          fingerprints: ${{ steps.gpg.outputs.validpgpkeys }}
+          dest: packages/${{ matrix.package.pkgbase }}/keys/pgp
+
+      - name: Update pkgver and pkgrel
+        if: endsWith(matrix.package.pkgbase, '-git')
+        env: ${{ matrix.package.env }}
+        uses: ./.github/actions/execute-makepkg
+        with:
+          where: packages/${{ matrix.package.pkgbase }}
+          preserve-env: ${{ matrix.package.preserve-env }}
+          args: ${{ runner.arch != 'X64' && '--ignorearch' || '' }} --nobuild
+
+      - name: Update srcinfo
+        if: endsWith(matrix.package.pkgbase, '-git')
+        id: srcinfo-updated
+        env: ${{ matrix.package.env }}
+        uses: ./.github/actions/execute-makepkg
+        with:
+          where: packages/${{ matrix.package.pkgbase }}
+          preserve-env: ${{ matrix.package.preserve-env }}
+          args: --printsrcinfo
+
+      - name: Get package status
+        id: status
+        uses: ./.github/actions/get-package-status
+        with:
+          srcinfo: ${{ steps.srcinfo-updated.outputs.stdout || steps.srcinfo.outputs.stdout }}
+
+      - name: Clean runner
+        if: matrix.package.clean-runner && steps.status.outputs.built != 'true'
+        uses: ./.github/actions/clean-runner
+
+      - name: Generate repository
+        if: matrix.package.artifact-ids && steps.status.outputs.built != 'true'
+        uses: ./.github/actions/setup-repo
+        with:
+          artifact-ids: ${{ join(matrix.package.artifact-ids, ',') }}
+
+      - name: Build package
+        if: steps.status.outputs.built != 'true'
+        env: ${{ matrix.package.env }}
+        uses: ./.github/actions/execute-makepkg
+        with:
+          where: packages/${{ matrix.package.pkgbase }}
+          preserve-env: ${{ matrix.package.preserve-env }}
+          args: ${{ runner.arch != 'X64' && '--ignorearch' || '' }}
+
+      - name: Upload package
+        id: upload
+        uses: ./.github/actions/upload-artifacts
+        with:
+          name: ${{ steps.status.outputs.artifact-name }}
+          path: pkgdest
+
+  tier1-packages:
+    needs:
+      - prepare
+      - tier0-packages
+    outputs:
+      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
+        package:
+          - type: aur
+            pkgbase: firefox-extension-plasma-integration
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-web-ext }}
+          - type: aur
+            pkgbase: fooyin
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-libvgm-git }}
+          - type: aur
+            pkgbase: libblkmaker
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-libbase58 }}
+          - type: aur
+            pkgbase: patool
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-python-setuptools-reproducible }}
+          - type: aur
+            pkgbase: protoc-gen-go-grpc
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-protoc-gen-go }}
+          - type: aur
+            pkgbase: qcm
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-cubeb }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-ctre }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-qcmbackend-git }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-qmlmaterial }}
+          - type: aur
+            pkgbase: watt-toolkit-git
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-dotnet-install }}
+    runs-on: ${{ matrix.runs-on }}
+    name: Build ${{ matrix.package.pkgbase }}
+    steps: *steps
+
+  tier2-packages:
+    needs:
+      - prepare
+      - tier0-packages
+      - tier1-packages
+    outputs:
+      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
+        package:
+          - type: aur
+            pkgbase: bfgminer-git
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-libbase58 }}
+              - ${{ needs.tier1-packages.outputs.artifact-id-libblkmaker }}
+          - type: local
+            pkgbase: local-ai
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-gorice }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-protoc-gen-go }}
+              - ${{ needs.tier1-packages.outputs.artifact-id.protoc-gen-go-grpc }}
+          - type: aur
+            pkgbase: bottles
+            artifact-ids:
+              - ${{ needs.tier0-packages.outputs.artifact-id-icoextract }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-python-setuptools-reproducible }}
+              - ${{ needs.tier1-packages.outputs.artifact-id-patool }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-python-fvs }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-python-pathvalidate }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-python-steamgriddb }}
+              - ${{ needs.tier0-packages.outputs.artifact-id-vkbasalt-cli }}
+    runs-on: ${{ matrix.runs-on }}
+    name: Build ${{ matrix.package.pkgbase }}
+    steps: *steps
+
+  prebuilt-packages:
+    needs: prepare
+    outputs:
+      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
+        package:
+          - type: obs
+            pkgbase: ungoogled-chromium-xdg
+            project: home:ZhangHua
+            package: ungoogled-chromium-xdg
+          - type: github
+            pkgbase: firefox-xdg
+            repo: arenekosreal/firefox-xdg
+    runs-on: ${{ matrix.runs-on }}
+    name: Download prebuilt ${{ matrix.package.pkgbase }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get target arch
+        id: target-arch
+        run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
+
+      - name: Install python-yq
+        if: matrix.package.type == 'obs'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y yq
+
+      - name: Install Github CLI
+        if: matrix.package.type == 'github' && github.event.act.local
+        run: |
+          sudo mkdir -p -m 755 /etc/apt/keyrings /etc/apt/sources.list.d
+          sudo curl https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
+          sudo apt-get update -y
+          sudo apt-get install -y gh
+
+      - name: Create pkgdest
+        run: mkdir -p pkgdest
+
+      - name: Download GitHub packages
+        if: matrix.package.type == 'github'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --dir pkgdest \
+            --repo '${{ matrix.package.repo }}' \
+            --pattern '*-${{ steps.target-arch.outputs.target-arch }}.pkg.tar.*'
+
+      - name: Download OBS packages
+        if: matrix.package.type == 'obs'
+        run: |
+          API='https://api.opensuse.org/published/${{ matrix.package.project }}/Arch/${{ steps.target-arch.outputs.target-arch }}'
+          JQ_QUERY='.directory.entry[]."@name" | select(test(".+-${{ steps.target-arch.outputs.target-arch }}\.pkg\.tar\.[0-9a-zA-Z]+$"))'
+          echo "::debug::API endpoint: $API"
+          echo "::debug::JQ query: $JQ_QUERY"
+          while read -r name
+          do
+            curl -L -u '${{ secrets.OBS_USERNAME }}:${{ secrets.OBS_PASSWORD }}' "$API/$name" -o "pkgdest/$name"
+            echo "Downloaded pkgdest/$name."
+          done < <(curl -L -u '${{ secrets.OBS_USERNAME }}:${{ secrets.OBS_PASSWORD }}' -H 'Accept: application/xml; charset=utf-8' "$API" | xq-python -r "$JQ_QUERY")
+
+      - name: Clean downloaded packages
+        run: find pkgdest -maxdepth 1 -type f ! -regex '*.pkg.tar.[0-9a-zA-Z]$' -printf 'Removing %f...\n' -delete
+
+      - name: Generate metadata
+        id: meta
+        run: |
+          echo 'artifact-name=${{ matrix.package.pkgbase }} ' \
+               "$(find pkgdest -maxdepth 1 -type f -regex 'pkgdest/${{ matrix.package.pkgbase }}-.+-${{ steps.target-arch.outputs.target-arch }}.pkg.tar.[0-9a-zA-Z]+$' \
+                     -printf '%f\n' -quit | rev | cut -d - -f 2-3 | rev ) " \
+               '${{ steps.target-arch.outputs.target-arch }}' \
+          >> "$GITHUB_OUTPUT"
+
+      - name: Upload package
+        id: upload
+        uses: ./.github/actions/upload-artifacts
+        with:
+          name: ${{ steps.meta.outputs.artifact-name }}
+          path: pkgdest
+
+  release:
+    needs:
+      - prepare
+      - tier0-packages
+      - tier1-packages
+      - tier2-packages
+      - prebuilt-packages
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
+    runs-on: ${{ matrix.runs-on }}
+    name: Generate and release repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get target arch
+        id: target-arch
+        run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
+
+      - name: Import GPG private key
+        id: import-gpg
+        run: |
+          GPG=(gpg --batch --yes --passphrase '${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}')
+          fingerprint="$("${GPG[@]}" --import --import-options import-show --with-colons <<< '${{ secrets.GPG_PRIVATE_KEY }}' | grep '^sec' | cut -d : -f 5)"
+          {
+            echo "fingerprint=$fingerprint"
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "public-key<<$EOF"
+            "${GPG[@]}" --export --armor "$fingerprint" 
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate repository
+        uses: ./.github/actions/setup-repo
+        with:
+          artifact-ids: ${{ join(needs.*.outputs.artifact-id-*, ',') }}
+          repo-name: ${{ github.repository_owner }}
+          where: ${{ github.workspace }}/${{ github.repository_owner }}
+          gpg-fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}
+          gpg-password: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
+
+      - name: Generate notes
+        run: |
+          {
+            echo '## Usage:'
+            echo '1. Setup a domain which webserver can redirect any request url contains `:` to `.`.'
+            echo 'For example, see [cloudflare-worker](../../../tree/os/${{ steps.target-arch.outputs.target-arch }}/cloudflare-worker)'
+            echo ''
+            echo '2. Update `pacman.conf` by appending follows:'
+            echo '```'
+            echo '[${{ github.repository_owner }}]'
+            echo 'Server = <DOMAIN>/${{ github.repository_owner }}/os/${{ steps.target-arch.outputs.target-arch }}'
+            echo '```'
+            echo ''
+            echo '3. Import and trust this public key by using `pacman-key`:'
+            echo '```'
+            echo '${{ steps.import-gpg.outputs.public-key }}'
+            echo '```'
+          } > notes.md
+
+      - name: Show repository status
+        run: ls -l '${{ github.workspace }}/${{ github.repository_owner }}'
+
+      - name: Remove existing release
+        if: ${{ ! github.event.act.local }}
+        env:
+          GH_TOKEN: ${{ github.event.act.local }}
+        run: |
+          if gh release view 'os/${{ steps.target-arch.outputs.target-arch }}' > /dev/null
+          then
+            echo "Removing existing release..."
+            gh release delete 'os/${{ steps.target-arch.outputs.target-arch }}' --cleanup-tag --yes
+          fi
+        
+
+      - name: Release
+        if: ${{ ! github.event.act.local }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Creating release..."
+          gh release create 'os/${{ steps.target-arch.outputs.target-arch }}' \
+            --notes-file notes.md \
+            --title 'Release for os/${{ steps.target-arch.outputs.target-arch }}' \
+            --draft
+          echo "Uploading files..."          
+          # https://github.com/cli/cli/issues/9586
+          MAX_PARALLEL=70
+          while read -r line
+          do
+            echo "Uploading $line..."
+            gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
+            sleep 1
+          done < <(ls -1 '${{ github.workspace }}/${{ github.repository_owner }}' | xargs -n "$MAX_PARALLEL")
+
+      - name: Save
+        if: github.event.act.local
+        run: |
+          mkdir -p '/act/out/${{ github.repository_owner }}/os/${{ steps.target-arch.outputs.target-arch }}'
+          cp -a --target-directory '/act/out/${{ github.repository_owner }}/os/${{ steps.target-arch.outputs.target-arch }}' \
+            '${{ github.workspace }}/${{ github.repository_owner }}/.'
