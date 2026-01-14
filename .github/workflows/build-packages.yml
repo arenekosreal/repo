@@ -397,7 +397,7 @@ jobs:
 
       - name: Build package
         if: steps.cache.outputs.cache-hit != 'true'
-        env: ${{ matrix.package.env }}
+        env: *env
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
