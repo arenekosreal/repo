@@ -4,6 +4,9 @@ inputs:
   artifact-ids:
     description: Comma-seperated artifact ids of packages
     required: false
+  artifact-names:
+    description: Newline-seperated artifact names of packages
+    required: false
   packages-path:
     description: The path in artifact contains packages
     required: false
@@ -44,10 +47,11 @@ runs:
         fi
 
     - name: Get packages
-      if: inputs.artifact-ids
+      if: inputs.artifact-ids || inputs.artifact-names
       uses: ./.github/actions/download-artifacts
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
+        names: ${{ inputs.artifact-names }}
         path: ${{ steps.prepare.outputs.temp }}
 
     - name: Copy packages
