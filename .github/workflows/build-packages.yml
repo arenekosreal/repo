@@ -321,7 +321,7 @@ jobs:
       - name: Get srcinfo
         id: srcinfo
         env: &env
-          cinnyBase: /cinny
+          cinnyBase: ${{ vars.CINNYBASE }}
           MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
           MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
         uses: ./.github/actions/execute-makepkg
