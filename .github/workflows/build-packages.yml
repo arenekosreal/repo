@@ -266,6 +266,7 @@ jobs:
             env:
               MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
               MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+            preserve-env: MAKEPKG_SPOTUBE_LASTFM_API_KEY,MAKEPKG_SPOTUBE_LASTFM_API_SECRET
           - type: aur
             pkgbase: systemd-boot-pacman-hook
           - type: aur
