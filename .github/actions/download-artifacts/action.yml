@@ -7,6 +7,9 @@ inputs:
   artifact-ids:
     description: Comma-separated artifacts ids
     required: false
+  artifact-pattern:
+    description: A glob pattern to the artifacts
+    required: false
   path:
     description: Destination path
     required: false
@@ -33,6 +36,7 @@ runs:
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
         path: ${{ inputs.path }}
+        pattern: ${{ inputs.artifact-pattern }}
         merge-multiple: true
         github-token: ${{ inputs.github-token }}
         run-id: ${{ inputs.run-id }}

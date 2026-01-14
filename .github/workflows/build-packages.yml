@@ -611,7 +611,7 @@ jobs:
       - name: Generate repository
         uses: ./.github/actions/setup-repo
         with:
-          artifact-ids: ${{ join(needs.*.outputs.artifact-id-*, ',') }}
+          artifact-pattern: pkgdest-*-${{ steps.target-arch.outputs.target-arch }}
           repo-name: ${{ github.repository_owner }}
           where: ${{ github.workspace }}/${{ github.repository_owner }}
           gpg-fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}
