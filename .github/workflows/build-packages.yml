@@ -356,7 +356,7 @@ jobs:
       - name: Update srcinfo
         if: endsWith(matrix.package.pkgbase, '-git')
         id: srcinfo-updated
-        env: ${{ matrix.package.env }}
+        env: *env
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
