@@ -637,7 +637,7 @@ jobs:
       - name: Remove existing release
         if: ${{ ! github.event.act.local }}
         env:
-          GH_TOKEN: ${{ github.event.act.local }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view 'os/${{ steps.target-arch.outputs.target-arch }}' > /dev/null
           then
