@@ -11,8 +11,6 @@ on:
           - ubuntu-24.04-arm
   #schedule:
   #  - cron: '0 22 * * *'
-env:
-  PACKAGER: ${{ vars.PACKAGER }}
 jobs:
   prepare:
     name: Prepare contents required by building
@@ -321,6 +319,7 @@ jobs:
       - name: Get srcinfo
         id: srcinfo
         env: &env
+          PACKAGER: ${{ vars.PACKAGER }}
           cinnyBase: ${{ vars.CINNYBASE }}
           MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
           MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
