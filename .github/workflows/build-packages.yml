@@ -71,8 +71,6 @@ jobs:
   
   tier0-packages:
     needs: prepare
-    outputs:
-      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
     strategy:
       fail-fast: false
       matrix:
@@ -365,24 +363,40 @@ jobs:
           preserve-env: ${{ matrix.package.preserve-env }}
           args: --printsrcinfo
 
-      - name: Get package status
-        id: status
-        uses: ./.github/actions/get-package-status
+      - name: Get target arch
+        id: target-arch
+        run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache built package
+        id: cache
+        uses: actions/cache@v4
         with:
-          srcinfo: ${{ steps.srcinfo-updated.outputs.stdout || steps.srcinfo.outputs.stdout }}
+          path: pkgdest
+          key: pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}-${{ hashFiles(steps.srcinfo-updated.outputs.stdout-path || steps.srcinfo.outputs.stdout-path) }}
 
       - name: Clean runner
-        if: matrix.package.clean-runner && steps.status.outputs.built != 'true'
+        if: matrix.package.clean-runner && steps.cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/clean-runner
 
+      - name: Generate artifact names
+        id: dependency-names
+        if: matrix.package.depends
+        run: |
+          {
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "artifact-names<<$EOF"
+            jq -r '.[]' <<< '${{ toJSON(matrix.package.depends) }}' | sed 's/^/pkgdest-/g;s/$/-${{ steps.target-arch.outputs.target-arch }}/;'
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Generate repository
-        if: matrix.package.artifact-ids && steps.status.outputs.built != 'true'
+        if: matrix.package.depends && steps.cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/setup-repo
         with:
-          artifact-ids: ${{ join(matrix.package.artifact-ids, ',') }}
+          artifact-names: ${{ steps.dependency-names.outputs.artifact-names }}
 
       - name: Build package
-        if: steps.status.outputs.built != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
         env: ${{ matrix.package.env }}
         uses: ./.github/actions/execute-makepkg
         with:
@@ -394,15 +408,13 @@ jobs:
         id: upload
         uses: ./.github/actions/upload-artifacts
         with:
-          name: ${{ steps.status.outputs.artifact-name }}
+          name: pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}
           path: pkgdest
 
   tier1-packages:
     needs:
       - prepare
       - tier0-packages
-    outputs:
-      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
     strategy:
       fail-fast: false
       matrix:
@@ -410,35 +422,35 @@ jobs:
         package:
           - type: aur
             pkgbase: firefox-extension-plasma-integration
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-web-ext }}
+            depends:
+              - web-ext
           - type: aur
             pkgbase: fooyin
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-libvgm-git }}
+            depends:
+              - libvgm-git
           - type: aur
             pkgbase: libblkmaker
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-libbase58 }}
+            depends:
+              - libbase58
           - type: aur
             pkgbase: patool
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-python-setuptools-reproducible }}
+            depends:
+              - python-setuptools-reproducible
           - type: aur
             pkgbase: protoc-gen-go-grpc
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-protoc-gen-go }}
+            depends:
+              - protoc-gen-go
           - type: aur
             pkgbase: qcm
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-cubeb }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-ctre }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-qcmbackend-git }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-qmlmaterial }}
+            depends:
+              - cubeb
+              - ctre
+              - qcmbackend-git
+              - qmlmaterial
           - type: aur
             pkgbase: watt-toolkit-git
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-dotnet-install }}
+            depends:
+              - dotnet-install
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
@@ -448,8 +460,6 @@ jobs:
       - prepare
       - tier0-packages
       - tier1-packages
-    outputs:
-      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
     strategy:
       fail-fast: false
       matrix:
@@ -457,33 +467,31 @@ jobs:
         package:
           - type: aur
             pkgbase: bfgminer-git
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-libbase58 }}
-              - ${{ needs.tier1-packages.outputs.artifact-id-libblkmaker }}
+            depends:
+              - libbase58
+              - libblkmaker
           - type: local
             pkgbase: local-ai
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-gorice }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-protoc-gen-go }}
-              - ${{ needs.tier1-packages.outputs.artifact-id.protoc-gen-go-grpc }}
+            depends:
+              - gorice
+              - protoc-gen-go
+              - protoc-gen-go-grpc
           - type: aur
             pkgbase: bottles
-            artifact-ids:
-              - ${{ needs.tier0-packages.outputs.artifact-id-icoextract }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-python-setuptools-reproducible }}
-              - ${{ needs.tier1-packages.outputs.artifact-id-patool }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-python-fvs }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-python-pathvalidate }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-python-steamgriddb }}
-              - ${{ needs.tier0-packages.outputs.artifact-id-vkbasalt-cli }}
+            depends:
+              - icoextract
+              - python-setuptools-reproducible
+              - patool
+              - python-fvs
+              - python-pathvalidate
+              - python-steamgriddb
+              - vkbasalt-cli
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
 
   prebuilt-packages:
     needs: prepare
-    outputs:
-      artifact-id-${{ matrix.package.pkgbase }}: ${{ steps.upload.outputs.artifact-id }}
     strategy:
       fail-fast: false
       matrix:
