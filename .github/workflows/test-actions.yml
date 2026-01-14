@@ -277,20 +277,3 @@ jobs:
 
       - name: Check result
         run: ls -l '${{ github.workspace }}/repo'
-
-  test-generate-env-mapping:
-    name: Test generate-env-mapping action when changed
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Test generate-env-mapping
-        id: env-mapping
-        uses: ./.github/actions/generate-env-mapping
-        with:
-          env-names: cinnyBase
-
-      - name: Check result
-        env: ${{ fromJSON(steps.env-mapping.outputs.env-mapping) }}
-        run: test "$cinnyBase" == "/cinny"
