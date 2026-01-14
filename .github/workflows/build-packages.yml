@@ -107,8 +107,6 @@ jobs:
             pkgbase: chromium-extension-web-store
           - type: aur
             pkgbase: cinny
-            env:
-              cinnyBase: /cinny
             preserve-env: cinnyBase
           - type: aur
             pkgbase: cleanmedia
@@ -263,9 +261,6 @@ jobs:
             pkgbase: spicetify-themes-git
           - type: aur
             pkgbase: spotube
-            env:
-              MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
-              MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
             preserve-env: MAKEPKG_SPOTUBE_LASTFM_API_KEY,MAKEPKG_SPOTUBE_LASTFM_API_SECRET
           - type: aur
             pkgbase: systemd-boot-pacman-hook
@@ -325,7 +320,10 @@ jobs:
 
       - name: Get srcinfo
         id: srcinfo
-        env: ${{ matrix.package.env }}
+        env: &env
+          cinnyBase: /cinny
+          MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
+          MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
@@ -351,7 +349,7 @@ jobs:
 
       - name: Update pkgver and pkgrel
         if: endsWith(matrix.package.pkgbase, '-git')
-        env: ${{ matrix.package.env }}
+        env: *env
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
