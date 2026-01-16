@@ -54,7 +54,7 @@ jobs:
               ;;
           esac
           {
-            echo "runs-on=$(jq --null-input --compat-output '$ARGS.positional' --args "${runs_on[@]}")"
+            echo "runs-on=$(jq --null-input --compact-output '$ARGS.positional' --args "${runs_on[@]}")"
             echo -n "platforms=${platforms[0]}"
             printf ",%s" "${platforms[@]:1}"
             echo
