@@ -11,19 +11,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Get platform
-      id: platform
-      shell: bash
-      run: |
-        sudo docker info
-        echo "platform=$(sudo docker info --format '{{ .OSType }}/{{ .Architecture }}')" >> "$GITHUB_OUTPUT"
-
     - name: Load image
       shell: bash
-      run: |
-        sudo docker load \
-          --platform '${{ steps.platform.outputs.platform }}' \
-          --input '${{ inputs.image-path }}'
+      run: sudo docker load --platform 'linux' --input '${{ inputs.image-path }}'
 
     - name: List images
       shell: bash
