@@ -378,12 +378,25 @@ jobs:
         id: target-arch
         run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
 
+      - name: Get cache key
+        id: cache-key
+        run: |
+          {
+            echo -n 'cache-key=pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}-'
+            if [[ -f '${{ steps.srcinfo.updated.outputs.stdout-path }}' ]]
+            then
+              echo '${{ hashFiles(steps.srcinfo-updated.outputs.stdout-path) }}'
+            else
+              echo '${{ hashFiles(steps.srcinfo.outputs.stdout-path) }}'
+            fi
+          } >> "$GITHUB_OUTPUT"
+
       - name: Cache built package
         id: cache
         uses: actions/cache@v4
         with:
           path: pkgdest
-          key: pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}-${{ hashFiles(steps.srcinfo-updated && steps.srcinfo-updated.outputs.stdout-path || steps.srcinfo.outputs.stdout-path) }}
+          key: ${{ steps.cache-key.outputs.cache-key }}
 
       - name: Clean runner
         if: matrix.package.clean-runner && steps.cache.outputs.cache-hit != 'true'
