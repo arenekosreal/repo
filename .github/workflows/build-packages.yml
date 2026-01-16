@@ -152,7 +152,7 @@ jobs:
           - type: local
             pkgbase: flatpak-builder-tools-git
           - type: aur
-            pkgbase: gorice
+            pkgbase: go.rice
           - type: aur
             pkgbase: gpt4all-chat
           - type: aur
@@ -484,7 +484,7 @@ jobs:
           - type: local
             pkgbase: local-ai
             depends:
-              - gorice
+              - go.rice
               - protoc-gen-go
               - protoc-gen-go-grpc
           - type: aur
