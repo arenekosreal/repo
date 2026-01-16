@@ -43,7 +43,7 @@ fi
 
 if [[ -n "$INPUT_STDOUT" ]]
 then
-    "${MAKEPKG[@]}" "$@" > "$INPUT_STDOUT"
+    "${MAKEPKG[@]}" "$@" | tee "$INPUT_STDOUT"
 else
     "${MAKEPKG[@]}" "$@"
 fi
