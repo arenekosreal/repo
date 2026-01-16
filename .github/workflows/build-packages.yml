@@ -569,7 +569,7 @@ jobs:
 
       - name: Clean downloaded packages
         run: |
-          find pkgdest -maxdepth 1 -type f ! -regex 'pkgdest/.+-${{ steps.target-arch.outputs.target-arch }}.pkg.tar.[0-9a-zA-Z]$' \
+          find pkgdest -maxdepth 1 -type f ! -regex 'pkgdest/.+.pkg.tar.[0-9a-zA-Z]+$' \
             -printf 'Removing %f...\n' \
             -delete
 
