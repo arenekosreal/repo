@@ -56,7 +56,7 @@ jobs:
           {
             echo "runs-on=$(jq --null-input --compact-output '$ARGS.positional' --args "${runs_on[@]}")"
             echo -n "platforms=${platforms[0]}"
-            if [[ "${!platforms[@]}" -gt 1 ]]
+            if [[ "${#platforms[@]}" -gt 1 ]]
             then
               printf ",%s" "${platforms[@]:1}"
             fi
