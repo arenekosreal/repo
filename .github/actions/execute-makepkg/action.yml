@@ -39,12 +39,9 @@ inputs:
     default: repo
 
 outputs:
-  stdout:
-    description: The stdout of makepkg
-    value: ${{ steps.output.outputs.stdout }}
   stdout-path:
     description: The path of text file contains makepkg's stdout
-    value: ${{ steps.output.outputs.stdout-path }}
+    value: ${{ steps.prepare.outputs.temp }}/stdout/makepkg
   
 runs:
   using: composite
@@ -97,14 +94,3 @@ runs:
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/pkgdest' '${{ inputs.pkgdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/logdest' '${{ inputs.logdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/startdir/'* '${{ inputs.where }}'
-    - name: Generate output
-      id: output
-      shell: bash
-      run: |
-        {
-          EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-          echo "stdout<<$EOF"
-          cat '${{ steps.prepare.outputs.temp }}/stdout/makepkg'
-          echo "$EOF"
-        } >> "$GITHUB_OUTPUT"
-        echo 'stdout-path=${{ steps.prepare.outputs.temp }}/stdout/makepkg' >> "$GITHUB_OUTPUT"
