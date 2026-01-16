@@ -14,7 +14,9 @@ runs:
     - name: Get platform
       id: platform
       shell: bash
-      run: echo "platform=$(sudo docker info --format '{{ .Version.OsArch }}')" >> "$GITHUB_OUTPUT"
+      run: |
+        sudo docker info
+        echo "platform=$(sudo docker info --format '{{ .OSType }}/{{ .Architecture }}')" >> "$GITHUB_OUTPUT"
 
     - name: Load image
       shell: bash
