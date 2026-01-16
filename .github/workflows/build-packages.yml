@@ -241,7 +241,7 @@ jobs:
           - type: aur
             pkgbase: qcm-ncm-plugin-git
           - type: aur
-            pkgbase: qmlbackend-git
+            pkgbase: qcmbackend-git
           - type: aur
             pkgbase: qmlmaterial
           - type: aur
