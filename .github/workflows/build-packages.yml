@@ -564,7 +564,10 @@ jobs:
           done < <(curl -L -u '${{ secrets.OBS_USERNAME }}:${{ secrets.OBS_PASSWORD }}' -H 'Accept: application/xml; charset=utf-8' "$API" | xq-python -r "$JQ_QUERY")
 
       - name: Clean downloaded packages
-        run: find pkgdest -maxdepth 1 -type f ! -regex '*.pkg.tar.[0-9a-zA-Z]$' -printf 'Removing %f...\n' -delete
+        run: |
+          find pkgdest -maxdepth 1 -type f ! -regex 'pkgdest/.+-${{ steps.target-arch.outputs.target-arch }}.pkg.tar.[0-9a-zA-Z]$' \
+            -printf 'Removing %f...\n' \
+            -delete
 
       - name: Generate metadata
         id: meta
