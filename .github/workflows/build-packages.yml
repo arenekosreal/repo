@@ -509,6 +509,7 @@ jobs:
             pkgbase: ungoogled-chromium-xdg
             project: home:ZhangHua
             package: ungoogled-chromium-xdg
+            filter: ungoogled-chromium-xdg
           - type: github
             pkgbase: firefox-xdg
             repo: arenekosreal/firefox-xdg
@@ -554,7 +555,7 @@ jobs:
         if: matrix.package.type == 'obs'
         run: |
           API='https://api.opensuse.org/published/${{ matrix.package.project }}/Arch/${{ steps.target-arch.outputs.target-arch }}'
-          JQ_QUERY='.directory.entry[]."@name" | select(test(".+-${{ steps.target-arch.outputs.target-arch }}\.pkg\.tar\.[0-9a-zA-Z]+$"))'
+          JQ_QUERY='.directory.entry[]."@name" | select(test("${{ matrix.package.filter }}.+-${{ steps.target-arch.outputs.target-arch }}.pkg.tar.[0-9a-zA-Z]+$"))'
           echo "::debug::API endpoint: $API"
           echo "::debug::JQ query: $JQ_QUERY"
           while read -r name
