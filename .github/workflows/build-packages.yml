@@ -292,6 +292,8 @@ jobs:
           - type: aur
             pkgbase: waylyrics
           - type: aur
+            pkgbase: web-ext
+          - type: aur
             pkgbase: xdg-ninja
           - type: local
             pkgbase: zuban
