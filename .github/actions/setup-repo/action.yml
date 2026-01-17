@@ -7,6 +7,9 @@ inputs:
   artifact-names:
     description: Newline-seperated artifact names of packages
     required: false
+  artifact-pattern:
+    description: A glob pattern to the artifacts of packages
+    required: false
   packages-path:
     description: The path in artifact contains packages
     required: false
@@ -51,6 +54,7 @@ runs:
       uses: ./.github/actions/download-artifacts
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
+        artifact-pattern: ${{ inputs.artifact-pattern }}
         names: ${{ inputs.artifact-names }}
         path: ${{ steps.prepare.outputs.temp }}
 
