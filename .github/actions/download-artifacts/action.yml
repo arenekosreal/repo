@@ -31,7 +31,7 @@ runs:
   steps:
     - name: Download artifact by id
       id: download-artifact-by-id
-      if: inputs.artifact-ids
+      if: inputs.artifact-ids || inputs.artifact-pattern
       uses: actions/download-artifact@v5
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
@@ -43,7 +43,7 @@ runs:
 
     - name: Download artifact by name
       id: download-artifact-by-name
-      if: inputs.names && ! inputs.artifact-ids
+      if: inputs.names && ! inputs.artifact-ids && ! inputs.artifact-pattern
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
