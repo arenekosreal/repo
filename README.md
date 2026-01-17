@@ -11,7 +11,7 @@ Collection of GitHub Actions and Workflows to work on Arch Linux packaging.
 
 ### Build on GitHub
 
-Go to [Actions](/../../actions), trigger [workflow](/../../actions/workflows/build-repo-packages.yml) manually.
+Go to [Actions](/../../actions), trigger [workflow](/../../actions/workflows/build-packages.yml) manually.
 
 If everything is fine, `os/<arch>` tag will be updated and new packages and repository are uploaded.
 
@@ -37,7 +37,7 @@ This repository requires those secrets:
 
 If you want to [build locally](#build-locally), you need to create a `.secrets` file in the repository and use `KEY=VALUE` format. Or you can pass them manually to act.
 
-Only secrets 1-7 are required for building packages and generating repository.
+Only secrets 1-6 are required for building packages and generating repository.
 
 ### Variables
 

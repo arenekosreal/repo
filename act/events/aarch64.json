@@ -1,8 +1,9 @@
 {
-    "act": {
-        "local": true
-    },
-    "inputs": {
-        "runs-on": "ubuntu-24.04-arm"
-    }
+  "act": {
+    "local": true
+  },
+  "inputs": {
+    "x86_64": false,
+    "aarch64": true
+  }
 }
