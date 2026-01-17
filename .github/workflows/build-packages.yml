@@ -98,6 +98,7 @@ jobs:
           - type: aur
             pkgbase: ayugram-desktop
             clean-runner: true
+            set-swap: 32G
           - type: aur
             pkgbase: basedpyright
           - type: aur
@@ -388,6 +389,24 @@ jobs:
       - name: Clean runner
         if: matrix.package.clean-runner && steps.cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/clean-runner
+
+      - name: Set swap
+        if: matrix.package.set-swap && steps.cache.outputs.cache-hit != 'true'
+        run: |
+          swapon --show
+
+          while read -r swap
+          do
+            echo "Swapping off $swap..."
+            sudo swapoff "$swap"
+            sudo rm -f "$swap"
+          done < <(swapon --noheadings --show=name)
+          sudo fallocate --length '${{ matrix.package.set-swap }}' /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+
+          swapon --show
 
       - name: Generate artifact names
         id: dependency-names
