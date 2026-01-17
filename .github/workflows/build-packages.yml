@@ -386,7 +386,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: pkgdest
-          key: pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}-${{ hashFiles(format('packages/{0}/*', matrix.package.pkgbase)) }}
+          key: pkgdest-${{ matrix.package.pkgbase }}-${{ steps.target-arch.outputs.target-arch }}-${{ hashFiles(format('packages/{0}/PKGBUILD', matrix.package.pkgbase)) }}
 
       - name: Clean runner
         if: matrix.package.clean-runner && steps.cache.outputs.cache-hit != 'true'
