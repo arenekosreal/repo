@@ -75,7 +75,7 @@ runs:
       run: |
         repo-add '${{ inputs.where }}/${{ inputs.repo-name }}.db${{ inputs.repo-suffix }}'
         find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/.+.pkg.tar.[0-9a-zA-Z]+$' \
-          -exec repo-add --include-sigs '${{ inputs.where }}/${{ inputs.repo-name }}.db${{ inputs.repo-suffix }}' '{}' +
+          -exec repo-add ${{ inputs.gpg-fingerprint && '--include-sigs' || '' }} '${{ inputs.where }}/${{ inputs.repo-name }}.db${{ inputs.repo-suffix }}' '{}' +
 
     - name: Sign repository
       if: inputs.gpg-fingerprint
