@@ -616,6 +616,8 @@ jobs:
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
     runs-on: ${{ matrix.runs-on }}
+    permissions:
+      contents: write
     name: Generate and release repository
     steps:
       - name: Checkout
