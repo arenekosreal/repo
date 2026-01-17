@@ -67,7 +67,7 @@ runs:
       shell: bash
       run: |
         find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/.+.pkg.tar.[0-9a-zA-Z]+$' \
-          -exec gpg --batch --yes --passprase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
+          -exec gpg --batch --yes --passphrase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
                     --detach-sign --local-user '${{ inputs.gpg-fingerprint }}' --output '{}.sig' '{}' \;
 
     - name: Generate repository
