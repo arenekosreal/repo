@@ -83,7 +83,6 @@ jobs:
   tier0-packages:
     needs: prepare
     strategy:
-      fail-fast: false
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
@@ -451,7 +450,6 @@ jobs:
       - prepare
       - tier0-packages
     strategy:
-      fail-fast: false
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
@@ -496,7 +494,6 @@ jobs:
       - tier0-packages
       - tier1-packages
     strategy:
-      fail-fast: false
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
@@ -528,7 +525,6 @@ jobs:
   prebuilt-packages:
     needs: prepare
     strategy:
-      fail-fast: false
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
@@ -616,7 +612,6 @@ jobs:
       - tier2-packages
       - prebuilt-packages
     strategy:
-      fail-fast: false
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
     runs-on: ${{ matrix.runs-on }}
