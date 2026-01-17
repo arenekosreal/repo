@@ -50,7 +50,7 @@ runs:
         fi
 
     - name: Get packages
-      if: inputs.artifact-ids || inputs.artifact-names
+      if: inputs.artifact-ids || inputs.artifact-pattern || inputs.artifact-names
       uses: ./.github/actions/download-artifacts
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
