@@ -436,6 +436,9 @@ jobs:
           preserve-env: ${{ matrix.package.preserve-env }}
           args: ${{ runner.arch != 'X64' && '--ignorearch' || '' }}
 
+      - name: List contents to be upload
+        run: ls -lR pkgdest
+
       - name: Upload package
         id: upload
         uses: ./.github/actions/upload-artifacts
