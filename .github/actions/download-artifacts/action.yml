@@ -56,7 +56,7 @@ runs:
       id: download-artifact
       shell: bash
       run: |
-        if '${{ !! inputs.artifact-ids }}'
+        if '${{ !! inputs.artifact-ids || !! inputs.artifact-pattern }}'
         then
           echo 'download-path=${{ steps.download-artifact-by-id.outputs.download-path }}' >> "$GITHUB_OUTPUT"
         elif '${{ !! inputs.names }}'
