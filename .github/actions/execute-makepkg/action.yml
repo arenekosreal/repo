@@ -89,7 +89,7 @@ runs:
     - name: Copy generated files
       shell: bash
       run: |
-        sudo rm -rf '${{ inputs.srcdest }}'
+        sudo rm -rf '${{ inputs.srcdest }}' '${{ inputs.pkgdest }}' '${{ inputs.logdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/srcdest' '${{ inputs.srcdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/pkgdest' '${{ inputs.pkgdest }}'
         cp -a --no-preserve=ownership '${{ steps.prepare.outputs.temp }}/logdest' '${{ inputs.logdest }}'
