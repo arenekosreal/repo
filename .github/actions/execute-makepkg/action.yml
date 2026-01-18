@@ -79,7 +79,7 @@ runs:
           --env INPUT_STDOUT='/output/stdout/makepkg' \
           --env INPUT_REPO_NAME='${{ inputs.repo-name }}' \
           --env-file /dev/stdin \
-          --volume '${{ steps.prepare.outputs.temp }}/startdir:/startdir' \
+          --volume '${{ steps.prepare.outputs.temp }}/startdir:/input/startdir' \
           --volume '${{ steps.prepare.outputs.temp }}/pkgdest:/output/pkgdest' \
           --volume '${{ steps.prepare.outputs.temp }}/logdest:/output/logdest' \
           --volume '${{ steps.prepare.outputs.temp }}/stdout:/output/stdout' \

@@ -39,7 +39,7 @@ then
         -exec "${GPG[@]}" --import {} \;
 fi
 
-"${CP[@]}" /input/srcdest /
+"${CP[@]}" --no-preserve=ownership /input/srcdest /input/startdir /
 
 if [[ -n "$INPUT_STDOUT" ]]
 then
@@ -49,4 +49,4 @@ else
 fi
 
 cp -a --no-preserve=ownership /pkgdest /logdest /output
-cp -a --no-preserve=ownership /srcdest /input
+cp -a --no-preserve=ownership /srcdest /startdir /input
