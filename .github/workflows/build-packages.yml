@@ -699,7 +699,6 @@ jobs:
           MAX_PARALLEL=70
           while read -r line
           do
-            echo "Uploading $line..."
             gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
             sleep 1
           done < <(ls -1 '${{ github.workspace }}/${{ github.repository_owner }}' | sed 's|^|${{ github.workspace }}/${{ github.repository_owner }}/|' | xargs -n "$MAX_PARALLEL")
