@@ -12,8 +12,8 @@ on:
         type: boolean
         description: If build for aarch64 architecture
         default: false
-  #schedule:
-  #  - cron: '0 22 * * *'
+  schedule:
+    - cron: '0 22 * * *'
 jobs:
   prepare:
     name: Prepare contents required by building
