@@ -702,6 +702,8 @@ jobs:
             gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
             sleep 1
           done < <(ls -1 '${{ github.workspace }}/${{ github.repository_owner }}' | xargs -n "$MAX_PARALLEL")
+          echo "Finalizing release..."
+          gh release edit 'os/${{ steps.target-arch.outputs.target-arch }}' --draft=false
 
       - name: Save
         if: github.event.act.local
