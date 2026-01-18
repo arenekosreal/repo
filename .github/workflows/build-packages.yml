@@ -92,8 +92,10 @@ jobs:
             pkgbase: aria2cd
           - type: aur
             pkgbase: ariang-git
+            devel: true
           - type: aur
             pkgbase: ariang-native-git
+            devel: true
           - type: aur
             pkgbase: ayugram-desktop
             clean-runner: true
@@ -151,6 +153,7 @@ jobs:
             pkgbase: firefox-extension-localcdn
           - type: local
             pkgbase: flatpak-builder-tools-git
+            devel: true
           - type: aur
             pkgbase: go.rice
           - type: aur
@@ -159,6 +162,7 @@ jobs:
             pkgbase: hath-rust
           - type: aur
             pkgbase: icalingua++-git
+            devel: true
           - type: aur
             pkgbase: icecream
           - type: aur
@@ -171,6 +175,7 @@ jobs:
             pkgbase: libbase58
           - type: aur
             pkgbase: libvgm-git
+            devel: true
           - type: aur
             pkgbase: linux-pf
             clean-runner: true
@@ -178,8 +183,10 @@ jobs:
             pkgbase: lyrica
           - type: aur
             pkgbase: mpv-memo-git
+            devel: true
           - type: aur
             pkgbase: mpv-thumbfast-noenabled-git
+            devel: true
           - type: aur
             pkgbase: mpv-uosc
           - type: aur
@@ -218,12 +225,16 @@ jobs:
             pkgbase: pipewire-module-xrdp
           - type: aur
             pkgbase: pipewire-module-xrdp-git
+            devel: true
           - type: aur
             pkgbase: plasma-gamemode-git
+            devel: true
           - type: aur
             pkgbase: plasma6-applets-caraoke-git
+            devel: true
           - type: aur
             pkgbase: plasma6-wallpapers-wallpaper-engine-git
+            devel: true
           - type: aur
             pkgbase: protoc-gen-go
           - type: aur
@@ -240,12 +251,15 @@ jobs:
             pkgbase: q4wine
           - type: aur
             pkgbase: qcm-ncm-plugin-git
+            devel: true
           - type: aur
             pkgbase: qcmbackend-git
+            devel: true
           - type: aur
             pkgbase: qmlmaterial
           - type: aur
             pkgbase: rclone-aliyundrive-git
+            devel: true
           - type: aur
             pkgbase: realitlscanner
           - type: aur
@@ -262,10 +276,13 @@ jobs:
             pkgbase: spicetify-cli
           - type: aur
             pkgbase: spicetify-extensions-rxri-git
+            devel: true
           - type: aur
             pkgbase: spicetify-theme-nord-git
+            devel: true
           - type: aur
             pkgbase: spicetify-themes-git
+            devel: true
           - type: aur
             pkgbase: spotube
             preserve-env: MAKEPKG_SPOTUBE_LASTFM_API_KEY,MAKEPKG_SPOTUBE_LASTFM_API_SECRET
@@ -280,8 +297,10 @@ jobs:
             clean-runner: true
           - type: aur
             pkgbase: unblockneteasemusic-golang-git
+            devel: true
           - type: aur
             pkgbase: usbguard-notifier-git
+            devel: true
           - type: aur
             pkgbase: vkbasalt-cli
           - type: aur
@@ -358,7 +377,7 @@ jobs:
           dest: packages/${{ matrix.package.pkgbase }}/keys/pgp
 
       - name: Update pkgver and pkgrel
-        if: endsWith(matrix.package.pkgbase, '-git')
+        if: matrix.package.devel
         env: *env
         uses: ./.github/actions/execute-makepkg
         with:
@@ -367,7 +386,7 @@ jobs:
           args: ${{ runner.arch != 'X64' && '--ignorearch' || '' }} --nobuild
 
       - name: Update srcinfo
-        if: endsWith(matrix.package.pkgbase, '-git')
+        if: matrix.package.devel
         id: srcinfo-updated
         env: *env
         uses: ./.github/actions/execute-makepkg
@@ -485,6 +504,7 @@ jobs:
             pkgbase: watt-toolkit-git
             depends:
               - dotnet-install
+            devel: true
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
@@ -503,6 +523,7 @@ jobs:
             depends:
               - libbase58
               - libblkmaker
+            devel: true
           - type: local
             pkgbase: local-ai
             depends:
