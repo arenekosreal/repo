@@ -86,7 +86,7 @@ runs:
       shell: bash
       run: |
         find '${{ inputs.where }}' -maxdepth 1 -type f -regex '${{ inputs.where }}/${{ inputs.repo-name }}.\(db\|files\)${{ inputs.repo-suffix }}$' \
-          -exec gpg --batch --yes --passprase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
+          -exec gpg --batch --yes --passphrase '${{ inputs.gpg-password }}' --pinentry-mode loopback \
                     --detach-sign --local-user '${{ inputs.gpg-fingerprint }}' --output '{}.sig' '{}' \;
         if '${{ !! inputs.repo-suffix }}'
         then
