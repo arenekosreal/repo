@@ -25,21 +25,36 @@ inputs:
 outputs:
   download-path:
     description: Path of artifact download
-    value: ${{ steps.download-artifact.outputs.download-path }}
+    value: ${{ steps.download-artifact-by-id.outputs.download-path ||
+               steps.download-artifact-by-pattern.outputs.download-path ||
+               steps.download-artifact-by-name.outputs.download-path }}
 runs:
   using: composite
   steps:
     - name: Download artifact by id
       id: download-artifact-by-id
-      if: inputs.artifact-ids || inputs.artifact-pattern
+      if: inputs.artifact-ids
       uses: actions/download-artifact@v5
       with:
         artifact-ids: ${{ inputs.artifact-ids }}
         path: ${{ inputs.path }}
-        pattern: ${{ inputs.artifact-pattern }}
         merge-multiple: true
         github-token: ${{ inputs.github-token }}
         run-id: ${{ inputs.run-id }}
+
+    - name: Download artifact by pattern
+      id: download-artifact-by-pattern
+      if: inputs.pattern && ! inputs.artifact-ids && ! inputs.names
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        mkdir -p '${{ inputs.path }}'
+        gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}' --pattern '${{ inputs.pattern }}'
+        find '${{ inputs.path }}' -mindepth 2 -type f -name "*.tar" \
+          -exec cp -vt '${{ inputs.path }}' {} +
+        find '${{ inputs.path }}' -mindepth 1 -maxdepth 1 -type d -exec rm -rfv {} +
+        echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
 
     - name: Download artifact by name
       id: download-artifact-by-name
@@ -49,23 +64,9 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       run: |
         mkdir -p '${{ inputs.path }}'
-        sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs gh run download --dir '${{ inputs.path }}'
+        sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs \
+          gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}'
         echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
-
-    - name: Generate output
-      id: download-artifact
-      shell: bash
-      run: |
-        if '${{ !! inputs.artifact-ids || !! inputs.artifact-pattern }}'
-        then
-          echo 'download-path=${{ steps.download-artifact-by-id.outputs.download-path }}' >> "$GITHUB_OUTPUT"
-        elif '${{ !! inputs.names }}'
-        then
-          echo 'download-path=${{ steps.download-artifact-by-name.outputs.download-path }}' >> "$GITHUB_OUTPUT"
-        else
-          echo "::error::Unable to download artifacts by name or id."
-          exit 1
-        fi
 
     - name: Unpack files
       shell: bash
