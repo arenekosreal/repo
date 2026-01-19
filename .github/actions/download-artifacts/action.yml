@@ -44,7 +44,7 @@ runs:
 
     - name: Download artifact by pattern
       id: download-artifact-by-pattern
-      if: inputs.pattern && ! inputs.artifact-ids && ! inputs.names
+      if: inputs.artifact-pattern && ! inputs.artifact-ids
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
