@@ -50,7 +50,7 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       run: |
         mkdir -p '${{ inputs.path }}'
-        gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}' --pattern '${{ inputs.pattern }}'
+        gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}' --pattern '${{ inputs.artifact-pattern }}'
         find '${{ inputs.path }}' -mindepth 2 -type f -name "*.tar" \
           -exec cp -vt '${{ inputs.path }}' {} +
         find '${{ inputs.path }}' -mindepth 1 -maxdepth 1 -type d -exec rm -rfv {} +
