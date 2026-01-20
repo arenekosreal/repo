@@ -26,8 +26,9 @@ outputs:
   download-path:
     description: Path of artifact download
     value: ${{ steps.download-artifact-by-id.outputs.download-path ||
-               steps.download-artifact-by-pattern.outputs.download-path ||
-               steps.download-artifact-by-name.outputs.download-path }}
+               steps.download-artifact-by-name.outputs.download-path ||
+               steps.download-artifact-by-pattern.outputs.download-path }}
+
 runs:
   using: composite
   steps:
@@ -42,9 +43,24 @@ runs:
         github-token: ${{ inputs.github-token }}
         run-id: ${{ inputs.run-id }}
 
+    - name: Download artifact by name
+      id: download-artifact-by-name
+      if: inputs.names && ! inputs.artifact-ids
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        mkdir -p '${{ inputs.path }}'
+        sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs \
+          gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}'
+        find '${{ inputs.path }}' -mindepth 2 -type f -name "*.tar" \
+          -exec cp -vt '${{ inputs.path }}' {} +
+        find '${{ inputs.path }}' -mindepth 1 -maxdepth 1 -type d -exec rm -rfv {} +
+        echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
+
     - name: Download artifact by pattern
       id: download-artifact-by-pattern
-      if: inputs.artifact-pattern && ! inputs.artifact-ids
+      if: inputs.artifact-pattern && ! inputs.artifact-ids && ! inputs.names
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
@@ -54,18 +70,6 @@ runs:
         find '${{ inputs.path }}' -mindepth 2 -type f -name "*.tar" \
           -exec cp -vt '${{ inputs.path }}' {} +
         find '${{ inputs.path }}' -mindepth 1 -maxdepth 1 -type d -exec rm -rfv {} +
-        echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
-
-    - name: Download artifact by name
-      id: download-artifact-by-name
-      if: inputs.names && ! inputs.artifact-ids && ! inputs.artifact-pattern
-      shell: bash
-      env:
-        GH_TOKEN: ${{ inputs.github-token }}
-      run: |
-        mkdir -p '${{ inputs.path }}'
-        sed '/^[[:space:]]*$/d;s/^/-n /g' <<< '${{ inputs.names }}' | xargs \
-          gh run download '${{ inputs.run-id }}' --dir '${{ inputs.path }}'
         echo "download-path=$(realpath -m '${{ inputs.path }}')" >> "$GITHUB_OUTPUT"
 
     - name: Unpack files
