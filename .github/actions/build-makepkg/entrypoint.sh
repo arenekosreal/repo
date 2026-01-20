@@ -43,6 +43,7 @@ fi
 
 if [[ -n "$INPUT_STDOUT" ]]
 then
+    set -o pipefail
     "${MAKEPKG[@]}" "$@" | tee "$INPUT_STDOUT"
 else
     "${MAKEPKG[@]}" "$@"
