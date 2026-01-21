@@ -42,7 +42,22 @@ jobs:
       - name: Checkout
         if: steps.check-tag.outputs.tag
         uses: actions/checkout@v6
-      - name: Clone repository
+        with:
+          sparse-checkout: |
+            .github/actions
+            patches/ruffle-nightly
+      - name: Build makepkg
+        id: build-makepkg
+        if: steps.check-tag.outputs.tag
+        uses: ./.github/actions/build-makepkg
+        with:
+          platforms: linux/amd64
+      - name: Setup makepkg
+        if: steps.build-makepkg.outputs.image-path
+        uses: ./.github/actions/setup-makepkg
+        with:
+          image-path: ${{ steps.build-makepkg.outputs.image-path }}
+      - name: Clone AUR repository
         if: steps.check-tag.outputs.tag
         run: |
           git clone ssh://aur@aur.archlinux.org/ruffle-nightly.git
@@ -83,7 +98,7 @@ jobs:
           target_sha256="${{ steps.target-sha256.outputs.sha256 }}"
           sed -i "s/_date=$current_date/_date=$target_date/;s/$current_sha256/$target_sha256/" \
             ruffle-nightly/PKGBUILD
-          if git -C ruffle-nightly --no-pager diff --exit-code
+          if git -C ruffle-nightly --no-pager diff --exit-code PKGBUILD
           then
             echo "PKGBUILD is not updated."
             echo "updated=false" >> "$GITHUB_OUTPUT"
@@ -92,31 +107,36 @@ jobs:
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Update .SRCINFO
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
-        uses: arenekosreal/makepkg-action@v0.3.1
+        id: update-srcinfo
+        if: steps.update-pkgver.outputs.updated == 'true'
+        uses: ./.github/actions/execute-makepkg
         with:
-          builddir: ruffle-nightly
+          where: ruffle-nightly
           args: --printsrcinfo
-          stdout: ruffle-nightly/.SRCINFO
+      - name: Copy updated .SRCINFO
+        if: steps.update-srcinfo.outputs.stdout-path
+        run: |
+          cp '${{ steps.update-srcinfo.outputs.stdout-path }}' ruffle-nightly/.SRCINFO
+          git -C ruffle-nightly --no-pager diff .SRCINFO
       - name: Commit change
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
+        if: steps.check-tag.outputs.date
         run: |
           git -C ruffle-nightly commit --all -m "Bump to ${{ steps.check-tag.outputs.date }}"
       - name: Patch source
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
-        run: |
-          find "patches/ruffle-nightly" -maxdepth 1 -mindepth 1 -type f -name '*.patch' -o -name '*.diff' \
-            -printf "Applying patch %p...\n" \
-            -exec patch -Np1 -d ruffle-nightly -i '../{}' \;
+        if: steps.update-pkgver.outputs.updated == 'true'
+        uses: ./.github/actions/apply-patches
+        with:
+          where: ruffle-nightly
+          pkgbase: ruffle-nightly
       - name: Free space
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
+        if: steps.update-pkgver.outputs.updated == 'true'
         uses: ./.github/actions/clean-runner
       - name: Try build
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
-        uses: arenekosreal/makepkg-action@v0.3.1
+        if: steps.update-pkgver.outputs.updated == 'true'
+        uses: ./.github/actions/execute-makepkg
         with:
-          builddir: ruffle-nightly
+          where: ruffle-nightly
       - name: Push to AUR
-        if: steps.check-tag.outputs.tag && steps.update-pkgver.outputs.updated == 'true'
+        if: steps.update-pkgver.outputs.updated == 'true'
         run: |
           git -C ruffle-nightly push
