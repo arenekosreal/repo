@@ -321,6 +321,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Get target arch
+        id: target-arch
+        run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
+
       - name: Get PKGBUILD from AUR
         if: matrix.package.type == 'aur'
         uses: ./.github/actions/download-aur-pkgbase
@@ -345,6 +349,24 @@ jobs:
         with:
           where: packages/${{ matrix.package.pkgbase }}
           pkgbase: ${{ matrix.package.pkgbase }}
+
+      - name: Generate artifact names
+        id: dependency-names
+        if: matrix.package.depends
+        run: |
+          {
+            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
+            echo "artifact-names<<$EOF"
+            jq -r '.[]' <<< '${{ toJSON(matrix.package.depends) }}' | sed 's/^/pkgdest-/g;s/$/-${{ steps.target-arch.outputs.target-arch }}/;'
+            echo "$EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate repository
+        if: matrix.package.depends
+        uses: ./.github/actions/setup-repo
+        with:
+          artifact-names: ${{ steps.dependency-names.outputs.artifact-names }}
+          where: ${{ github.workspace }}/repo
 
       - name: Get srcinfo
         id: srcinfo
@@ -395,10 +417,6 @@ jobs:
           preserve-env: ${{ matrix.package.preserve-env }}
           args: --printsrcinfo
 
-      - name: Get target arch
-        id: target-arch
-        run: echo "target-arch=$(uname -m)" >> "$GITHUB_OUTPUT"
-
       - name: Cache built package
         id: cache
         uses: actions/cache@v4
@@ -427,24 +445,6 @@ jobs:
           sudo swapon /mnt/swapfile
 
           swapon --show
-
-      - name: Generate artifact names
-        id: dependency-names
-        if: matrix.package.depends
-        run: |
-          {
-            EOF="$(dd if=/dev/urandom bs=15 count=1 status=none | base64)"
-            echo "artifact-names<<$EOF"
-            jq -r '.[]' <<< '${{ toJSON(matrix.package.depends) }}' | sed 's/^/pkgdest-/g;s/$/-${{ steps.target-arch.outputs.target-arch }}/;'
-            echo "$EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Generate repository
-        if: matrix.package.depends && steps.cache.outputs.cache-hit != 'true'
-        uses: ./.github/actions/setup-repo
-        with:
-          artifact-names: ${{ steps.dependency-names.outputs.artifact-names }}
-          where: ${{ github.workspace }}/repo
 
       - name: Build package
         if: steps.cache.outputs.cache-hit != 'true'
