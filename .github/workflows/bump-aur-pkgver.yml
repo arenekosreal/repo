@@ -119,7 +119,7 @@ jobs:
           cp '${{ steps.update-srcinfo.outputs.stdout-path }}' ruffle-nightly/.SRCINFO
           git -C ruffle-nightly --no-pager diff .SRCINFO
       - name: Commit change
-        if: steps.check-tag.outputs.date
+        if: steps.update-pkgver.outputs.updated == 'true'
         run: |
           git -C ruffle-nightly commit --all -m "Bump to ${{ steps.check-tag.outputs.date }}"
       - name: Patch source
