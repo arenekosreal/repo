@@ -122,8 +122,6 @@ jobs:
           - type: aur
             pkgbase: cloudflarespeedtest
           - type: aur
-            pkgbase: crow-translate
-          - type: aur
             pkgbase: csharp-ls
           - type: aur
             pkgbase: ctre
