@@ -693,7 +693,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           echo "Checking existing release..."
-          if gh release view 'os/${{ steps.target-arch.outputs.target-arch }}'
+          if test "$(gh release list --json tagName --jq '[.[] | select(.tagName == "os/${{ steps.target-arch.outputs.target-arch }}")] | length')" -gt 0
           then
             echo "Removing existing release..."
             gh release delete 'os/${{ steps.target-arch.outputs.target-arch }}' --cleanup-tag --yes
