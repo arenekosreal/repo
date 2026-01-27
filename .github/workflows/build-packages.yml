@@ -553,9 +553,6 @@ jobs:
             project: home:ZhangHua
             package: ungoogled-chromium-xdg
             filter: ungoogled-chromium-xdg
-          - type: github
-            pkgbase: firefox-xdg
-            repo: arenekosreal/firefox-xdg
     runs-on: ${{ matrix.runs-on }}
     name: Download prebuilt ${{ matrix.package.pkgbase }}
     steps:
