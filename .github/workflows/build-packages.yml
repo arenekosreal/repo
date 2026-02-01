@@ -704,6 +704,7 @@ jobs:
         if: ${{ ! github.event.act.local }}
         env:
           GH_TOKEN: ${{ github.token }}
+          TIMEFORMAT: '%0R'
         run: |
           echo "Creating release..."
           gh release create 'os/${{ steps.target-arch.outputs.target-arch }}' \
@@ -713,10 +714,16 @@ jobs:
           echo "Uploading files..."          
           # https://github.com/cli/cli/issues/9586
           MAX_PARALLEL=70
+          MIN_SECONDS=60
           while read -r line
           do
-            gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
-            sleep 1
+            real_time="$(time gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line)"
+            if [[ "$real_time" -lt "$MIN_SECONDS" ]]
+            then
+              sleep_time="$(( MIN_SECONDS - real_time ))"
+              echo "Uploading is too quick, sleep $sleep_time second(s) to slow down..."
+              sleep "$sleep_time"
+            fi
           done < <(ls -1 '${{ github.workspace }}/${{ github.repository_owner }}' | sed 's|^|${{ github.workspace }}/${{ github.repository_owner }}/|' | xargs -n "$MAX_PARALLEL")
           echo "Finalizing release..."
           gh release edit 'os/${{ steps.target-arch.outputs.target-arch }}' --draft=false
