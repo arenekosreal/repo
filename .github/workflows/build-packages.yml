@@ -704,7 +704,6 @@ jobs:
         if: ${{ ! github.event.act.local }}
         env:
           GH_TOKEN: ${{ github.token }}
-          TIMEFORMAT: '%0R'
         run: |
           echo "Creating release..."
           gh release create 'os/${{ steps.target-arch.outputs.target-arch }}' \
@@ -717,7 +716,10 @@ jobs:
           MIN_SECONDS=60
           while read -r line
           do
-            real_time="$(time gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line)"
+            /usr/bin/time -o '${{ runner.temp }}/gh-upload-time' -f "%e" -- \
+              gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
+            real_time="$(< '${{ runner.temp }}/gh-upload-time')"
+            echo "Uploading uses $real_time second(s)."
             if [[ "$real_time" -lt "$MIN_SECONDS" ]]
             then
               sleep_time="$(( MIN_SECONDS - real_time ))"
