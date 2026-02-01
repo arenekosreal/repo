@@ -93,7 +93,7 @@ jobs:
           tar -cvpf temp.tar temp:invalid.txt
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: upload
         with:
           name: temp-download
