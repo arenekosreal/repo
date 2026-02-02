@@ -718,7 +718,7 @@ jobs:
           do
             /usr/bin/time -o '${{ runner.temp }}/gh-upload-time' -f "%e" -- \
               gh release upload 'os/${{ steps.target-arch.outputs.target-arch }}' $line
-            real_time="$(< '${{ runner.temp }}/gh-upload-time')"
+            real_time="$(printf "%.0f\n" "$(< '${{ runner.temp }}/gh-upload-time')")"
             echo "Uploading uses $real_time second(s)."
             if [[ "$real_time" -lt "$MIN_SECONDS" ]]
             then
