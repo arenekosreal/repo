@@ -268,10 +268,8 @@ jobs:
             pkgbase: sing-box
           - type: local
             pkgbase: sing-geoip
-            devel: true
           - type: local
             pkgbase: sing-geosite
-            devel: true
           - type: aur
             pkgbase: spicetify-cli
           - type: aur
