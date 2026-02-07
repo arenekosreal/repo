@@ -266,9 +266,9 @@ jobs:
             pkgbase: ruffle-nightly
           - type: aur
             pkgbase: sing-box
-          - type: aur
+          - type: local
             pkgbase: sing-geoip
-          - type: aur
+          - type: local
             pkgbase: sing-geosite
           - type: aur
             pkgbase: spicetify-cli

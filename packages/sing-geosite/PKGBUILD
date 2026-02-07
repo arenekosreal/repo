@@ -1,0 +1,45 @@
+_commit=dd64ae0ebf2ee69166c0510042b3e96c085f27df
+
+pkgbase=sing-geosite
+pkgname=(sing-geosite-db sing-geosite-rule-set)
+pkgver=20260207044021
+pkgrel=1
+arch=(any)
+url=https://github.com/SagerNet/sing-geosite
+license=(GPL-3.0-or-later)
+makedepends=(go)
+source=("$pkgbase-$_commit.tar.gz::$url/archive/$_commit.tar.gz")
+sha256sums=('6a8095a43720bea87791810c0cd4eb6d374cb8ad19a960ce50c987e10f2a6c2f')
+
+prepare() {
+    cd "$pkgbase-$_commit"
+    export GOPATH="$srcdir"
+    go mod download -modcacherw
+}
+pkgver() {
+    date -u${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH} +%Y%m%d%H%M%S
+}
+build() {
+    cd "$pkgbase-$_commit"
+    export CGO_CPPFLAGS="$CPPFLAGS"
+    export CGO_CFLAGS="$CFLAGS"
+    export CGO_CXXFLAGS="$CXXFLAGS"
+    export CGO_LDFLAGS="$LDFLAGS"
+    export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
+    export GOPATH="$srcdir"
+    NO_SKIP=true go run -v .
+}
+package_sing-geosite-db() {
+    pkgdesc="Geosite database for sing-box."
+    provides=(sing-geosite)
+
+    install -Dvm644 -t "$pkgdir/usr/share/sing-box" \
+        "$pkgbase-$_commit/sing-geosite"*.db    
+}
+package_sing-geosite-rule-set() {
+    pkgdesc="Geosite rule sets for sing-box."
+    provides=(sing-geosite)
+
+    install -Dvm644 -t "$pkgdir/usr/share/sing-box" \
+        "$pkgbase-$_commit/rule-set/geosite-"*.srs
+}
