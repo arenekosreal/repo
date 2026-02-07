@@ -34,7 +34,7 @@ package_sing-geosite-db() {
     provides=(sing-geosite)
 
     install -Dvm644 -t "$pkgdir/usr/share/sing-box" \
-        "$pkgbase-$_commit/sing-geosite"*.db    
+        "$pkgbase-$_commit/geosite"*.db    
 }
 package_sing-geosite-rule-set() {
     pkgdesc="Geosite rule sets for sing-box."
