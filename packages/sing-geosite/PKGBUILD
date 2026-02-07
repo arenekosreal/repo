@@ -2,7 +2,7 @@ _commit=dd64ae0ebf2ee69166c0510042b3e96c085f27df
 
 pkgbase=sing-geosite
 pkgname=(sing-geosite-db sing-geosite-rule-set)
-pkgver=20260207044021
+pkgver=20260207051345
 pkgrel=1
 arch=(any)
 url=https://github.com/SagerNet/sing-geosite
@@ -13,6 +13,7 @@ sha256sums=('6a8095a43720bea87791810c0cd4eb6d374cb8ad19a960ce50c987e10f2a6c2f')
 
 prepare() {
     cd "$pkgbase-$_commit"
+    sed -i '/os.Stdout.WriteString/ d' main.go
     export GOPATH="$srcdir"
     go mod download -modcacherw
 }

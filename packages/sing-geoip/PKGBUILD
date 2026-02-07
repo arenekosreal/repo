@@ -2,7 +2,7 @@ _commit=ecd02c178af5efbac38d427a8d178f940327de1f
 
 pkgbase=sing-geoip
 pkgname=(sing-geoip-db sing-geoip-rule-set)
-pkgver=20260207045628
+pkgver=20260207051600
 pkgrel=1
 arch=(any)
 url=https://github.com/SagerNet/sing-geoip
@@ -13,6 +13,7 @@ sha256sums=('4da5600e19c872f539853261c84936b9e08344cadf85561cf599ac3f8a58925b')
 
 prepare() {
     cd "$pkgbase-$_commit"
+    sed -i '/os.Stdout.WriteString/ d' main.go
     export GOPATH="$srcdir"
     go mod download -modcacherw
 }
