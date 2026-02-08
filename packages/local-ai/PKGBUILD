@@ -3,14 +3,13 @@
 pkgbase=local-ai
 pkgname=(local-ai
          local-ai-backend-llama-cpp-openblas
-         local-ai-backend-bark-cpp
          local-ai-backend-huggingface
          local-ai-backend-local-store
          local-ai-backend-piper
          local-ai-backend-silero-vad
          local-ai-backend-stablediffusion-ggml
          local-ai-backend-whisper-openblas)
-pkgver=3.10.1
+pkgver=3.11.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -22,20 +21,19 @@ makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
-        "0003-avoid-gobark-flags-being-applied-to-cmake.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
         "0005-do-not-clean-build-dir-in-whisper.diff")
-sha256sums=('413a21b5b5d6c39be34f2fb8894091d057c482169852b9ffa1ca207988ecb90f'
+sha256sums=('0172861c49681d3df5eae1e3847ae2fd162d32ee0ba1bfb245c5667983856792'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
-            '24e3895abb97aebf94bb2af4203922a6480974be88947a5826a2fffda9e6c29e'
             'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3'
             '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip)
 
 _llama_cpp_variants=(avx avx2 avx512 fallback grpc rpc-server)
-_golang_backends=(bark-cpp piper local-store huggingface silero-vad stablediffusion-ggml whisper)
+_backends=(piper local-store huggingface silero-vad stablediffusion-ggml
+           whisper)
 
 _strip_file() {
     case "$(file -Sib "$1")" in
@@ -53,13 +51,11 @@ _strip_file() {
 prepare() {
     cd "$srcdir/LocalAI"
     make -C backend/cpp/llama-cpp llama.cpp
-    make -C backend/go/bark-cpp sources/bark.cpp
     make -C backend/go/piper sources/go-piper
     make -C backend/go/silero-vad sources/onnxruntime
     make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
     make -C backend/go/whisper sources/whisper.cpp
     patch -Np1 -i ../0001-disable-installing-extra-tools.diff
-    patch -Np1 -i ../0003-avoid-gobark-flags-being-applied-to-cmake.diff
     patch -Np1 -d backend/go/piper/sources/go-piper -i "$srcdir/0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
     patch -Np1 -i ../0005-do-not-clean-build-dir-in-whisper.diff
 }
@@ -85,7 +81,7 @@ build() {
     done
     local backend
     # Golang backends
-    for backend in "${_golang_backends[@]}"
+    for backend in "${_backends[@]}"
     do
         echo "Building $backend..."
         make -C "backend/go/$backend" \
@@ -122,18 +118,6 @@ package_local-ai-backend-llama-cpp-openblas() {
         _strip_file "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/llama-cpp-$variant"
     done
     install -Dvm755 "backend/cpp/llama-cpp/run.sh" "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/run.sh"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-bark-cpp() {
-    pkgdesc+=" (bark-cpp backend)"
-    groups=(local-ai-backend)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/bark-cpp/" \
-        "backend/go/bark-cpp/bark-cpp" \
-        "backend/go/bark-cpp/run.sh"
-    _strip_file "$pkgdir/usr/lib/$pkgbase/backends/bark-cpp/bark-cpp"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
