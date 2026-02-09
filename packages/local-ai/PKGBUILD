@@ -17,17 +17,19 @@ url=https://localai.io/
 license=(MIT)
 depends=(gcc-libs glibc bash)
 makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
-             blas-openblas blas64-openblas)
+             blas-openblas blas64-openblas onnxruntime)
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "local-ai.service"
         "0001-disable-installing-extra-tools.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
-        "0005-do-not-clean-build-dir-in-whisper.diff")
+        "0005-do-not-clean-build-dir-in-whisper.diff"
+        "0006-silero-vad-use-system-onnxruntime.diff")
 sha256sums=('0172861c49681d3df5eae1e3847ae2fd162d32ee0ba1bfb245c5667983856792'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3'
-            '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc')
+            '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc'
+            '545d8f2534979ea234a664a5a9d576f1b75797b00b10ada289f59a52f8af4d7a')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip)
 
@@ -50,14 +52,14 @@ _strip_file() {
 
 prepare() {
     cd "$srcdir/LocalAI"
+    patch -Np1 -i ../0001-disable-installing-extra-tools.diff
+    patch -Np1 -i ../0005-do-not-clean-build-dir-in-whisper.diff
+    patch -Np1 -i ../0006-silero-vad-use-system-onnxruntime.diff
     make -C backend/cpp/llama-cpp llama.cpp
     make -C backend/go/piper sources/go-piper
-    make -C backend/go/silero-vad sources/onnxruntime
     make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
     make -C backend/go/whisper sources/whisper.cpp
-    patch -Np1 -i ../0001-disable-installing-extra-tools.diff
     patch -Np1 -d backend/go/piper/sources/go-piper -i "$srcdir/0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
-    patch -Np1 -i ../0005-do-not-clean-build-dir-in-whisper.diff
 }
 
 build() {
@@ -170,16 +172,12 @@ package_local-ai-backend-piper() {
 package_local-ai-backend-silero-vad() {
     pkgdesc+=" (silero-vad backend)"
     groups=(local-ai-backend)
+    depends+=(onnxruntime)
 
     cd "$srcdir/LocalAI"
     install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/" \
         "backend/go/silero-vad/silero-vad" \
         "backend/go/silero-vad/run.sh"
-    local onnx_lib="backend/go/silero-vad/sources/onnxruntime/lib"
-    find "$onnx_lib" -mindepth 1 -maxdepth 1 -type f -exec \
-        install -Dvm644 -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/lib/" {} +
-    find "$onnx_lib" -mindepth 1 -maxdepth 1 -type l -exec \
-        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/lib/" {} +
     local f
     while read -r f
     do
