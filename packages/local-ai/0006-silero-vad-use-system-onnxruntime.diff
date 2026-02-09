@@ -1,5 +1,5 @@
 diff --git a/backend/go/silero-vad/Makefile b/backend/go/silero-vad/Makefile
-index 3b3c31e..4fd6720 100644
+index 3b3c31e..90c3193 100644
 --- a/backend/go/silero-vad/Makefile
 +++ b/backend/go/silero-vad/Makefile
 @@ -37,8 +37,8 @@ else
@@ -9,7 +9,7 @@ index 3b3c31e..4fd6720 100644
 -silero-vad: backend-assets/lib/libonnxruntime.so.1
 -	CGO_LDFLAGS="$(CGO_LDFLAGS)" CPATH="$(CPATH):$(CURRENT_DIR)/sources/onnxruntime/include/" LIBRARY_PATH=$(CURRENT_DIR)/backend-assets/lib \
 +silero-vad:
-+	CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CFLAGS="$(CGO_CFLAGS) -I/usr/include/onnxruntime" \
++	CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CFLAGS="$(CGO_CFLAGS) $(shell pkg-config --cflags libonnxruntime)" \
  	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o silero-vad ./
  
  package:

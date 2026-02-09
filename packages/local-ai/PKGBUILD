@@ -29,7 +29,7 @@ sha256sums=('0172861c49681d3df5eae1e3847ae2fd162d32ee0ba1bfb245c5667983856792'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3'
             '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc'
-            '545d8f2534979ea234a664a5a9d576f1b75797b00b10ada289f59a52f8af4d7a')
+            '60f6a363f14188a22450c89e730a058e52185f7609e12e2a4a015ad4ad596c87')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip)
 
