@@ -20,8 +20,10 @@ runs:
       run: |
         if [[ -d '${{ inputs.patches }}/${{ inputs.pkgbase }}' ]]
         then
-          find "$(realpath '${{ inputs.patches }}/${{ inputs.pkgbase }}')" -maxdepth 1 -type f \
-            \( -name '*.diff' -o -name '*.patch' \) \
-            -printf "Applying patch %p...\n" \
-            -exec patch -Np1 -i '{}' \;
+          shopt -s nullglob
+          for f in '${{ inputs.patches }}/${{ inputs.pkgbase }}/'*.diff '${{ inputs.patches }}/${{ inputs.pkgbase }}/'*.patch
+          do
+            echo "Applying patch $f..."
+            patch -Np1 -i "$f"
+          done
         fi
