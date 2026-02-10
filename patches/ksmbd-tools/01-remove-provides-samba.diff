@@ -1,12 +1,12 @@
 diff --git a/PKGBUILD b/PKGBUILD
-index cfcf04b..239b530 100644
+index ac6742b..0096390 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
 @@ -9,7 +9,6 @@ arch=('x86_64' 'i686' 'aarch64' 'armv7h' 'armv6h')
  url="https://github.com/cifsd-team/ksmbd-tools"
- license=('GPL2')
- depends=('KSMBD-MODULE' 'libnl')
+ license=('GPL-2.0-or-later')
+ depends=('libnl' 'glib2' 'glibc' 'gcc-libs')
 -provides=('samba')
  makedepends=('meson' 'ninja')
  source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
- sha256sums=("2b0a9c117d8e66f1e9ad819f1a1925af2f54e3940cf19f67eba86b2ee9171d4d")
+ sha256sums=('e9edc06d5ed47ee878b3c3eddd194fb22f9bdcb2179e8fa21acfc2dfc46f7090')
