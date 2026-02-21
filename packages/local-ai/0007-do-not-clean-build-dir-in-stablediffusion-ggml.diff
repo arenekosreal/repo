@@ -1,0 +1,39 @@
+diff --git a/backend/go/stablediffusion-ggml/Makefile b/backend/go/stablediffusion-ggml/Makefile
+index e103d6d..b134f5a 100644
+--- a/backend/go/stablediffusion-ggml/Makefile
++++ b/backend/go/stablediffusion-ggml/Makefile
+@@ -94,30 +94,26 @@ purge:
+ # Build all variants (Linux only)
+ ifeq ($(UNAME_S),Linux)
+ libgosd-avx.so: sources/stablediffusion-ggml.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I stablediffusion-ggml build info:avx${RESET})
+ 	SO_TARGET=libgosd-avx.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgosd-custom
+-	rm -rfv build*
++	rm -rfv build-libgosd-avx.so
+ 
+ libgosd-avx2.so: sources/stablediffusion-ggml.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I stablediffusion-ggml build info:avx2${RESET})
+ 	SO_TARGET=libgosd-avx2.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=off -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgosd-custom
+-	rm -rfv build*
++	rm -rfv build-libgosd-avx2.so
+ 
+ libgosd-avx512.so: sources/stablediffusion-ggml.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I stablediffusion-ggml build info:avx512${RESET})
+ 	SO_TARGET=libgosd-avx512.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=on -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgosd-custom
+-	rm -rfv build*
++	rm -rfv build-libgosd-avx512.so
+ endif
+ 
+ # Build fallback variant (all platforms)
+ libgosd-fallback.so: sources/stablediffusion-ggml.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I stablediffusion-ggml build info:fallback${RESET})
+ 	SO_TARGET=libgosd-fallback.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=off -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgosd-custom
+-	rm -rfv build*
++	rm -rfv build-libgosd-fallback.so
+ 
+ libgosd-custom: CMakeLists.txt gosd.cpp gosd.h
+ 	mkdir -p build-$(SO_TARGET) && \

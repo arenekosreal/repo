@@ -9,7 +9,7 @@ pkgname=(local-ai
          local-ai-backend-silero-vad
          local-ai-backend-stablediffusion-ggml
          local-ai-backend-whisper-openblas)
-pkgver=3.11.0
+pkgver=3.12.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -23,13 +23,15 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0001-disable-installing-extra-tools.diff"
         "0004-avoid-gopiper-flags-being-applied-to-cmake.diff"
         "0005-do-not-clean-build-dir-in-whisper.diff"
-        "0006-silero-vad-use-system-onnxruntime.diff")
-sha256sums=('0172861c49681d3df5eae1e3847ae2fd162d32ee0ba1bfb245c5667983856792'
+        "0006-silero-vad-use-system-onnxruntime.diff"
+        "0007-do-not-clean-build-dir-in-stablediffusion-ggml.diff")
+sha256sums=('a3b47f8944bc068a6b3081a11525fd896bc78a854685b988e77451d5bad745ad'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '6ddb812ff27e3a402959eeed921f9ee1ef8ef4a5e9ebc04367e5fb9520e56fb1'
             'e308131cb6335a0240e26a9cb074f608641197d0435cabe7b5389f380596e8a3'
-            '51e22e43047892579f67470a6b6bee8bf687d4a31b1a07e03671b7ca6c8821cc'
-            '60f6a363f14188a22450c89e730a058e52185f7609e12e2a4a015ad4ad596c87')
+            '7b0d306870ddc49d41a7a37f13d1a8c89fc310b82c70de5c1f1b9769e87e7a90'
+            '60f6a363f14188a22450c89e730a058e52185f7609e12e2a4a015ad4ad596c87'
+            '3c3a983e48c650ca0c441a0cf23951a80ebd088af882cfd42170f0c6dee92e58')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip)
 
@@ -55,6 +57,7 @@ prepare() {
     patch -Np1 -i ../0001-disable-installing-extra-tools.diff
     patch -Np1 -i ../0005-do-not-clean-build-dir-in-whisper.diff
     patch -Np1 -i ../0006-silero-vad-use-system-onnxruntime.diff
+    patch -Np1 -i ../0007-do-not-clean-build-dir-in-stablediffusion-ggml.diff
     make -C backend/cpp/llama-cpp llama.cpp
     make -C backend/go/piper sources/go-piper
     make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
