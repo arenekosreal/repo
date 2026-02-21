@@ -1,0 +1,14 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index bead678..6a91537 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -58,9 +58,6 @@ prepare() {
+     # https://github.com/rpmfusion/nvidia-kmod/blob/master/make_modeset_default.patch
+     patch -Np1 -i "${srcdir}/0001-Enable-atomic-kernel-modesetting-by-default.patch" -d "${srcdir}/${_pkg}/kernel"
+ 
+-    # Fix compilation for 6.19
+-    patch -Np1 -i "${srcdir}/0002-Fix-compile-for-6.19.patch"
+-
+     shopt -s globstar
+     for conf in "${srcdir}"/**/dkms.conf; do
+         sed -i "s/__VERSION_STRING/${pkgver}/" "$conf"
