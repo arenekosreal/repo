@@ -313,6 +313,8 @@ jobs:
             pkgbase: web-ext
           - type: aur
             pkgbase: xdg-ninja
+          - type: aur
+            pkgbase: zendrite
           - type: local
             pkgbase: zuban
     runs-on: ${{ matrix.runs-on }}
