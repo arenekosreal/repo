@@ -178,6 +178,8 @@ jobs:
             pkgbase: linux-pf
             clean-runner: true
           - type: aur
+            pkgbase: localizationmanager
+          - type: aur
             pkgbase: lyrica
           - type: aur
             pkgbase: mpv-memo-git
