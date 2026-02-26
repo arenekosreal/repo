@@ -28,4 +28,4 @@ runs:
         echo ::warning::Unable to clone AUR repository, cloning from GitHub mirror instead...
         rm -rf '${{ inputs.dest }}'
         git clone --branch '${{ inputs.pkgbase }}' --single-branch https://github.com/archlinux/aur.git '${{ inputs.dest }}'
-        test -d '${{ inputs.test }}'
+        test -d '${{ inputs.dest }}'
