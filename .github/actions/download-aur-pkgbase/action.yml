@@ -17,12 +17,13 @@ runs:
     - name: Download PKGBUILD from AUR
       shell: bash
       id: download-from-aur
+      continue-on-error: ${{ inputs.fallback == 'true' }}
       run: |
         git clone 'https://aur.archlinux.org/${{ inputs.pkgbase }}.git' '${{ inputs.dest }}'
         test -d '${{ inputs.dest }}'
 
     - name: Download PKGBUILD from GitHub mirror
-      if: failure() && steps.download-from-aur.outcome == 'failure' && inputs.fallback == 'true'
+      if: steps.download-from-aur.outcome == 'failure' && inputs.fallback == 'true'
       shell: bash
       run: |
         echo ::warning::Unable to clone AUR repository, cloning from GitHub mirror instead...
