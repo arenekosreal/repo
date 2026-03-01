@@ -1,0 +1,7 @@
+[cronet-go]
+source = "github"
+github = "SagerNet/cronet-go"
+prefix = "v"
+use_latest_release = true
+from_pattern = "([0-9]+\\.[0-9]+\\.[0-9]+)-([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)-([0-9]+)"
+to_pattern = "\\1.\\2.\\3"

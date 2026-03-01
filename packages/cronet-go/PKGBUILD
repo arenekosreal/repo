@@ -1,0 +1,96 @@
+_tag=0.0.1-143.0.7499.109-1
+_naiveproxy=1ad28f33fdc953f4ab2c1d3831858f7d371a1c01
+_system_clang=true
+
+pkgname=cronet-go
+pkgver="${_tag//-/.}"
+pkgrel=1
+pkgdesc="Go bindings for naiveproxy."
+arch=(x86_64)
+url=https://github.com/SagerNet/cronet-go
+license=(GPL-3.0-or-later)
+depends=(libgcc glibc)
+makedepends=(gn ninja python)
+provides=(libcronet.so)
+source=("naiveproxy-$_naiveproxy.tar.gz::https://github.com/SagerNet/naiveproxy/archive/$_naiveproxy.tar.gz")
+sha256sums=('f7e96b12ca02369e65a0d7532e81993eb9e5c03aa90b2046dbabf4ed6ab5dee3')
+
+if "$_system_clang"
+then
+    makedepends+=(clang llvm lld)
+fi
+
+case "$CARCH" in
+    x86_64)
+        _cpu=x64 ;;
+    aarch64)
+        _cpu=arm64 ;;
+    i686)
+        _cpu=x86 ;;
+    armv7h)
+        _cpu=arm ;;
+    loongarch64)
+        _cpu=loong64 ;;
+    *)
+        _cpu="$CARCH" ;;
+esac
+
+build() {
+    local _clang_version
+    _clang_version="$(clang --version | grep -m1 version | sed 's/.* \([0-9]\+\).*/\1/')"
+        
+    # Check ./cmd/build-naive/cmd_build.go of SagerNet/cronet-go
+    _args=('is_official_build=true'
+           'is_debug=false'
+           'is_clang=true'
+           'use_clang_modules=false'
+           'use_thin_lto=false'              # Disable ThinLTO so static lib can be linked with system clang
+           'fatal_linker_warnings=false'
+           'treat_warnings_as_errors=false'
+           'is_cronet_build=true'
+           'use_udev=false'
+           'use_aura=false'
+           'use_ozone=false'
+           'use_gio=false'
+           'use_glib=false'
+           'use_kerberos=false'
+           'disable_zstd_filter=false'
+           'enable_reporting=false'
+           'enable_bracketed_proxy_uris=true'
+           'enable_quic_proxy_support=true'
+           'use_nss_certs=false'
+           'enable_backup_ref_ptr_support=false'
+           'enable_dangling_raw_ptr_checks=false'
+           'exclude_unwind_tables=true'
+           'enable_resource_allowlist_generation=false'
+           'symbol_level=0'
+           'enable_dsyms=false'
+           'optimize_for_size=true'
+           'target_os="linux"'
+           "target_cpu=\"$_cpu\""
+           'use_sysroot=false')
+    if "$_system_clang"
+    then
+        _args+=('clang_base_path="/usr"'
+                'clang_use_chrome_plugins=false'
+                "clang_version=\"$_clang_version\""
+                'chrome_pgo_phase=0')
+    fi
+    if [[ "$_cpu" == "x64" ]]
+    then
+        _args+=('use_cfi_icall=false'
+                'is_cfi=false')
+    fi
+    if check_buildoption ccache y
+    then
+        echo "ccache is enabled in BUILDENV, enabling ccache support..."
+        _args+=('cc_wrapper="ccache"')
+    fi
+    cd "naiveproxy-$_naiveproxy/src"
+    gn gen "out/cronet-linux-$_cpu" --args="${_args[*]}"
+    ninja -C "out/cronet-linux-$_cpu" cronet
+}
+package() {
+    install -Dm644 "naiveproxy-$_naiveproxy/src/out/cronet-linux-$_cpu/libcronet.so" \
+        "$pkgdir/usr/lib/libcronet.so"
+}
