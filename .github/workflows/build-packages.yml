@@ -121,6 +121,8 @@ jobs:
             pkgbase: cleanmedia
           - type: aur
             pkgbase: cloudflarespeedtest
+          - type: local
+            pkgbase: cronet-go
           - type: aur
             pkgbase: csharp-ls
           - type: aur
@@ -189,8 +191,6 @@ jobs:
             devel: true
           - type: aur
             pkgbase: mpv-uosc
-          - type: aur
-            pkgbase: naiveproxy
           - type: aur
             pkgbase: needrestart
           - type: local
