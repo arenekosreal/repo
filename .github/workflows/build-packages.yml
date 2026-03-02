@@ -336,7 +336,7 @@ jobs:
 
       - name: Get makepkg image
         id: download-image
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           artifact-ids: ${{ needs.prepare.outputs.image-artifact-id }}
           path: ${{ runner.temp }}

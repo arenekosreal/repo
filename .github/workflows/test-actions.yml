@@ -73,7 +73,7 @@ jobs:
           path: temp:invalid.txt
 
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: temp-upload
 
