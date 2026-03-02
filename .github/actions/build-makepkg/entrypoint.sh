@@ -32,14 +32,14 @@ fi
 
 pacman -Syu --noconfirm
 
+"${CP[@]}" --no-preserve=ownership /input/srcdest /input/startdir /
+
 if [[ -d keys/pgp ]]
 then
     find keys/pgp -maxdepth 1 -mindepth 1 -type f -name "*.asc" \
         -printf "Importing %f...\n" \
         -exec "${GPG[@]}" --import {} \;
 fi
-
-"${CP[@]}" --no-preserve=ownership /input/srcdest /input/startdir /
 
 if [[ -n "$INPUT_STDOUT" ]]
 then
