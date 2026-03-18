@@ -1,8 +1,7 @@
-diff --git a/Makefile b/Makefile
-index 0c3b5f4..721b49d 100644
---- a/Makefile
-+++ b/Makefile
-@@ -4,13 +4,13 @@ LIBRARY_PATH := $(abspath ./)
+diff -ur a/backend/go/piper/sources/go-piper/Makefile b/backend/go/piper/sources/go-piper/Makefile
+--- a/backend/go/piper/sources/go-piper/Makefile	2026-03-18 14:22:28.756205156 +0800
++++ b/backend/go/piper/sources/go-piper/Makefile	2026-03-18 14:34:34.898767742 +0800
+@@ -4,13 +4,13 @@
  
  BUILD_TYPE?=
  # keep standard at C11 and C++11
@@ -21,7 +20,7 @@ index 0c3b5f4..721b49d 100644
  #
  # Print build information
  #
-@@ -27,13 +27,13 @@ piper.o:
+@@ -27,13 +27,13 @@
  	cp piper/build/CMakeFiles/piper.dir/src/cpp/piper.cpp.o piper.o
  
  gopiper.o: piper.o

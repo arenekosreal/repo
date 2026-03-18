@@ -1,17 +1,31 @@
 diff --git a/Makefile b/Makefile
-index 03496c20..11ce6161 100644
+index f997aa55f..c0b699f5d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -85,7 +85,7 @@ install-go-tools:
- 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.2
+@@ -55,13 +55,6 @@ ifeq ($(OS),Darwin)
+ 	endif
+ endif
+ 
+-# check if goreleaser exists
+-ifeq (, $(shell which goreleaser))
+-	GORELEASER=curl -sfL https://goreleaser.com/static/run | bash -s --
+-else
+-	GORELEASER=$(shell which goreleaser)
+-endif
+-
+ TEST_PATHS?=./api/... ./pkg/... ./core/...
+ 
+ 
+@@ -107,7 +100,7 @@ core/http/react-ui/dist: react-ui
  
  ## Build:
--build: protogen-go install-go-tools ## Build the project
-+build: protogen-go ## Build the project
+ 
+-build: protogen-go install-go-tools core/http/react-ui/dist ## Build the project
++build: protogen-go core/http/react-ui/dist ## Build the project
  	$(info ${GREEN}I local-ai build info:${RESET})
  	$(info ${GREEN}I BUILD_TYPE: ${YELLOW}$(BUILD_TYPE)${RESET})
  	$(info ${GREEN}I GO_TAGS: ${YELLOW}$(GO_TAGS)${RESET})
-@@ -277,9 +277,9 @@ protoc:
+@@ -393,9 +386,9 @@ protoc:
  	unzip -j -d $(CURDIR) protoc.zip bin/protoc && rm protoc.zip
  
  .PHONY: protogen-go
