@@ -1,0 +1,9 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 9fe5b18..2bd42a0 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -12,4 +12,2 @@ conflicts=("${pkgname}")
+ makedepends=("nodejs" "pnpm")
+-optdepends=('mihomo: Another Clash Kernel by MetaCubeX'
+-            'sing-box: The universal proxy platform')
+ source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
