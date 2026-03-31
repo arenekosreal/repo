@@ -1,8 +1,8 @@
 diff --git a/PKGBUILD b/PKGBUILD
-index f5a439c..6004a75 100644
+index e04f450..1c73ec1 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
-@@ -9,12 +9,16 @@ url="https://www.fooyin.org/"
+@@ -9,12 +9,15 @@ url="https://www.fooyin.org/"
  _ghurl="https://github.com/ludouzi/fooyin"
  license=('GPL-3.0-only')
  depends=(
@@ -10,34 +10,34 @@ index f5a439c..6004a75 100644
 +    'glibc'
 +    'libstdc++'
 +    'libgcc'
-+    'qcoro'
      'qt6-base'
      'alsa-lib'
      'taglib'
      'ffmpeg'
      'kdsingleapplication'
 -    'libvgm-git'
+     'qcoro'
  )
  makedepends=(
-     'qt6-svg'
-@@ -28,6 +32,7 @@ makedepends=(
-     'libebur128'
+@@ -30,7 +33,6 @@ makedepends=(
      'libarchive'
      'libgme'
-+    'soundtouch'
+     'soundtouch'
+-    'git'
  )
  optdepends=(
      'sdl2: For the SDL2 audio output plugin'
-@@ -37,6 +42,8 @@ optdepends=(
+@@ -40,7 +42,8 @@ optdepends=(
      'libsndfile: For the GME audio input plugin'
      'libarchive: For the libarchive archive plugin'
      'libebur128: For the ReplayGain scanner plugin'
+-    'soundtouch: Enable building a dsp plugin based on soundtouch.'
 +    'libsoxr: For the SoX-based DSP plugin'
 +    'soundtouch: For the SoundTouch-based DSP plugin'
  )
  source=(
      "${pkgname}-${pkgver}.tar.gz::${_ghurl}/archive/refs/tags/v${pkgver}.tar.gz"
-@@ -53,6 +60,8 @@ build() {
+@@ -57,6 +60,8 @@ build() {
      cmake --build build
  }
  package() {
