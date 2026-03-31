@@ -153,6 +153,8 @@ jobs:
             pkgbase: flatpak-builder-tools-git
             devel: true
           - type: aur
+            pkgbase: fooyin
+          - type: aur
             pkgbase: go.rice
           - type: aur
             pkgbase: gpt4all-chat
@@ -479,10 +481,6 @@ jobs:
             pkgbase: firefox-extension-plasma-integration
             depends:
               - web-ext
-          - type: aur
-            pkgbase: fooyin
-            depends:
-              - libvgm-git
           - type: aur
             pkgbase: libblkmaker
             depends:
