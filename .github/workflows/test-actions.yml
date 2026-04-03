@@ -126,17 +126,17 @@ jobs:
       - name: Get PKGBUILD
         uses: ./.github/actions/download-aur-pkgbase
         with:
-          pkgbase: ruffle-nightly
-          dest: ruffle-nightly
+          pkgbase: ksmbd-tools
+          dest: ksmbd-tools
 
       - name: Test apply-patches
         uses: ./.github/actions/apply-patches
         with:
-          where: ruffle-nightly
-          pkgbase: ruffle-nightly
+          where: ksmbd-tools
+          pkgbase: ksmbd-tools
 
       - name: Check result
-        working-directory: ruffle-nightly
+        working-directory: ksmbd-tools
         run: '! git --no-pager diff --exit-code'
 
   test-build-makepkg:
