@@ -1,9 +1,9 @@
 _typeshed_commit=0e9b8c99ba01717d737de8b01ed647ef2f2ac9e5
 _django_stubs_commit=e82f5d126b1e15281e2e32ce746ce38e25105952
-_mypy_commit=991bca53f18e43f24e5a2f46b572f75c1e2043c3
+_mypy_commit=0ba5b1358df643fc3ae362746588f00b5050d63c
 
 pkgname=zuban
-pkgver=0.4.1
+pkgver=0.7.0
 pkgrel=1
 pkgdesc="Python Type Checker / Language Server"
 arch=(x86_64)
@@ -15,10 +15,10 @@ source=("$pkgname-$pkgver.tar.gz::https://github.com/zubanls/zuban/archive/refs/
 		"typeshed-$_typeshed_commit.tar.gz::https://github.com/python/typeshed/archive/$_typeshed_commit.tar.gz"
 		"django-stubs-$_django_stubs_commit.tar.gz::https://github.com/typeddjango/django-stubs/archive/$_django_stubs_commit.tar.gz"
 		"mypy-$_mypy_commit.tar.gz::https://github.com/davidhalter/mypy/archive/$_mypy_commit.tar.gz")
-sha256sums=('03146f20c709e6d145ebff82b151c0472a1a73da52f78286d729e60e87bf16e3'
+sha256sums=('099f618f773251405ab87f2b4cc1b618878336b616d4730fca5f53df566db6d4'
             '8f1ab8e6bb78da727159acad2369dc0c63d9fc96db19d24ad4fdd9536796d0fb'
             '0fb632c75a31758a2f2bb5bf00354b2dac749f3a2d292848b3430bfc1c358541'
-            '229d37f41379acb3f2408cd666d7cdcc1749005b92ab8b52580c6b94aa0e2881')
+            '7a60e799ab396d5bfbb7d40fbd848210ee544afe3109816b7f842533d5b80ac0')
 
 prepare() {
     cp -r "$srcdir/typeshed-$_typeshed_commit/." "$srcdir/$pkgname-$pkgver/third_party/typeshed/"
@@ -26,7 +26,7 @@ prepare() {
     cp -r "$srcdir/mypy-$_mypy_commit/." "$srcdir/$pkgname-$pkgver/crates/zuban_python/tests/mypylike/mypy/"
     cd "$srcdir/$pkgname-$pkgver"
     export RUSTUP_TOOLCHAIN=stable
-    cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+    cargo fetch --locked --target host-tuple
 }
 
 build() {
