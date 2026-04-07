@@ -1,0 +1,28 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index a012028..6f0246d 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -14,7 +14,7 @@ sha256sums=('f7f577c90e9b6e502ab05891f83f657038beded57bd6d09ab4421f87bc2542dd')
+ 
+ 
+ build() {
+-  cd "${pkgname}-${pkgver}"
++  cd "cli-${pkgver}"
+   export GO111MODULE="auto"
+   export GOPATH="${srcdir}"
+   export CGO_CPPFLAGS="${CPPFLAGS}"
+@@ -26,12 +26,12 @@ build() {
+ }
+ 
+ check() {
+-  cd "${pkgname}-${pkgver}"
++  cd "cli-${pkgver}"
+   test "v$(./spicetify -v)" = "v${pkgver}" || exit 1
+ }
+ 
+ package() {
+-  cd "${pkgname}-${pkgver}"
++  cd "cli-${pkgver}"
+   
+   # install everything to /opt
+   install -Dm755 ./spicetify "${pkgdir}/opt/${pkgname}/spicetify"
