@@ -14,7 +14,7 @@ declare -Ag _backends=(
 
 pkgbase=local-ai
 pkgname=(local-ai "${_backends[@]%%,*}")
-pkgver=4.1.2
+pkgver=4.1.3
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -31,7 +31,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0006-silero-vad-use-system-onnxruntime.diff"
         "0007-do-not-clean-build-dir-in-stablediffusion-ggml.diff"
         "0008-apply-build-flags.diff")
-sha256sums=('76426483c89d25c2ccd3885ea30982397473d59881fd12fa77aa62ef3aca15b5'
+sha256sums=('1f3d1688680069afb4ef96a3774c0d67b0524e3fb90c95d43e919c6a41f23b55'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
             '2771f64577862476a2e699c74d6eb0e3a537743c1784535cfb268f827ce6b18b'
             'fc1fd76b8af6be5db97e0e0ddccd09d9361ef69f12f9eab99308340634684704'
