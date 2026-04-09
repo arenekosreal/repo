@@ -155,6 +155,8 @@ jobs:
           - type: aur
             pkgbase: fooyin
           - type: aur
+            pkgbase: fvs2
+          - type: aur
             pkgbase: go.rice
           - type: aur
             pkgbase: gpt4all-chat
@@ -165,8 +167,6 @@ jobs:
             devel: true
           - type: aur
             pkgbase: icecream
-          - type: aur
-            pkgbase: icoextract
           - type: aur
             pkgbase: kde-thumbnailer-apk
           - type: aur
@@ -533,7 +533,7 @@ jobs:
           - type: aur
             pkgbase: bottles
             depends:
-              - icoextract
+              - fvs2
               - python-setuptools-reproducible
               - patool
               - python-fvs
