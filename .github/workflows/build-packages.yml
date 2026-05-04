@@ -312,6 +312,10 @@ jobs:
           - type: aur
             pkgbase: waylyrics
           - type: aur
+            pkgbase: waywallen
+          - type: aur
+            pkgbase: waywallen-display
+          - type: aur
             pkgbase: web-ext
           - type: aur
             pkgbase: xdg-ninja
