@@ -3,19 +3,19 @@ _django_stubs_commit=d09a79450b381f7d3443c08a6a3cdb0b84960495
 _mypy_commit=f1af857210fa16fafbdb227b3e4d8b3617f37570
 
 pkgname=zuban
-pkgver=0.7.1
+pkgver=0.7.2
 pkgrel=1
 pkgdesc="Python Type Checker / Language Server"
 arch=(x86_64)
 url=https://zubanls.com/
 license=(AGPL-3.0-only)
-depends=(gcc-libs glibc)
+depends=(libgcc glibc)
 makedepends=(cargo cargo-about maturin python python-installer)
 source=("$pkgname-$pkgver.tar.gz::https://github.com/zubanls/zuban/archive/refs/tags/v$pkgver.tar.gz"
 		"typeshed-$_typeshed_commit.tar.gz::https://github.com/python/typeshed/archive/$_typeshed_commit.tar.gz"
 		"django-stubs-$_django_stubs_commit.tar.gz::https://github.com/typeddjango/django-stubs/archive/$_django_stubs_commit.tar.gz"
 		"mypy-$_mypy_commit.tar.gz::https://github.com/davidhalter/mypy/archive/$_mypy_commit.tar.gz")
-sha256sums=('9301da87f7983d176e330668943832ed8901738ba8f8bb0ab390306501895047'
+sha256sums=('b19dadde491ff6d30211644813fb7f2de6a3b166ae48a3ebda80e18130e7e9e4'
             '46980e94b26f9653d50ac6d1fc3d5a5f58fc90bb3f1b6517d9ca51ec381a71ae'
             'ae51237437a791c17764d03b465bd4ebf81693cc3d9f118bf4ee22bb82567b7a'
             'f4c255ca020c8577fe82b1cf076c98a66409734c00eba406a22a00bbbc0d6c7e')
