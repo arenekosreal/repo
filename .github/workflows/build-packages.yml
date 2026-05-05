@@ -312,8 +312,6 @@ jobs:
           - type: aur
             pkgbase: waylyrics
           - type: aur
-            pkgbase: waywallen
-          - type: aur
             pkgbase: waywallen-display
           - type: aur
             pkgbase: web-ext
@@ -509,6 +507,10 @@ jobs:
             depends:
               - dotnet-install
             devel: true
+          - type: aur
+            pkgbase: waywallen
+            depends:
+              - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
