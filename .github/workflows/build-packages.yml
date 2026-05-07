@@ -642,6 +642,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     permissions:
       contents: write
+    timeout-minutes: 20
     name: Generate and release repository
     steps:
       - name: Checkout
