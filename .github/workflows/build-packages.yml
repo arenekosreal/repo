@@ -510,7 +510,7 @@ jobs:
           - type: aur
             pkgbase: waywallen
             depends:
-              - qmlmaterial
+              - cubeb
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
