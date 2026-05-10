@@ -546,6 +546,12 @@ jobs:
               - python-pathvalidate
               - python-steamgriddb
               - vkbasalt-cli
+          - type: aur
+            pkgbase: open-wallpaper-engine
+            depends:
+              - cubeb
+              - waywallen
+              - waywallen-display
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
