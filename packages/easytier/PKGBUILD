@@ -1,19 +1,19 @@
 _pkgname=EasyTier
 pkgname=easytier
-pkgver=2.4.5
+pkgver=2.6.4
 pkgrel=1
 pkgdesc="A simple, decentralized mesh VPN with WireGuard support."
 arch=(x86_64)
 url=https://easytier.cn/
 license=(LGPL-3.0-only)
-depends=(gcc-libs glibc)
-makedepends=(clang rust pnpm nodejs-lts-jod protobuf)
-source=("$_pkgname-$pkgver.tar.gz::https://github.com/EasyTier/EasyTier/archive/refs/tags/v$pkgver.tar.gz"
+depends=(libgcc glibc sqlite zstd openssl jemalloc)
+makedepends=(git clang rust pnpm nodejs-lts-jod protobuf)
+source=("git+https://github.com/EasyTier/EasyTier.git#tag=v$pkgver"
         "easytier-web.service"
         # Extracted from install script
         "easytier@.service"
         "default.conf")
-sha256sums=('8bce53d0390bc9b2842bb863de1d4f18e6bb145fa41ec9d49683285e54423b98'
+sha256sums=('fe41b78a040f77f7fb9c87028b5dca79bf71c582036d1f84f355e6b79935ffd3'
             'c44aa47853b8939983e0545cd9d441736c65ec2aeab919b8b4e8d699bd6bd0ea'
             'ec7374291753688e1c5d5f183abcda09ce8d9edd4eca5ae8f0956f976f20451f'
             '23fe08cdafad2c4f384aa6080d3ed52341510760822b1dbbdbf2259cc112e742')
@@ -21,28 +21,36 @@ options=(!lto)
 backup=(etc/easytier/default.conf)
 
 prepare() {
-    cd "$_pkgname-$pkgver"
+    cd "$_pkgname"
     pnpm -r install
     export RUSTUP_TOOLCHAIN=stable
-    cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+    cargo fetch --locked --target host-tuple
 }
 
 build() {
-    cd "$_pkgname-$pkgver"
+    cd "$_pkgname"
     pnpm -r --filter "./easytier-web/*" build
     export RUSTUP_TOOLCHAIN=stable
     export CARGO_TARGET_DIR=target
-    #RUSTFLAGS+=" --cfg tokio_unstable"
-    #cargo build --frozen --release --all-features
+    export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
+    export ZSTD_SYS_USE_PKG_CONFIG=1
+    export OPENSSL_NO_VENDOR=1
+    export JEMALLOC_OVERRIDE=/usr/lib/libjemalloc.so
+    # Existing -sys deps cannot link to system dependencies:
+    # libdbus-sys: They use vendored feature
+    #              This create does not like openssl-sys, which allows overriding.
+    # kcp-sys: Not configurable
+    # libmimalloc-sys: Not configurable
+
     cargo build --frozen --release \
         --features easytier-web/embed \
         --features easytier/full \
-        --features easytier/quic \
-        --features easytier/jemalloc
+        --features easytier/jemalloc \
+        --features easytier/mimalloc
 }
 
 package() {
-    cd "$_pkgname-$pkgver"
+    cd "$_pkgname"
     find target/release \
         -maxdepth 1 \
         -executable \

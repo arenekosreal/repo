@@ -1,5 +1,5 @@
 pkg
 src
+EasyTier
 *.pkg.tar.*
 *.log
-*.tar.gz
