@@ -137,6 +137,8 @@ jobs:
             pkgbase: downgrade
           - type: local
             pkgbase: easytier
+            clean-runner: true
+            set-swap: 16G
           - type: aur
             pkgbase: fcitx5-pinyin-custom-pinyin-dictionary
           - type: aur
