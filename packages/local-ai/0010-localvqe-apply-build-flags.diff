@@ -1,0 +1,21 @@
+diff --git a/backend/go/localvqe/Makefile b/backend/go/localvqe/Makefile
+index b607288..f14fde2 100644
+--- a/backend/go/localvqe/Makefile
++++ b/backend/go/localvqe/Makefile
+@@ -20,6 +20,7 @@ LOCALVQE_VERSION?=72bfb4c6
+ CMAKE_ARGS+=-DLOCALVQE_BUILD_SHARED=ON
+ CMAKE_ARGS+=-DGGML_BUILD_TESTS=OFF
+ CMAKE_ARGS+=-DGGML_BUILD_EXAMPLES=OFF
++CMAKE_ARGS+=-DCMAKE_SKIP_RPATH=ON
+ 
+ ifeq ($(NATIVE),false)
+ 	CMAKE_ARGS+=-DGGML_NATIVE=OFF
+@@ -75,7 +76,7 @@ liblocalvqe.so: $(LIB_SENTINEL)
+ # --- Go binary + packaging ---
+ 
+ localvqe: main.go golocalvqe.go $(LIB_SENTINEL)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o localvqe ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o localvqe ./
+ 
+ package: localvqe
+ 	bash package.sh

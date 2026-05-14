@@ -1,7 +1,16 @@
 diff --git a/backend/go/whisper/Makefile b/backend/go/whisper/Makefile
-index 3767651..d8517c1 100644
+index 402d319..f4174aa 100644
 --- a/backend/go/whisper/Makefile
 +++ b/backend/go/whisper/Makefile
+@@ -70,7 +70,7 @@ else
+ endif
+ 
+ whisper: main.go gowhisper.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o whisper ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o whisper ./
+ 
+ package: whisper
+ 	bash package.sh
 @@ -86,30 +86,26 @@ purge:
  # Build all variants (Linux only)
  ifeq ($(UNAME_S),Linux)
@@ -35,5 +44,5 @@ index 3767651..d8517c1 100644
 -	rm -rfv build*
 +	rm -rfv build-libgowhisper-fallback.so
  
- libgowhisper-custom: CMakeLists.txt gowhisper.cpp gowhisper.h
+ libgowhisper-custom: CMakeLists.txt cpp/gowhisper.cpp cpp/gowhisper.h
  	mkdir -p build-$(SO_TARGET) && \

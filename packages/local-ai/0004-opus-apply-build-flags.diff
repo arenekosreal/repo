@@ -1,0 +1,17 @@
+diff --git a/backend/go/opus/Makefile b/backend/go/opus/Makefile
+index 028b16b..ea6080b 100644
+--- a/backend/go/opus/Makefile
++++ b/backend/go/opus/Makefile
+@@ -5,10 +5,10 @@ OPUS_CFLAGS := $(shell pkg-config --cflags opus)
+ OPUS_LIBS := $(shell pkg-config --libs opus)
+ 
+ libopusshim.so: csrc/opus_shim.c
+-	$(CC) -shared -fPIC -o $@ $< $(OPUS_CFLAGS) $(OPUS_LIBS)
++	$(CC) -shared -fPIC -o $@ $< $(CFLAGS) $(OPUS_CFLAGS) $(LDFLAGS) $(OPUS_LIBS)
+ 
+ opus: libopusshim.so
+-	$(GOCMD) build -tags "$(GO_TAGS)" -o opus ./
++	$(GOCMD) build -ldflags "-compressdwarf=false -linkmode external -bindnow" -tags "$(GO_TAGS)" -o opus ./
+ 
+ package: opus
+ 	bash package.sh

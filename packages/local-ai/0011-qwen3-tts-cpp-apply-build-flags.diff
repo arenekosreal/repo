@@ -1,0 +1,21 @@
+diff --git a/backend/go/qwen3-tts-cpp/Makefile b/backend/go/qwen3-tts-cpp/Makefile
+index fe83c3f..18dc1d3 100644
+--- a/backend/go/qwen3-tts-cpp/Makefile
++++ b/backend/go/qwen3-tts-cpp/Makefile
+@@ -12,6 +12,7 @@ QWEN3TTS_CPP_VERSION?=7a762e2ad4bacc6fdda81d81bf10a09ffb546f29
+ SO_TARGET?=libgoqwen3ttscpp.so
+ 
+ CMAKE_ARGS+=-DBUILD_SHARED_LIBS=OFF
++CMAKE_ARGS+=-DCMAKE_SKIP_RPATH=ON
+ 
+ ifeq ($(NATIVE),false)
+ 	CMAKE_ARGS+=-DGGML_NATIVE=OFF
+@@ -70,7 +71,7 @@ else
+ endif
+ 
+ qwen3-tts-cpp: main.go goqwen3ttscpp.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o qwen3-tts-cpp ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o qwen3-tts-cpp ./
+ 
+ package: qwen3-tts-cpp
+ 	bash package.sh

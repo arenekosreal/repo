@@ -1,0 +1,15 @@
+diff --git a/backend/go/piper/Makefile b/backend/go/piper/Makefile
+index 08a1e43..f3c95a2 100644
+--- a/backend/go/piper/Makefile
++++ b/backend/go/piper/Makefile
+@@ -28,8 +28,8 @@ espeak-ng-data: sources/go-piper sources/go-piper/libpiper_binding.a
+ 
+ piper: sources/go-piper sources/go-piper/libpiper_binding.a espeak-ng-data
+ 	$(GOCMD) mod edit -replace github.com/mudler/go-piper=$(CURRENT_DIR)/sources/go-piper
+-	CGO_CXXFLAGS="$(PIPER_CGO_CXXFLAGS)" CGO_LDFLAGS="$(PIPER_CGO_LDFLAGS)" LIBRARY_PATH=$(CURRENT_DIR)/sources/go-piper \
+-	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o piper ./
++	CGO_CXXFLAGS="$(CGO_CXXFLAGS) $(PIPER_CGO_CXXFLAGS)" CGO_LDFLAGS="$(CGO_LDFLAGS) $(PIPER_CGO_LDFLAGS)" LIBRARY_PATH=$(CURRENT_DIR)/sources/go-piper \
++	$(GOCMD) build -ldflags "$(LD_FLAGS) -compressdwarf=false -linkmode external -bindnow" -tags "$(GO_TAGS)" -o piper ./
+ 
+ package:
+ 	bash package.sh

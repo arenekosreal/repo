@@ -1,0 +1,48 @@
+diff --git a/backend/go/sam3-cpp/Makefile b/backend/go/sam3-cpp/Makefile
+index 53b0dfb..ccb23dd 100644
+--- a/backend/go/sam3-cpp/Makefile
++++ b/backend/go/sam3-cpp/Makefile
+@@ -70,7 +70,7 @@ else
+ endif
+ 
+ sam3-cpp: main.go gosam3.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o sam3-cpp ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o sam3-cpp ./
+ 
+ package: sam3-cpp
+ 	bash package.sh
+@@ -86,30 +86,26 @@ purge:
+ # Build all variants (Linux only)
+ ifeq ($(UNAME_S),Linux)
+ libgosam3-avx.so: sources/sam3.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I sam3-cpp build info:avx${RESET})
+ 	SO_TARGET=libgosam3-avx.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgosam3-custom
+-	rm -rfv build*
++	rm -rfv build-libgosam3-avx.so
+ 
+ libgosam3-avx2.so: sources/sam3.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I sam3-cpp build info:avx2${RESET})
+ 	SO_TARGET=libgosam3-avx2.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=off -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgosam3-custom
+-	rm -rfv build*
++	rm -rfv build-libgosam3-avx2.so
+ 
+ libgosam3-avx512.so: sources/sam3.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I sam3-cpp build info:avx512${RESET})
+ 	SO_TARGET=libgosam3-avx512.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=on -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgosam3-custom
+-	rm -rfv build*
++	rm -rfv build-libgosam3-avx512.so
+ endif
+ 
+ # Build fallback variant (all platforms)
+ libgosam3-fallback.so: sources/sam3.cpp
+-	$(MAKE) purge
+ 	$(info ${GREEN}I sam3-cpp build info:fallback${RESET})
+ 	SO_TARGET=libgosam3-fallback.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=off -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgosam3-custom
+-	rm -rfv build*
++	rm -rfv build-libgosam3-fallback.so
+ 
+ libgosam3-custom: CMakeLists.txt cpp/gosam3.cpp cpp/gosam3.h
+ 	mkdir -p build-$(SO_TARGET) && \

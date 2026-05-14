@@ -1,7 +1,8 @@
-diff -ur a/backend/go/piper/sources/go-piper/Makefile b/backend/go/piper/sources/go-piper/Makefile
---- a/backend/go/piper/sources/go-piper/Makefile	2026-03-18 14:22:28.756205156 +0800
-+++ b/backend/go/piper/sources/go-piper/Makefile	2026-03-18 14:34:34.898767742 +0800
-@@ -4,13 +4,13 @@
+diff --git a/Makefile b/Makefile
+index 0c3b5f4..91238b3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,13 +4,13 @@ LIBRARY_PATH := $(abspath ./)
  
  BUILD_TYPE?=
  # keep standard at C11 and C++11
@@ -20,19 +21,19 @@ diff -ur a/backend/go/piper/sources/go-piper/Makefile b/backend/go/piper/sources
  #
  # Print build information
  #
-@@ -27,13 +27,13 @@
+@@ -27,13 +27,13 @@ piper.o:
  	cp piper/build/CMakeFiles/piper.dir/src/cpp/piper.cpp.o piper.o
  
  gopiper.o: piper.o
 -	$(CXX) $(CXXFLAGS) gopiper.cpp -o gopiper.o -c $(LDFLAGS)
-+	$(CXX) $(GOPIPER_CXXFLAGS) gopiper.cpp -o gopiper.o -c $(GOPIPER_LDFLAGS)
++	$(CXX) $(CXXFLAGS) $(GOPIPER_CXXFLAGS) gopiper.cpp -o gopiper.o -c $(LDFLAGS) $(GOPIPER_LDFLAGS)
  
  libpiper_binding.a: piper.o gopiper.o
  	ar src libpiper_binding.a piper.o
  
  example/main: libpiper_binding.a
 -	CGO_CXXFLAGS="${CXXFLAGS}" CGO_LDFLAGS="${LDFLAGS}" LIBRARY_PATH=${LIBRARY_PATH} go build -buildvcs=false -x -o example/main ./example
-+	CGO_CXXFLAGS="${GOPIPER_CXXFLAGS}" CGO_LDFLAGS="${GOPIPER_LDFLAGS}" LIBRARY_PATH=${LIBRARY_PATH} go build -buildvcs=false -x -o example/main ./example
++	CGO_CXXFLAGS="${CGO_CXXFLAGS} ${GOPIPER_CXXFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS} ${GOPIPER_LDFLAGS}" LIBRARY_PATH=${LIBRARY_PATH} go build -ldflags "-compressdwarf=false -linkmode external -bindnow" -buildvcs=false -x -o example/main ./example
  
  clean:
  	rm -rf *.o

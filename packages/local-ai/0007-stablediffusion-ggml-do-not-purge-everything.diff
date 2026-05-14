@@ -1,7 +1,16 @@
 diff --git a/backend/go/stablediffusion-ggml/Makefile b/backend/go/stablediffusion-ggml/Makefile
-index e103d6d..b134f5a 100644
+index bdcced4..2b4fb63 100644
 --- a/backend/go/stablediffusion-ggml/Makefile
 +++ b/backend/go/stablediffusion-ggml/Makefile
+@@ -78,7 +78,7 @@ else
+ endif
+ 
+ stablediffusion-ggml: main.go gosd.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o stablediffusion-ggml ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o stablediffusion-ggml ./
+ 
+ package: stablediffusion-ggml
+ 	bash package.sh
 @@ -94,30 +94,26 @@ purge:
  # Build all variants (Linux only)
  ifeq ($(UNAME_S),Linux)
@@ -35,5 +44,12 @@ index e103d6d..b134f5a 100644
 -	rm -rfv build*
 +	rm -rfv build-libgosd-fallback.so
  
- libgosd-custom: CMakeLists.txt gosd.cpp gosd.h
+ libgosd-custom: CMakeLists.txt cpp/gosd.cpp cpp/gosd.h
  	mkdir -p build-$(SO_TARGET) && \
+@@ -127,4 +123,4 @@ libgosd-custom: CMakeLists.txt cpp/gosd.cpp cpp/gosd.h
+ 	cd .. && \
+ 	mv build-$(SO_TARGET)/libgosd.so ./$(SO_TARGET)
+ 
+-all: stablediffusion-ggml package
+\ No newline at end of file
++all: stablediffusion-ggml package
