@@ -9,8 +9,8 @@ pkgname=(local-ai
          local-ai-backend-whisper-openblas              local-ai-backend-kokoros
          local-ai-backend-localvqe                      local-ai-backend-qwen3-tts-cpp-openblas
          local-ai-backend-sam3-cpp                      local-ai-backend-sherpa-onnx
-         local-ai-backend-vibevoice-cpp-openblas)
-pkgver=4.2.3
+         local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4)
+pkgver=4.2.4
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -19,7 +19,7 @@ license=(MIT)
 depends=(bash)
 makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
              blas-openblas blas64-openblas onnxruntime opus npm cargo libsonic pcaudiolib
-             espeak-ng clang)
+             espeak-ng clang nlohmann-json)
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "git+https://github.com/lucasjinreal/Kokoros.git"
         "git+https://github.com/McShelby/hugo-theme-relearn.git"
@@ -40,7 +40,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0014-vibevoice-cpp-apply-build-flags.diff"
         "0015-go-piper-apply-build-flags.diff"
         "0016-piper-phonemize-fix-building.diff")
-sha256sums=('01c946177cf1426c034024568aade891472187d79e3acc556fb88f201fa3b47f'
+sha256sums=('b78a4a49489a62085fc0d728fee08a2f0942689e8645a0e088d235860742a393'
             'SKIP'
             'SKIP'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
@@ -81,6 +81,8 @@ _strip_files() {
 
 prepare() {
     cd "$srcdir/LocalAI"
+    # Breaks kokoros backend
+    git revert --no-commit 0245b33eabd7f9461d4b1ad74027e3a38087c650
     git submodule init
     git config submodule."backend/rust/kokoros/sources/Kokoros".url "$srcdir/Kokoros"
     git config submodule."docs/themes/hugo-theme-relearn".url "$srcdir/hugo-theme-relearn"
@@ -100,6 +102,7 @@ prepare() {
     patch -Np1 -i "$srcdir/0013-sherpa-onnx-use-system-onnxruntime.diff"
     patch -Np1 -i "$srcdir/0014-vibevoice-cpp-apply-build-flags.diff"
     make -C backend/cpp/llama-cpp llama.cpp
+    make -C backend/cpp/ds4 ds4
     make -C backend/go/piper sources/go-piper
     make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
     make -C backend/go/whisper sources/whisper.cpp
@@ -137,6 +140,7 @@ build() {
          build
     make -C "backend/cpp/llama-cpp"             BUILD_TYPE=openblas \
         llama-cpp-avx llama-cpp-avx2 llama-cpp-avx512 llama-cpp-fallback llama-cpp-grpc llama-cpp-rpc-server
+    make -C "backend/cpp/ds4"                   BUILD_TYPE=openblas grpc-server
     make -C "backend/go/acestep-cpp"            BUILD_TYPE=openblas acestep-cpp
     make -C "backend/go/local-store"            BUILD_TYPE=openblas local-store
     make -C "backend/go/opus"                   BUILD_TYPE=openblas opus
@@ -378,7 +382,7 @@ package_local-ai-backend-sherpa-onnx() {
         "backend/go/sherpa-onnx/sherpa-onnx" \
         "backend/go/sherpa-onnx/run.sh"
     install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/sherpa-onnx/lib/" \
-        "backend/go/sherpa-onnx/backend-assets/lib/libsherpa-"*.so \
+        "backend/go/sherpa-onnx/backend-assets/lib/libsherpa-"*.so
     _strip_files "$pkgdir/usr/lib/$pkgbase/backends/sherpa-onnx/"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
@@ -396,5 +400,18 @@ package_local-ai-backend-vibevoice-cpp-openblas() {
         "backend/go/vibevoice-cpp/vibevoice-cpp" \
         "backend/go/vibevoice-cpp/run.sh"
     _strip_files "$pkgdir/usr/lib/$pkgbase/backends/vibevoice-cpp/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-ds4() {
+    pkgdesc+=" (ds4 backend)"
+    groups=(local-ai-backend)
+    depends+=(glibc libgcc protobuf grpc abseil-cpp openssl re2 c-ares)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/ds4/" \
+        "backend/cpp/ds4/grpc-server" \
+        "backend/cpp/ds4/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/ds4/"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
