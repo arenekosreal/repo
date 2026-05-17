@@ -269,8 +269,6 @@ jobs:
           - type: aur
             pkgbase: roslyn-ls
           - type: aur
-            pkgbase: ruffle-nightly
-          - type: aur
             pkgbase: ruffle
           - type: aur
             pkgbase: sing-box
