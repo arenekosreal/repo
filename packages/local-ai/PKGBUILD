@@ -10,7 +10,7 @@ pkgname=(local-ai
          local-ai-backend-localvqe                      local-ai-backend-qwen3-tts-cpp-openblas
          local-ai-backend-sam3-cpp                      local-ai-backend-sherpa-onnx
          local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4)
-pkgver=4.2.4
+pkgver=4.2.6
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -39,8 +39,9 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0013-sherpa-onnx-use-system-onnxruntime.diff"
         "0014-vibevoice-cpp-apply-build-flags.diff"
         "0015-go-piper-apply-build-flags.diff"
-        "0016-piper-phonemize-fix-building.diff")
-sha256sums=('b78a4a49489a62085fc0d728fee08a2f0942689e8645a0e088d235860742a393'
+        "0016-piper-phonemize-fix-building.diff"
+        "fix-kokoros-building.diff")
+sha256sums=('693d92fb5606c8c015ca5af8a03afc8474e888013ba5f293bd0db14b28db88fc'
             'SKIP'
             'SKIP'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
@@ -59,7 +60,8 @@ sha256sums=('b78a4a49489a62085fc0d728fee08a2f0942689e8645a0e088d235860742a393'
             '24f80dfe85d977cdeae6c128e39cd7ddf0fcbea5ff0e0cd6245dc22577343ae0'
             'bd9470f4847a502268cb5e9bde23ce67ccbdca8221f02211edb3dfc7d03b9bdf'
             '68e620935d30c3dc2a57f46f2bf2fdcf3e55eb18135a05ed9d5c3da4c6eb71c0'
-            'fa6fb0e1abdc2a2b7016bf652be4a6f56a492d2a0ded8eec3c5132d44ca1be83')
+            'fa6fb0e1abdc2a2b7016bf652be4a6f56a492d2a0ded8eec3c5132d44ca1be83'
+            'd1c86a9de70a2fa8bdb85bfcc401d0e9910c40e1db6854eb25bb52372c2bbdb5')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip !lto)
 
@@ -82,7 +84,7 @@ _strip_files() {
 prepare() {
     cd "$srcdir/LocalAI"
     # Breaks kokoros backend
-    git revert --no-commit 0245b33eabd7f9461d4b1ad74027e3a38087c650
+    #git revert --no-commit 0245b33eabd7f9461d4b1ad74027e3a38087c650
     git submodule init
     git config submodule."backend/rust/kokoros/sources/Kokoros".url "$srcdir/Kokoros"
     git config submodule."docs/themes/hugo-theme-relearn".url "$srcdir/hugo-theme-relearn"
@@ -101,6 +103,7 @@ prepare() {
     patch -Np1 -i "$srcdir/0012-sam3-cpp-do-not-purge-everything.diff"
     patch -Np1 -i "$srcdir/0013-sherpa-onnx-use-system-onnxruntime.diff"
     patch -Np1 -i "$srcdir/0014-vibevoice-cpp-apply-build-flags.diff"
+    patch -Np1 -i "$srcdir/fix-kokoros-building.diff"
     make -C backend/cpp/llama-cpp llama.cpp
     make -C backend/cpp/ds4 ds4
     make -C backend/go/piper sources/go-piper

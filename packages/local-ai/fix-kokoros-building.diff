@@ -1,0 +1,20 @@
+diff --git a/backend/rust/kokoros/src/service.rs b/backend/rust/kokoros/src/service.rs
+index 0bd7cc1..b4b0407 100644
+--- a/backend/rust/kokoros/src/service.rs
++++ b/backend/rust/kokoros/src/service.rs
+@@ -561,6 +561,15 @@ impl Backend for KokorosService {
+     ) -> Result<Response<backend::Result>, Status> {
+         Err(Status::unimplemented("Not supported"))
+     }
++
++    type AudioToAudioStreamStream =
++        ReceiverStream<Result<backend::AudioToAudioResponse, Status>>;
++    async fn audio_to_audio_stream(
++        &self,
++        _: Request<tonic::Streaming<backend::AudioToAudioRequest>>,
++    ) -> Result<Response<Self::AudioToAudioStreamStream>, Status> {
++        Err(Status::unimplemented("Not supported"))
++    }
+ }
+ 
+ #[cfg(test)]
