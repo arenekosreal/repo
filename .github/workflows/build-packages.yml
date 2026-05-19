@@ -155,8 +155,6 @@ jobs:
             pkgbase: flatpak-builder-tools-git
             devel: true
           - type: aur
-            pkgbase: fooyin
-          - type: aur
             pkgbase: fvs2
           - type: aur
             pkgbase: go.rice
