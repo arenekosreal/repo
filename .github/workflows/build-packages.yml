@@ -159,6 +159,8 @@ jobs:
           - type: aur
             pkgbase: go.rice
           - type: aur
+            pkgbase: godot-mono-export-templates-linux
+          - type: aur
             pkgbase: gpt4all-chat
           - type: aur
             pkgbase: hath-rust
@@ -295,9 +297,6 @@ jobs:
           - type: aur
             pkgbase: tcp-brutal-dkms
           - type: aur
-            pkgbase: thrive
-            clean-runner: true
-          - type: aur
             pkgbase: unblockneteasemusic-golang-git
             devel: true
           - type: aur
@@ -381,6 +380,7 @@ jobs:
           cinnyBase: ${{ vars.CINNYBASE }}
           MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
           MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
+          MAKEPKG_THRIVE_SYSTEM_GODOT: 'true'
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
@@ -502,6 +502,12 @@ jobs:
               - ctre
               - qcmbackend-git
               - qmlmaterial
+          - type: aur
+            pkgbase: thrive
+            depends:
+              - godot-mono-export-templates-linux
+            preserve-env: MAKEPKG_THRIVE_SYSTEM_GODOT
+            clean-runner: true
           - type: aur
             pkgbase: watt-toolkit-git
             depends:
