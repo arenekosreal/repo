@@ -11,7 +11,7 @@ pkgname=(local-ai
          local-ai-backend-sam3-cpp                      local-ai-backend-sherpa-onnx
          local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4
          local-ai-backend-rfdetr-cpp                    local-ai-backend-cloud-proxy)
-pkgver=4.3.2
+pkgver=4.3.4
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -43,7 +43,7 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0016-piper-phonemize-fix-building.diff"
         "0017-rfdetr-cpp-apply-build-flags.diff"
         "0018-cloud-proxy-apply-build-flags.diff")
-sha256sums=('58ce641422f1e08acbff0d70dc7917824c96f213cb86423580267ce198e21057'
+sha256sums=('d76b415298d2c98f49ef0b3c68ef933ca6f031d67e50c98c7897bd17677ce0d7'
             'SKIP'
             'SKIP'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
