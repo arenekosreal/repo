@@ -10,8 +10,9 @@ pkgname=(local-ai
          local-ai-backend-localvqe                      local-ai-backend-qwen3-tts-cpp-openblas
          local-ai-backend-sam3-cpp                      local-ai-backend-sherpa-onnx
          local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4
-         local-ai-backend-rfdetr-cpp                    local-ai-backend-cloud-proxy)
-pkgver=4.3.4
+         local-ai-backend-rfdetr-cpp                    local-ai-backend-cloud-proxy
+         local-ai-backend-parakeet-cpp-openblas)
+pkgver=4.3.6
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
@@ -42,8 +43,9 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0015-go-piper-apply-build-flags.diff"
         "0016-piper-phonemize-fix-building.diff"
         "0017-rfdetr-cpp-apply-build-flags.diff"
-        "0018-cloud-proxy-apply-build-flags.diff")
-sha256sums=('d76b415298d2c98f49ef0b3c68ef933ca6f031d67e50c98c7897bd17677ce0d7'
+        "0018-cloud-proxy-apply-build-flags.diff"
+        "0019-parakeet-cpp-apply-build-flags.diff")
+sha256sums=('d7351a3a1f4fa10c50677303cd8db36b1baf400156cae76c824dc3dc177ff234'
             'SKIP'
             'SKIP'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
@@ -64,7 +66,8 @@ sha256sums=('d76b415298d2c98f49ef0b3c68ef933ca6f031d67e50c98c7897bd17677ce0d7'
             '68e620935d30c3dc2a57f46f2bf2fdcf3e55eb18135a05ed9d5c3da4c6eb71c0'
             'fa6fb0e1abdc2a2b7016bf652be4a6f56a492d2a0ded8eec3c5132d44ca1be83'
             'af910bcd82f4e16967cd8d899ddd1855ccac460073ecfbd5004b69a360e42c1e'
-            '21d4bf42a6bc39bad9e4b57855ee51db0b2d929365d4ebd90b7fe02782b34831')
+            '21d4bf42a6bc39bad9e4b57855ee51db0b2d929365d4ebd90b7fe02782b34831'
+            'c99703fb0f69f63c846f653d82b7c47676a5ac716b33edcb75b7783428cfc421')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip !lto)
 
@@ -106,6 +109,7 @@ prepare() {
     patch -Np1 -i "$srcdir/0014-vibevoice-cpp-apply-build-flags.diff"
     patch -Np1 -i "$srcdir/0017-rfdetr-cpp-apply-build-flags.diff"
     patch -Np1 -i "$srcdir/0018-cloud-proxy-apply-build-flags.diff"
+    patch -Np1 -i "$srcdir/0019-parakeet-cpp-apply-build-flags.diff"
     make -C backend/cpp/llama-cpp llama.cpp
     make -C backend/cpp/ds4 ds4
     make -C backend/go/piper sources/go-piper
@@ -119,6 +123,7 @@ prepare() {
     make -C backend/go/sherpa-onnx sources/sherpa-onnx
     make -C backend/go/vibevoice-cpp sources/vibevoice.cpp
     make -C backend/go/rfdetr-cpp sources/rt-detr.cpp
+    make -C backend/go/parakeet-cpp sources/parakeet.cpp
     patch -Np1 -i "$srcdir/0015-go-piper-apply-build-flags.diff" -d "backend/go/piper/sources/go-piper/"
     patch -Np1 -i "$srcdir/0016-piper-phonemize-fix-building.diff" -d "backend/go/piper/sources/go-piper/piper-phonemize/"
     export GOPATH="$srcdir"
@@ -162,6 +167,7 @@ build() {
     make -C "backend/go/vibevoice-cpp"          BUILD_TYPE=openblas vibevoice-cpp
     make -C "backend/go/rfdetr-cpp"             BUILD_TYPE=openblas rfdetr-cpp
     make -C "backend/go/cloud-proxy"            BUILD_TYPE=openblas cloud-proxy
+    make -C "backend/go/parakeet-cpp"           BUILD_TYPE=openblas parakeet-cpp-grpc
     #make -C "backend/rust/kokoros"              BUILD_TYPE=openblas kokoros-grpc
 }
 
@@ -447,5 +453,21 @@ package_local-ai-backend-cloud-proxy() {
         "backend/go/cloud-proxy/cloud-proxy" \
         "backend/go/cloud-proxy/run.sh"
     _strip_files "$pkgdir/usr/lib/$pkgbase/backends/cloud-proxy/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-parakeet-cpp-openblas() {
+    pkgdesc+=" (parakeet-cpp backend with openblas optimization)"
+    groups=(local-ai-backend)
+    provides=(local-ai-backend-parakeet-cpp)
+    conflicts=(local-ai-backend-parakeet-cpp)
+    depends+=(glibc libgcc libgomp libstdc++ openblas)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/parakeet-cpp/" \
+        "backend/go/parakeet-cpp/libparakeet.so" \
+        "backend/go/parakeet-cpp/parakeet-cpp-grpc" \
+        "backend/go/parakeet-cpp/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/parakeet-cpp/"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
