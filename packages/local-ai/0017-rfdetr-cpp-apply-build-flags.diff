@@ -1,0 +1,13 @@
+diff --git a/backend/go/rfdetr-cpp/Makefile b/backend/go/rfdetr-cpp/Makefile
+index 413d008..da0518b 100644
+--- a/backend/go/rfdetr-cpp/Makefile
++++ b/backend/go/rfdetr-cpp/Makefile
+@@ -75,7 +75,7 @@ else
+ endif
+ 
+ rfdetr-cpp: main.go gorfdetrcpp.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o rfdetr-cpp ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o rfdetr-cpp ./
+ 
+ package: rfdetr-cpp
+ 	bash package.sh
