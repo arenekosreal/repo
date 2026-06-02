@@ -1,36 +1,34 @@
-_typeshed_commit=aaefc85a95431045b0726b297d0ad1f4786ba1e2
-_django_stubs_commit=d09a79450b381f7d3443c08a6a3cdb0b84960495
-_mypy_commit=f1af857210fa16fafbdb227b3e4d8b3617f37570
-
 pkgname=zuban
-pkgver=0.7.2
+pkgver=0.8.0
 pkgrel=1
 pkgdesc="Python Type Checker / Language Server"
 arch=(x86_64)
 url=https://zubanls.com/
 license=(AGPL-3.0-only)
 depends=(libgcc glibc)
-makedepends=(cargo cargo-about maturin python python-installer)
-source=("$pkgname-$pkgver.tar.gz::https://github.com/zubanls/zuban/archive/refs/tags/v$pkgver.tar.gz"
-		"typeshed-$_typeshed_commit.tar.gz::https://github.com/python/typeshed/archive/$_typeshed_commit.tar.gz"
-		"django-stubs-$_django_stubs_commit.tar.gz::https://github.com/typeddjango/django-stubs/archive/$_django_stubs_commit.tar.gz"
-		"mypy-$_mypy_commit.tar.gz::https://github.com/davidhalter/mypy/archive/$_mypy_commit.tar.gz")
-sha256sums=('b19dadde491ff6d30211644813fb7f2de6a3b166ae48a3ebda80e18130e7e9e4'
-            '46980e94b26f9653d50ac6d1fc3d5a5f58fc90bb3f1b6517d9ca51ec381a71ae'
-            'ae51237437a791c17764d03b465bd4ebf81693cc3d9f118bf4ee22bb82567b7a'
-            'f4c255ca020c8577fe82b1cf076c98a66409734c00eba406a22a00bbbc0d6c7e')
+makedepends=(git cargo cargo-about maturin python python-installer)
+source=("git+https://github.com/zubanls/zuban.git#tag=v$pkgver"
+        "git+https://github.com/python/typeshed.git"
+        "git+https://github.com/typeddjango/django-stubs.git"
+        "git+https://github.com/davidhalter/mypy.git")
+sha256sums=('01272c96ec7f151cd063b16436de64734d52bdc3836be6a65ba121d5e29d0b11'
+            'SKIP'
+            'SKIP'
+            'SKIP')
 
 prepare() {
-    cp -r "$srcdir/typeshed-$_typeshed_commit/." "$srcdir/$pkgname-$pkgver/third_party/typeshed/"
-    cp -r "$srcdir/django-stubs-$_django_stubs_commit/." "$srcdir/$pkgname-$pkgver/third_party/django-stubs/"
-    cp -r "$srcdir/mypy-$_mypy_commit/." "$srcdir/$pkgname-$pkgver/crates/zuban_python/tests/mypylike/mypy/"
-    cd "$srcdir/$pkgname-$pkgver"
+    cd "$srcdir/$pkgname"
+    git submodule init
+    git config submodule.typeshed.url "$srcdir/typeshed"
+    git config submodule.crates/zuban_python/tests/mypylike/mypy.url "$srcdir/mypy"
+    git config submodule.third_party/django-stubs.url "$srcdir/django-stubs"
+    git -c protocol.file.allow=always submodule update
     export RUSTUP_TOOLCHAIN=stable
     cargo fetch --locked --target host-tuple
 }
 
 build() {
-    cd "$srcdir/$pkgname-$pkgver/deploy/pypi/zuban"
+    cd "$srcdir/$pkgname/deploy/pypi/zuban"
     export RUSTUP_TOOLCHAIN=stable
     export CARGO_TARGET_DIR=target
     # deploy/pypi/zuban/pre-maturin-build.sh
@@ -39,6 +37,6 @@ build() {
 }
 
 package() {
-    cd "$srcdir/$pkgname-$pkgver/deploy/pypi/zuban"
+    cd "$srcdir/$pkgname/deploy/pypi/zuban"
     python -m installer --destdir="$pkgdir" dist/*.whl
 }
