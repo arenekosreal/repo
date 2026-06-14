@@ -1,0 +1,13 @@
+diff --git a/backend/go/omnivoice-cpp/Makefile b/backend/go/omnivoice-cpp/Makefile
+index 7806ce1..61e0823 100644
+--- a/backend/go/omnivoice-cpp/Makefile
++++ b/backend/go/omnivoice-cpp/Makefile
+@@ -69,7 +69,7 @@ else
+ endif
+ 
+ omnivoice-cpp: main.go gomnivoicecpp.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o omnivoice-cpp ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o omnivoice-cpp ./
+ 
+ package: omnivoice-cpp
+ 	bash package.sh

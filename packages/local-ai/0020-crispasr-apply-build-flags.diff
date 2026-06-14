@@ -1,0 +1,47 @@
+diff --git a/backend/go/crispasr/Makefile b/backend/go/crispasr/Makefile
+index 42a7a75..caee407 100644
+--- a/backend/go/crispasr/Makefile
++++ b/backend/go/crispasr/Makefile
+@@ -79,7 +79,7 @@ else
+ endif
+ 
+ crispasr: main.go gocrispasr.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o crispasr ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o crispasr ./
+ 
+ package: crispasr
+ 	bash package.sh
+@@ -94,29 +94,25 @@ purge:
+ 
+ ifeq ($(UNAME_S),Linux)
+ libgocrispasr-avx.so: sources/CrispASR
+-	$(MAKE) purge
+ 	$(info ${GREEN}I crispasr build info:avx${RESET})
+ 	SO_TARGET=libgocrispasr-avx.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgocrispasr-custom
+-	rm -rfv build*
++	rm -rfv build-libgocrispasr-avx.so
+ 
+ libgocrispasr-avx2.so: sources/CrispASR
+-	$(MAKE) purge
+ 	$(info ${GREEN}I crispasr build info:avx2${RESET})
+ 	SO_TARGET=libgocrispasr-avx2.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=off -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgocrispasr-custom
+-	rm -rfv build*
++	rm -rfv build-libgocrispasr-avx2.so
+ 
+ libgocrispasr-avx512.so: sources/CrispASR
+-	$(MAKE) purge
+ 	$(info ${GREEN}I crispasr build info:avx512${RESET})
+ 	SO_TARGET=libgocrispasr-avx512.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=on -DGGML_AVX2=on -DGGML_AVX512=on -DGGML_FMA=on -DGGML_F16C=on -DGGML_BMI2=on" $(MAKE) libgocrispasr-custom
+-	rm -rfv build*
++	rm -rfv build-libgocrispasr-avx512.so
+ endif
+ 
+ libgocrispasr-fallback.so: sources/CrispASR
+-	$(MAKE) purge
+ 	$(info ${GREEN}I crispasr build info:fallback${RESET})
+ 	SO_TARGET=libgocrispasr-fallback.so CMAKE_ARGS="$(CMAKE_ARGS) -DGGML_AVX=off -DGGML_AVX2=off -DGGML_AVX512=off -DGGML_FMA=off -DGGML_F16C=off -DGGML_BMI2=off" $(MAKE) libgocrispasr-custom
+-	rm -rfv build*
++	rm -rfv build-libgocrispasr-fallback.so
+ 
+ libgocrispasr-custom: CMakeLists.txt cpp/crispasr_shim.cpp cpp/crispasr_shim.h
+ 	mkdir -p build-$(SO_TARGET) && \

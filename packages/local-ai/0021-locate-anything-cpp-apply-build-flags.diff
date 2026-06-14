@@ -1,0 +1,13 @@
+diff --git a/backend/go/locate-anything-cpp/Makefile b/backend/go/locate-anything-cpp/Makefile
+index 91dbc41..a07bf76 100644
+--- a/backend/go/locate-anything-cpp/Makefile
++++ b/backend/go/locate-anything-cpp/Makefile
+@@ -74,7 +74,7 @@ else
+ endif
+ 
+ locate-anything-cpp: main.go golocateanythingcpp.go $(VARIANT_TARGETS)
+-	CGO_ENABLED=0 $(GOCMD) build -tags "$(GO_TAGS)" -o locate-anything-cpp ./
++	CGO_ENABLED=0 $(GOCMD) build -ldflags "-bindnow" -tags "$(GO_TAGS)" -o locate-anything-cpp ./
+ 
+ package: locate-anything-cpp
+ 	bash package.sh
