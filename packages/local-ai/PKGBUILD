@@ -14,7 +14,7 @@ pkgname=(local-ai
          local-ai-backend-parakeet-cpp-openblas         local-ai-backend-crispasr-openblas
          local-ai-backend-locate-anything-cpp-openblas  local-ai-backend-omnivoice-cpp-openblas)
 pkgver=4.4.3
-pkgrel=1
+pkgrel=2
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
