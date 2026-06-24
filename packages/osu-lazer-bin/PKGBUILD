@@ -1,7 +1,7 @@
 _system_libs=true
 
 pkgname=osu-lazer-bin
-pkgver=2026.620.0
+pkgver=2026.624.0
 pkgrel=1
 pkgdesc="rhythm is just a *click* away!"
 arch=(x86_64)
@@ -20,7 +20,7 @@ source=("osu-lazer-$pkgver.AppImage::https://github.com/ppy/osu/releases/downloa
         # Basically stolen from aur/osu-mime, but changed icon name to osu to use icon in this package.
         "osu!"
 		"osu!.xml")
-sha256sums=('acba26fd4c2a54e5d493f6b22ef7a4450303e3da79301f4103a442a21b6e3df8'
+sha256sums=('10a982abae7a7633c62b923526a4837132ada5b4196cef1619670fbfe3d3d2ae'
             '2e73c7c4295cc3da18697ac982f64a4ec449e0781e8f4c59318216e13998864a'
             'a7451bab08bc49114e22f1fcbbdd80459ae12f9739a26eb24d14ba149f95f098'
             'e87eb744005e6f193240526aea88d9555d5ee8a7a837f39bcdfa9a05ef6ab7e7')
