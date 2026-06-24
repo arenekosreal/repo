@@ -12,9 +12,11 @@ pkgname=(local-ai
          local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4
          local-ai-backend-rfdetr-cpp                    local-ai-backend-cloud-proxy
          local-ai-backend-parakeet-cpp-openblas         local-ai-backend-crispasr-openblas
-         local-ai-backend-locate-anything-cpp-openblas  local-ai-backend-omnivoice-cpp-openblas)
-pkgver=4.4.3
-pkgrel=2
+         local-ai-backend-locate-anything-cpp-openblas  local-ai-backend-omnivoice-cpp-openblas
+         local-ai-backend-ced                           local-ai-backend-depth-anything-cpp-openblas
+         local-ai-backend-supertonic                    local-ai-backend-privacy-filter-openblas)
+pkgver=4.5.0
+pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
 arch=(x86_64)
 url=https://localai.io/
@@ -47,8 +49,11 @@ source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "0019-parakeet-cpp-apply-build-flags.diff"
         "0020-crispasr-apply-build-flags.diff"
         "0021-locate-anything-cpp-apply-build-flags.diff"
-        "0022-omnivoice-cpp-apply-build-flags.diff")
-sha256sums=('cdba00f3dd4ef5a21e3fbcc71ba5d4c97c52c247e0ccfd00ff8fc46bf7aa24c3'
+        "0022-omnivoice-cpp-apply-build-flags.diff"
+        "0023-ced-apply-build-flags.diff"
+        "0024-depth-anything-cpp-apply-build-flags.diff"
+        "0025-supertonic-use-system-onnxruntime.diff")
+sha256sums=('41193233508b7eea639a5340f0d98cd75a49697b3be71cb77448725404758393'
             'SKIP'
             'SKIP'
             '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
@@ -73,7 +78,10 @@ sha256sums=('cdba00f3dd4ef5a21e3fbcc71ba5d4c97c52c247e0ccfd00ff8fc46bf7aa24c3'
             'c99703fb0f69f63c846f653d82b7c47676a5ac716b33edcb75b7783428cfc421'
             '489079bd1d0cf02870d7510e58c90148dbcbbfd0c8ff39c8ac5e8f5a7372de0b'
             '0e87dc4f8718edb1801ddf057e1d318e4e1e3ac90373b6b96bae46ca9937f95c'
-            'c29996671b273866cdde11bb6d54c0316d5b5c5e51b2345352233e05b049c07b')
+            'c29996671b273866cdde11bb6d54c0316d5b5c5e51b2345352233e05b049c07b'
+            'ca16476a714a2dc1ed51b3d794f27c1c0175932c741920d7436da41623960bf6'
+            '2b5585a52899db4fc6379f67a08a29b813d87a17129c8b646a31d121640a3715'
+            '6dac8db814d9f0ff78f2341b68a11b3c8d754e207110aea77f4d7d986b946713')
 # static resources are embedded into binary and cannot be stripped.
 options=(!strip !lto)
 
@@ -119,6 +127,9 @@ prepare() {
     patch -Np1 -i "$srcdir/0020-crispasr-apply-build-flags.diff"
     patch -Np1 -i "$srcdir/0021-locate-anything-cpp-apply-build-flags.diff"
     patch -Np1 -i "$srcdir/0022-omnivoice-cpp-apply-build-flags.diff"
+    patch -Np1 -i "$srcdir/0023-ced-apply-build-flags.diff"
+    patch -Np1 -i "$srcdir/0024-depth-anything-cpp-apply-build-flags.diff"
+    patch -Np1 -i "$srcdir/0025-supertonic-use-system-onnxruntime.diff"
     make -C backend/cpp/llama-cpp llama.cpp
     make -C backend/cpp/ds4 ds4
     make -C backend/go/piper sources/go-piper
@@ -137,6 +148,9 @@ prepare() {
     make -C backend/go/locate-anything-cpp sources/locate-anything.cpp
     make -C backend/go/omnivoice-cpp sources/omnivoice.cpp
     make -C backend/go/rfdetr-cpp sources/rt-detr.cpp
+    make -C backend/go/ced sources/ced.cpp
+    make -C backend/go/depth-anything-cpp sources/depth-anything.cpp
+    make -C backend/cpp/privacy-filter privacy-filter.cpp
     patch -Np1 -i "$srcdir/0015-go-piper-apply-build-flags.diff" -d "backend/go/piper/sources/go-piper/"
     patch -Np1 -i "$srcdir/0016-piper-phonemize-fix-building.diff" -d "backend/go/piper/sources/go-piper/piper-phonemize/"
     export GOPATH="$srcdir"
@@ -185,6 +199,10 @@ build() {
     make -C "backend/go/locate-anything-cpp"    BUILD_TYPE=openblas locate-anything-cpp
     make -C "backend/go/omnivoice-cpp"          BUILD_TYPE=openblas omnivoice-cpp
     make -C "backend/go/rfdetr-cpp"             BUILD_TYPE=openblas rfdetr-cpp
+    make -C "backend/go/ced"                    BUILD_TYPE=openblas ced-grpc
+    make -C "backend/go/depth-anything-cpp"     BUILD_TYPE=openblas depth-anything-cpp
+    make -C "backend/go/supertonic"             BUILD_TYPE=openblas supertonic
+    make -C "backend/cpp/privacy-filter"        BUILD_TYPE=openblas grpc-server
     #make -C "backend/rust/kokoros"              BUILD_TYPE=openblas kokoros-grpc
 }
 
@@ -536,5 +554,64 @@ package_local-ai-backend-omnivoice-cpp-openblas() {
         "backend/go/omnivoice-cpp/omnivoice-cpp" \
         "backend/go/omnivoice-cpp/run.sh"
     _strip_files "$pkgdir/usr/lib/$pkgbase/backends/omnivoice-cpp/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-ced() {
+    pkgdesc+=" (ced backend)"
+    groups=(local-ai-backend)
+    depends+=(glibc libgcc libgomp libstdc++ bash)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/ced/" \
+        "backend/go/ced/libced.so"* \
+        "backend/go/ced/ced-grpc" \
+        "backend/go/ced/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/ced/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-depth-anything-cpp-openblas() {
+    pkgdesc+=" (depth-anything.cpp backend with openblas optimization)"
+    groups=(local-ai-backend)
+    provides=(local-ai-backend-depth-anything-cpp)
+    conflicts=(local-ai-backend-depth-anything-cpp)
+    depends+=(glibc libgcc libgomp libstdc++ libgfortran openblas bash)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/depth-anything-cpp/" \
+        "backend/go/depth-anything-cpp/libdepthanythingcpp-"* \
+        "backend/go/depth-anything-cpp/depth-anything-cpp" \
+        "backend/go/depth-anything-cpp/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/depth-anything-cpp/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-supertonic() {
+    pkgdesc+=" (supertonic backend)"
+    groups=(local-ai-backend)
+    depends+=(glibc bash)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/supertonic/" \
+        "backend/go/supertonic/supertonic" \
+        "backend/go/supertonic/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/supertonic/"
+    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_local-ai-backend-privacy-filter-openblas() {
+    pkgdesc+=" (privacy-filter backend with openblas optimization)"
+    groups=(local-ai-backend)
+    provides=(local-ai-backend-privacy-filter)
+    conflicts=(local-ai-backend-privacy-filter)
+    depends+=(abseil-cpp glibc grpc libgcc libstdc++ openblas protobuf brotli systemd-libs re2 c-ares openssl bash)
+
+    cd "$srcdir/LocalAI"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/privacy-filter/" \
+        "backend/go/privacy-filter/build/privacy-filter.cpp/ggml/src/libggml"*.so* \
+        "backend/go/privacy-filter/grpc-server" \
+        "backend/go/privacy-filter/run.sh"
+    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/privacy-filter/"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

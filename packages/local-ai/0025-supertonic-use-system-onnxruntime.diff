@@ -1,0 +1,16 @@
+diff --git a/backend/go/supertonic/Makefile b/backend/go/supertonic/Makefile
+index ab49914..430ee3c 100644
+--- a/backend/go/supertonic/Makefile
++++ b/backend/go/supertonic/Makefile
+@@ -41,9 +41,9 @@ backend-assets/lib: sources/onnxruntime
+ 	mkdir -p backend-assets/lib
+ 	cp -rfLv sources/onnxruntime/lib/* backend-assets/lib/
+ 
+-supertonic: backend-assets/lib
++supertonic:
+ 	CGO_ENABLED=1 $(GOCMD) build \
+-	  -ldflags "$(LD_FLAGS) -X main.onnxProvider=$(ONNX_PROVIDER)" \
++	  -ldflags "$(LD_FLAGS) -X main.onnxProvider=$(ONNX_PROVIDER) -compressdwarf=false -linkmode external -bindnow" \
+ 	  -tags "$(GO_TAGS)" -o supertonic ./
+ 
+ package:
