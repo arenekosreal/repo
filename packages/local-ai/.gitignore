@@ -1,7 +1,4 @@
-pkg
-src
-*.pkg.tar.*
-LocalAI
-Kokoros
-hugo-theme-relearn
-*.log
+*
+!PKGBUILD
+!.gitignore
+!*.diff

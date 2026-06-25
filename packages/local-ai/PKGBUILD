@@ -1,20 +1,7 @@
 # Contributor: robertfoster
 
 pkgbase=local-ai
-pkgname=(local-ai
-         local-ai-backend-llama-cpp-openblas            local-ai-backend-acestep-cpp-openblas
-         local-ai-backend-local-store                   local-ai-backend-opus
-         local-ai-backend-piper                         local-ai-backend-silero-vad
-         local-ai-backend-stablediffusion-ggml-openblas local-ai-backend-voxtral-openblas
-         local-ai-backend-whisper-openblas              #local-ai-backend-kokoros
-         local-ai-backend-localvqe                      local-ai-backend-qwen3-tts-cpp-openblas
-         local-ai-backend-sam3-cpp                      local-ai-backend-sherpa-onnx
-         local-ai-backend-vibevoice-cpp-openblas        local-ai-backend-ds4
-         local-ai-backend-rfdetr-cpp                    local-ai-backend-cloud-proxy
-         local-ai-backend-parakeet-cpp-openblas         local-ai-backend-crispasr-openblas
-         local-ai-backend-locate-anything-cpp-openblas  local-ai-backend-omnivoice-cpp-openblas
-         local-ai-backend-ced                           local-ai-backend-depth-anything-cpp-openblas
-         local-ai-backend-supertonic                    local-ai-backend-privacy-filter-openblas)
+pkgname=(local-ai local-ai-backend-llama-cpp local-ai-backend-cloud-proxy)
 pkgver=4.5.0
 pkgrel=1
 pkgdesc="The free, Open Source alternative to OpenAI, Claude and others."
@@ -22,194 +9,109 @@ arch=(x86_64)
 url=https://localai.io/
 license=(MIT)
 makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
-             blas-openblas blas64-openblas onnxruntime opus npm libsonic pcaudiolib
-             espeak-ng clang nlohmann-json nodejs-lts-jod)
+             blas-openblas blas64-openblas npm nodejs-lts-jod vulkan-headers spirv-headers
+             vulkan-icd-loader shaderc nlohmann-json)
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
-        "git+https://github.com/lucasjinreal/Kokoros.git"
-        "git+https://github.com/McShelby/hugo-theme-relearn.git"
-        "local-ai.service"
-        "0001-Makefile-apply-build-flags-and-skip-installing-tools.diff"
-        "0002-acestep-cpp-apply-build-flags.diff"
-        "0003-local-store-apply-build-flags.diff"
-        "0004-opus-apply-build-flags.diff"
-        "0005-piper-apply-build-flags.diff"
-        "0006-silero-vad-use-system-onnxruntime.diff"
-        "0007-stablediffusion-ggml-do-not-purge-everything.diff"
-        "0008-voxtral-apply-build-flags.diff"
-        "0009-whisper-do-not-purge-everything.diff"
-        "0010-localvqe-apply-build-flags.diff"
-        "0011-qwen3-tts-cpp-apply-build-flags.diff"
-        "0012-sam3-cpp-do-not-purge-everything.diff"
-        "0013-sherpa-onnx-use-system-onnxruntime.diff"
-        "0014-vibevoice-cpp-apply-build-flags.diff"
-        "0015-go-piper-apply-build-flags.diff"
-        "0016-piper-phonemize-fix-building.diff"
-        "0017-rfdetr-cpp-apply-build-flags.diff"
-        "0018-cloud-proxy-apply-build-flags.diff"
-        "0019-parakeet-cpp-apply-build-flags.diff"
-        "0020-crispasr-apply-build-flags.diff"
-        "0021-locate-anything-cpp-apply-build-flags.diff"
-        "0022-omnivoice-cpp-apply-build-flags.diff"
-        "0023-ced-apply-build-flags.diff"
-        "0024-depth-anything-cpp-apply-build-flags.diff"
-        "0025-supertonic-use-system-onnxruntime.diff")
+        "git+https://github.com/ggerganov/llama.cpp.git#commit=73618f27a801c0b8614ceaf3547d3c2a99baae14"
+        "local-ai.service")
 sha256sums=('41193233508b7eea639a5340f0d98cd75a49697b3be71cb77448725404758393'
-            'SKIP'
-            'SKIP'
-            '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0'
-            '9a2bfad4953ee59872c917677a5c63c60dc83e0999c04a4d5f8e5560703bae09'
-            '91bf3799d6844777769cb4bd297b55b3f2c793b50ecbe45c184b05edd1e22236'
-            '3e6d93f17214d3a7d843e5c17fa84c3cf2dc4fde8ab1bd4b071cb6b44c3b287a'
-            'e6232ef97ecfc0cef034e661a17141d5a338c25d401ff6d794bda475a2e737ac'
-            '15f784a0ad3e3bcbfe6f250717727f6cf203f4086cbd35f340f575c8a7fd062c'
-            '5525ff47247a4800f2b82def9f61992879ce50733f09d40fd86997e1e905561c'
-            'd69320361132e8870fcd9efcc6abf2ec62767f81ebe26a9693d19dcbd9cbd790'
-            '93bf2f3fb0635f31e65afdfecf2ce5e113bcc040aee9d9299902c6799b150936'
-            'd70106348ff0493b74a713d9e57cf20cef94a8d983c382ab116bfdb3108a2c61'
-            'b50b0aa7c45201b9a38b8d24aec125147bd3e2890033982729566a1edb0f030a'
-            '1aba537794539fe2f70cc7a53c0771999434a67d74c1e1cec2eea857aef2702b'
-            '76266689549be105ce07fc6157bd08d11cf5a0e0899d4830ad77672f57649b62'
-            '24f80dfe85d977cdeae6c128e39cd7ddf0fcbea5ff0e0cd6245dc22577343ae0'
-            'bd9470f4847a502268cb5e9bde23ce67ccbdca8221f02211edb3dfc7d03b9bdf'
-            '68e620935d30c3dc2a57f46f2bf2fdcf3e55eb18135a05ed9d5c3da4c6eb71c0'
-            'fa6fb0e1abdc2a2b7016bf652be4a6f56a492d2a0ded8eec3c5132d44ca1be83'
-            'af910bcd82f4e16967cd8d899ddd1855ccac460073ecfbd5004b69a360e42c1e'
-            '21d4bf42a6bc39bad9e4b57855ee51db0b2d929365d4ebd90b7fe02782b34831'
-            'c99703fb0f69f63c846f653d82b7c47676a5ac716b33edcb75b7783428cfc421'
-            '489079bd1d0cf02870d7510e58c90148dbcbbfd0c8ff39c8ac5e8f5a7372de0b'
-            '0e87dc4f8718edb1801ddf057e1d318e4e1e3ac90373b6b96bae46ca9937f95c'
-            'c29996671b273866cdde11bb6d54c0316d5b5c5e51b2345352233e05b049c07b'
-            'ca16476a714a2dc1ed51b3d794f27c1c0175932c741920d7436da41623960bf6'
-            '2b5585a52899db4fc6379f67a08a29b813d87a17129c8b646a31d121640a3715'
-            '6dac8db814d9f0ff78f2341b68a11b3c8d754e207110aea77f4d7d986b946713')
-# static resources are embedded into binary and cannot be stripped.
-options=(!strip !lto)
-
-_strip_files() {
-    while read -r f
-    do
-        case "$(file -Sib "$f")" in
-            application/x-sharedlib\;*)        # Libraries (.so)
-                strip -v $STRIP_SHARED "$f" ;;
-            application/x-archive\;*)          # Libraries (.a)
-                strip -v $STRIP_STATIC "$f" ;;
-            application/x-executable\;*)       # Binaries
-                strip -v $STRIP_BINARIES "$f" ;;
-            application/x-pie-executable\;*)   # Relocatable binaries
-                strip -v $STRIP_SHARED "$f" ;;
-        esac
-    done < <(find "$1" -mindepth 1 -type f \( -executable -o -name "*.so" \) -a ! -name "*.sh")
-}
+            'cb4e31ada1280c92ce69f4b89f7b254e53bfe2266808147a2175301c788e86d2'
+            '2cbecd8267b3807e88feffb2239a5cdfd3912fe1e78aa856a781cb39154536d0')
 
 prepare() {
     cd "$srcdir/LocalAI"
-    git submodule init
-    git config submodule."backend/rust/kokoros/sources/Kokoros".url "$srcdir/Kokoros"
-    git config submodule."docs/themes/hugo-theme-relearn".url "$srcdir/hugo-theme-relearn"
-    git -c protocol.file.allow=always submodule update
-    patch -Np1 -i "$srcdir/0001-Makefile-apply-build-flags-and-skip-installing-tools.diff"
-    patch -Np1 -i "$srcdir/0002-acestep-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0003-local-store-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0004-opus-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0005-piper-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0006-silero-vad-use-system-onnxruntime.diff"
-    patch -Np1 -i "$srcdir/0007-stablediffusion-ggml-do-not-purge-everything.diff"
-    patch -Np1 -i "$srcdir/0008-voxtral-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0009-whisper-do-not-purge-everything.diff"
-    patch -Np1 -i "$srcdir/0010-localvqe-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0011-qwen3-tts-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0012-sam3-cpp-do-not-purge-everything.diff"
-    patch -Np1 -i "$srcdir/0013-sherpa-onnx-use-system-onnxruntime.diff"
-    patch -Np1 -i "$srcdir/0014-vibevoice-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0017-rfdetr-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0018-cloud-proxy-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0019-parakeet-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0020-crispasr-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0021-locate-anything-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0022-omnivoice-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0023-ced-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0024-depth-anything-cpp-apply-build-flags.diff"
-    patch -Np1 -i "$srcdir/0025-supertonic-use-system-onnxruntime.diff"
-    make -C backend/cpp/llama-cpp llama.cpp
-    make -C backend/cpp/ds4 ds4
-    make -C backend/go/piper sources/go-piper
-    make -C backend/go/stablediffusion-ggml sources/stablediffusion-ggml.cpp
-    make -C backend/go/whisper sources/whisper.cpp
-    make -C backend/go/acestep-cpp sources/acestep.cpp
-    make -C backend/go/voxtral sources/voxtral.c
-    make -C backend/go/localvqe sources/LocalVQE
-    make -C backend/go/qwen3-tts-cpp sources/qwentts.cpp
-    make -C backend/go/sam3-cpp sources/sam3.cpp
-    make -C backend/go/sherpa-onnx sources/sherpa-onnx
-    make -C backend/go/vibevoice-cpp sources/vibevoice.cpp
-    make -C backend/go/rfdetr-cpp sources/rt-detr.cpp
-    make -C backend/go/parakeet-cpp sources/parakeet.cpp
-    make -C backend/go/crispasr sources/CrispASR
-    make -C backend/go/locate-anything-cpp sources/locate-anything.cpp
-    make -C backend/go/omnivoice-cpp sources/omnivoice.cpp
-    make -C backend/go/rfdetr-cpp sources/rt-detr.cpp
-    make -C backend/go/ced sources/ced.cpp
-    make -C backend/go/depth-anything-cpp sources/depth-anything.cpp
-    make -C backend/cpp/privacy-filter privacy-filter.cpp
-    patch -Np1 -i "$srcdir/0015-go-piper-apply-build-flags.diff" -d "backend/go/piper/sources/go-piper/"
-    patch -Np1 -i "$srcdir/0016-piper-phonemize-fix-building.diff" -d "backend/go/piper/sources/go-piper/piper-phonemize/"
+
+    #backend/cpp/llama-cpp/prepare.sh
+    cp -a "$srcdir/llama.cpp/tools/server" "$srcdir/llama.cpp/tools/grpc-server"
+    cp -t "$srcdir/llama.cpp/tools/grpc-server" "backend/cpp/llama-cpp/CMakeLists.txt" "backend/cpp/llama-cpp/grpc-server.cpp"
+    # shellcheck disable=SC2016
+    sed -i -e '/add_executable/ s/ json.hpp httplib.h//' \
+           -e '/target_link_libraries(${TARGET}/ a nlohmann_json::nlohmann_json' \
+           -e '/target_link_libraries(${TARGET}/ a cpp-httplib' \
+           -e '/find_package(absl/ i find_package(nlohmann_json CONFIG REQUIRED)' \
+           -e "s|../../../../../..|$srcdir/LocalAI|" \
+        "$srcdir/llama.cpp/tools/grpc-server/CMakeLists.txt"
+    grep -q "add_subdirectory(grpc-server)" "$srcdir/llama.cpp/tools/CMakeLists.txt" || \
+        echo "add_subdirectory(grpc-server)" >> "$srcdir/llama.cpp/tools/CMakeLists.txt"
+
+    echo "Generating protobuf code..."
+    mkdir -p pkg/grpc/proto/
+    protoc --experimental_allow_proto3_optional -Ibackend/ \
+        --go_out=pkg/grpc/proto/ --go_opt=paths=source_relative \
+        --go-grpc_out=pkg/grpc/proto/ --go-grpc_opt=paths=source_relative \
+        backend/backend.proto
+
+    echo "Fetching dependencies..."
     export GOPATH="$srcdir"
     go mod download -modcacherw
     cd "$srcdir/LocalAI/core/http/react-ui"
     npm install
-    #cd "$srcdir/LocalAI/backend/rust/kokoros"
-    #export RUSTUP_TOOLCHAIN=stable
-    #cargo fetch --locked --target host-tuple
 }
 
 build() {
-    cd "$srcdir/LocalAI"
     export CGO_CPPFLAGS="${CPPFLAGS}"
     export CGO_CFLAGS="${CFLAGS}"
     export CGO_CXXFLAGS="${CXXFLAGS}"
     export CGO_LDFLAGS="${LDFLAGS}"
     export GOFLAGS="-buildmode=pie -mod=readonly -modcacherw"
     export GOPATH="$srcdir"
-    export RUSTUP_TOOLCHAIN=stable
-    export CARGO_TARGET_DIR=target
 
+    cd "$srcdir/LocalAI/core/http/react-ui"
+    echo "Building frontend..."
+    npm run build
+
+    local tags="stablediffusion,tts,p2p"
+
+    cd "$srcdir/LocalAI"
     echo "Building main program..."
-    make GO_TAGS=stablediffusion,tts,p2p BUILD_TYPE=openblas \
-         build
-    make -C "backend/cpp/llama-cpp"             BUILD_TYPE=openblas \
-        llama-cpp-avx llama-cpp-avx2 llama-cpp-avx512 llama-cpp-fallback llama-cpp-grpc llama-cpp-rpc-server
-    make -C "backend/cpp/ds4"                   BUILD_TYPE=openblas grpc-server
-    make -C "backend/go/acestep-cpp"            BUILD_TYPE=openblas acestep-cpp
-    make -C "backend/go/local-store"            BUILD_TYPE=openblas local-store
-    make -C "backend/go/opus"                   BUILD_TYPE=openblas opus
-    make -C "backend/go/piper"                  BUILD_TYPE=openblas piper
-    make -C "backend/go/silero-vad"             BUILD_TYPE=openblas silero-vad
-    make -C "backend/go/stablediffusion-ggml"   BUILD_TYPE=openblas stablediffusion-ggml
-    make -C "backend/go/voxtral"                BUILD_TYPE=openblas voxtral
-    make -C "backend/go/whisper"                BUILD_TYPE=openblas whisper
-    make -C "backend/go/localvqe"               BUILD_TYPE=openblas localvqe
-    make -C "backend/go/qwen3-tts-cpp"          BUILD_TYPE=openblas qwen3-tts-cpp
-    make -C "backend/go/sam3-cpp"               BUILD_TYPE=openblas sam3-cpp
-    make -C "backend/go/sherpa-onnx"            BUILD_TYPE=openblas sherpa-onnx
-    make -C "backend/go/vibevoice-cpp"          BUILD_TYPE=openblas vibevoice-cpp
-    make -C "backend/go/rfdetr-cpp"             BUILD_TYPE=openblas rfdetr-cpp
-    make -C "backend/go/cloud-proxy"            BUILD_TYPE=openblas cloud-proxy
-    make -C "backend/go/parakeet-cpp"           BUILD_TYPE=openblas parakeet-cpp-grpc
-    make -C "backend/go/crispasr"               BUILD_TYPE=openblas crispasr
-    make -C "backend/go/locate-anything-cpp"    BUILD_TYPE=openblas locate-anything-cpp
-    make -C "backend/go/omnivoice-cpp"          BUILD_TYPE=openblas omnivoice-cpp
-    make -C "backend/go/rfdetr-cpp"             BUILD_TYPE=openblas rfdetr-cpp
-    make -C "backend/go/ced"                    BUILD_TYPE=openblas ced-grpc
-    make -C "backend/go/depth-anything-cpp"     BUILD_TYPE=openblas depth-anything-cpp
-    make -C "backend/go/supertonic"             BUILD_TYPE=openblas supertonic
-    make -C "backend/cpp/privacy-filter"        BUILD_TYPE=openblas grpc-server
-    #make -C "backend/rust/kokoros"              BUILD_TYPE=openblas kokoros-grpc
+    go build -ldflags "-s -w -bindnow -compressdwarf=false -linkmode external -X \"github.com/mudler/LocalAI/internal.Version=$(git describe --always --tags)\" -X \"github.com/mudler/LocalAI/internal.Commit=$(git rev-parse HEAD)\"" -tags "$tags" -o local-ai ./cmd/local-ai
+
+    cd "$srcdir"
+    local ggml_common_args=(-DCMAKE_BUILD_TYPE=None -DGGML_NATIVE=OFF -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS -DBUILD_SHARED_LIBS=OFF
+        -DGGML_BUILD_TESTS=OFF -DGGML_BUILD_EXAMPLES=OFF -DGGML_VULKAN=ON)
+    local ggml_avx2_args=(-DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_AVX512=OFF -DGGML_FMA=ON -DGGML_F16C=ON)
+    local ggml_avx_args=(-DGGML_AVX=ON -DGGML_AVX2=OFF -DGGML_AVX512=OFF -DGGML_FMA=OFF -DGGML_F16C=OFF)
+    local ggml_avx512_args=(-DGGML_AVX=ON -DGGML_AVX2=OFF -DGGML_AVX512=ON -DGGML_FMA=ON -DGGML_F16C=ON)
+    local ggml_fallback_args=(-DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_AVX512=OFF -DGGML_FMA=OFF -DGGML_F16C=OFF)
+    local ggml_grpc_args=("${ggml_fallback_args[@]}" -DGGML_RPC=ON)
+
+    echo "Building llama-cpp backend..."
+    mkdir llama-cpp-avx2-build
+    cmake -B llama-cpp-avx2-build -S "$srcdir/llama.cpp" \
+        "${ggml_avx2_args[@]}" \
+        "${ggml_common_args[@]}"
+    cmake --build llama-cpp-avx2-build --target grpc-server
+    mkdir llama-cpp-avx-build
+    cmake -B llama-cpp-avx-build -S "$srcdir/llama.cpp" \
+        "${ggml_avx_args[@]}" \
+        "${ggml_common_args[@]}"
+    cmake --build llama-cpp-avx-build --target grpc-server
+    mkdir llama-cpp-avx512-build
+    cmake -B llama-cpp-avx512-build -S "$srcdir/llama.cpp" \
+        "${ggml_avx512_args[@]}" \
+        "${ggml_common_args[@]}"
+    cmake --build llama-cpp-avx512-build --target grpc-server
+    mkdir llama-cpp-fallback-build
+    cmake -B llama-cpp-fallback-build -S "$srcdir/llama.cpp" \
+        "${ggml_fallback_args[@]}" \
+        "${ggml_common_args[@]}"
+    cmake --build llama-cpp-fallback-build --target grpc-server
+    mkdir llama-cpp-grpc-build
+    cmake -B llama-cpp-grpc-build -S "$srcdir/llama.cpp" \
+        "${ggml_grpc_args[@]}" \
+        "${ggml_common_args[@]}"
+    cmake --build llama-cpp-grpc-build --target grpc-server --target rpc-server
+
+    echo "Building cloud-proxy backend..."
+    CGO_ENABLED=0 go build -C "$srcdir/LocalAI/backend/go/cloud-proxy" -ldflags "-s -w -bindnow" -tags "$tags" -o cloud-proxy ./
 }
 
 package_local-ai() {
     install=$pkgname.install
     optdepends=("local-ai-backend: Packaged backends")
     depends+=(glibc)
+    # static resources are embedded into binary and cannot be stripped.
+    options=(!strip)
 
     cd "$srcdir/LocalAI"
     mkdir -p "$pkgdir/usr/bin"
@@ -219,399 +121,29 @@ package_local-ai() {
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgbase/LICENSE"
 }
 
-package_local-ai-backend-llama-cpp-openblas() {
-    pkgdesc+=" (llama-cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-llama-cpp)
-    conflicts=(local-ai-backend-llama-cpp)
-    depends+=(abseil-cpp glibc grpc libgcc libgomp libstdc++ openblas protobuf bash)
+package_local-ai-backend-llama-cpp() {
+    pkgdesc+=" (llama-cpp backend)"
+    provides=(local-ai-backend)
+    depends+=(abseil-cpp glibc grpc libgcc libgomp libstdc++ openblas protobuf vulkan-icd-loader bash)
 
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp" \
-        "backend/cpp/llama-cpp/llama-cpp-avx" \
-        "backend/cpp/llama-cpp/llama-cpp-avx2" \
-        "backend/cpp/llama-cpp/llama-cpp-avx512" \
-        "backend/cpp/llama-cpp/llama-cpp-fallback" \
-        "backend/cpp/llama-cpp/llama-cpp-grpc" \
-        "backend/cpp/llama-cpp/llama-cpp-rpc-server" \
-        "backend/cpp/llama-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-acestep-cpp-openblas() {
-    pkgdesc+=" (acestep-cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-acestep-cpp)
-    conflicts=(local-ai-backend-acestep-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/acestep-cpp/" \
-        "backend/go/acestep-cpp/libgoacestepcpp-"*.so \
-        "backend/go/acestep-cpp/acestep-cpp" \
-        "backend/go/acestep-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/acestep-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-local-store() {
-    pkgdesc+=" (local-store backend)"
-    groups=(local-ai-backend)
-    depends+=(bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/local-store/" \
-        "backend/go/local-store/local-store" \
-        "backend/go/local-store/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/local-store/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-opus() {
-    pkgdesc+=" (opus backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc opus bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/opus/" \
-        "backend/go/opus/opus" \
-        "backend/go/opus/run.sh"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/opus/lib/" \
-        "backend/go/opus/libopusshim.so"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/opus/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-piper() {
-    pkgdesc+=" (piper backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libstdc++ bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/piper/" \
-        "backend/go/piper/piper" \
-        "backend/go/piper/run.sh"
-    local pi_lib="backend/go/piper/sources/go-piper/piper-phonemize/pi/lib"
-    find "$pi_lib" -mindepth 1 -maxdepth 1 -type f -name "*.so*" -exec \
-        install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/piper/lib/" {} +
-    find "$pi_lib" -mindepth 1 -maxdepth 1 -type l -name "*.so*" -exec \
-        cp -Pv -t "$pkgdir/usr/lib/$pkgbase/backends/piper/lib/" {} +
-    cp -avf "backend/go/piper/espeak-ng-data" "$pkgdir/usr/lib/$pkgbase/backends/piper/"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/piper"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-silero-vad() {
-    pkgdesc+=" (silero-vad backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc onnxruntime bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/" \
-        "backend/go/silero-vad/silero-vad" \
-        "backend/go/silero-vad/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/silero-vad/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-stablediffusion-ggml-openblas() {
-    pkgdesc+=" (stablediffusion-ggml backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-stablediffusion-ggml)
-    conflicts=(local-ai-backend-stablediffusion-ggml)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/stablediffusion-ggml/" \
-        "backend/go/stablediffusion-ggml/libgosd-"*.so \
-        "backend/go/stablediffusion-ggml/stablediffusion-ggml" \
-        "backend/go/stablediffusion-ggml/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/stablediffusion-ggml/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-voxtral-openblas() {
-    pkgdesc+=" (voxtral backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-voxtral)
-    conflicts=(local-ai-backend-voxtral)
-    depends+=(glibc openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/voxtral/" \
-        "backend/go/voxtral/voxtral" \
-        "backend/go/voxtral/run.sh"
-    install -Dvm755 "backend/go/voxtral/libgovoxtral.so" \
-        "$pkgdir/usr/lib/$pkgbase/backends/voxtral/libgovoxtral-fallback.so"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/voxtral/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-whisper-openblas() {
-    pkgdesc+=" (whisper backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-whisper)
-    conflicts=(local-ai-backend-whisper)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/whisper/" \
-        "backend/go/whisper/libgowhisper-"*.so \
-        "backend/go/whisper/whisper" \
-        "backend/go/whisper/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/whisper/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-kokoros() {
-    pkgdesc+=" (Kokoros backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libstdc++ libsonic pcaudiolib espeak-ng openssl bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/kokoros" \
-        "backend/rust/kokoros/target/release/kokoros-grpc" \
-        "backend/rust/kokoros/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/kokoros"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-localvqe() {
-    pkgdesc+=" (localvqe backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libstdc++ libgomp bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/localvqe/" \
-        "backend/go/localvqe/libggml"*.so* \
-        "backend/go/localvqe/liblocalvqe.so"* \
-        "backend/go/localvqe/localvqe" \
-        "backend/go/localvqe/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/localvqe/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-qwen3-tts-cpp-openblas() {
-    pkgdesc+=" (qwen3-tts-cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-qwen3-tts-cpp)
-    conflicts=(local-ai-backend-qwen3-tts-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/qwen3-tts-cpp/" \
-        "backend/go/qwen3-tts-cpp/libgoqwen3ttscpp-"*.so \
-        "backend/go/qwen3-tts-cpp/qwen3-tts-cpp" \
-        "backend/go/qwen3-tts-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/qwen3-tts-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-sam3-cpp() {
-    pkgdesc+=" (sam3-cpp backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libgomp libstdc++ bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/sam3-cpp/" \
-        "backend/go/sam3-cpp/libgosam3-"*.so \
-        "backend/go/sam3-cpp/sam3-cpp" \
-        "backend/go/sam3-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/sam3-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-sherpa-onnx() {
-    pkgdesc+=" (sherpa-onnx backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libstdc++ onnxruntime bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/sherpa-onnx/" \
-        "backend/go/sherpa-onnx/sherpa-onnx" \
-        "backend/go/sherpa-onnx/run.sh"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/sherpa-onnx/lib/" \
-        "backend/go/sherpa-onnx/backend-assets/lib/libsherpa-"*.so
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/sherpa-onnx/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-vibevoice-cpp-openblas() {
-    pkgdesc+=" (vibevoice-cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-vibevoice-cpp)
-    conflicts=(local-ai-backend-vibevoice-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/vibevoice-cpp/" \
-        "backend/go/vibevoice-cpp/libgovibevoicecpp-"*.so \
-        "backend/go/vibevoice-cpp/vibevoice-cpp" \
-        "backend/go/vibevoice-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/vibevoice-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-ds4() {
-    pkgdesc+=" (ds4 backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libstdc++ protobuf grpc abseil-cpp bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/ds4/" \
-        "backend/cpp/ds4/grpc-server" \
-        "backend/cpp/ds4/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/ds4/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-rfdetr-cpp() {
-    pkgdesc+=" (rfdetr-cpp backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libgomp libstdc++ bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/rfdetr-cpp/" \
-        "backend/go/rfdetr-cpp/librfdetrcpp-"*.so \
-        "backend/go/rfdetr-cpp/rfdetr-cpp" \
-        "backend/go/rfdetr-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/rfdetr-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/" \
+        "$srcdir/LocalAI/backend/cpp/llama-cpp/run.sh"
+    for variant in avx2 avx avx512 fallback grpc
+    do
+        install -Dvm755 "$srcdir/llama-cpp-$variant-build/bin/grpc-server" \
+            "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/llama-cpp-$variant"
+    done
+    install -Dvm644 "$srcdir/LocalAI/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
 package_local-ai-backend-cloud-proxy() {
     pkgdesc+=" (cloud-proxy backend)"
-    groups=(local-ai-backend)
+    provides=(local-ai-backend)
     depends+=(bash)
 
     cd "$srcdir/LocalAI"
     install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/cloud-proxy/" \
         "backend/go/cloud-proxy/cloud-proxy" \
         "backend/go/cloud-proxy/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/cloud-proxy/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-parakeet-cpp-openblas() {
-    pkgdesc+=" (parakeet-cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-parakeet-cpp)
-    conflicts=(local-ai-backend-parakeet-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/parakeet-cpp/" \
-        "backend/go/parakeet-cpp/libparakeet.so" \
-        "backend/go/parakeet-cpp/parakeet-cpp-grpc" \
-        "backend/go/parakeet-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/parakeet-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-crispasr-openblas() {
-    pkgdesc+=" (CrispASR backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-crispasr)
-    conflicts=(local-ai-backend-crispasr)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/crispasr/" \
-        "backend/go/crispasr/libgocrispasr-"*.so \
-        "backend/go/crispasr/crispasr" \
-        "backend/go/crispasr/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/crispasr/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-locate-anything-cpp-openblas() {
-    pkgdesc+=" (locate-anything.cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-locate-anything-cpp)
-    conflicts=(local-ai-backend-locate-anything-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/locate-anything-cpp/" \
-        "backend/go/locate-anything-cpp/liblocateanythingcpp-"*.so \
-        "backend/go/locate-anything-cpp/locate-anything-cpp" \
-        "backend/go/locate-anything-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/locate-anything-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-omnivoice-cpp-openblas() {
-    pkgdesc+=" (omnivoice.cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-omnivoice-cpp)
-    conflicts=(local-ai-backend-omnivoice-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/omnivoice-cpp/" \
-        "backend/go/omnivoice-cpp/libgomnivoicecpp-"*.so \
-        "backend/go/omnivoice-cpp/omnivoice-cpp" \
-        "backend/go/omnivoice-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/omnivoice-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-ced() {
-    pkgdesc+=" (ced backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc libgcc libgomp libstdc++ bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/ced/" \
-        "backend/go/ced/libced.so"* \
-        "backend/go/ced/ced-grpc" \
-        "backend/go/ced/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/ced/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-depth-anything-cpp-openblas() {
-    pkgdesc+=" (depth-anything.cpp backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-depth-anything-cpp)
-    conflicts=(local-ai-backend-depth-anything-cpp)
-    depends+=(glibc libgcc libgomp libstdc++ libgfortran openblas bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/depth-anything-cpp/" \
-        "backend/go/depth-anything-cpp/libdepthanythingcpp-"* \
-        "backend/go/depth-anything-cpp/depth-anything-cpp" \
-        "backend/go/depth-anything-cpp/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/depth-anything-cpp/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-supertonic() {
-    pkgdesc+=" (supertonic backend)"
-    groups=(local-ai-backend)
-    depends+=(glibc bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/supertonic/" \
-        "backend/go/supertonic/supertonic" \
-        "backend/go/supertonic/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/supertonic/"
-    install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-}
-
-package_local-ai-backend-privacy-filter-openblas() {
-    pkgdesc+=" (privacy-filter backend with openblas optimization)"
-    groups=(local-ai-backend)
-    provides=(local-ai-backend-privacy-filter)
-    conflicts=(local-ai-backend-privacy-filter)
-    depends+=(abseil-cpp glibc grpc libgcc libstdc++ openblas protobuf brotli systemd-libs re2 c-ares openssl bash)
-
-    cd "$srcdir/LocalAI"
-    install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/privacy-filter/" \
-        "backend/go/privacy-filter/build/privacy-filter.cpp/ggml/src/libggml"*.so* \
-        "backend/go/privacy-filter/grpc-server" \
-        "backend/go/privacy-filter/run.sh"
-    _strip_files "$pkgdir/usr/lib/$pkgbase/backends/privacy-filter/"
     install -Dvm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
