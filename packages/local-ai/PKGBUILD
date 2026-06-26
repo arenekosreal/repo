@@ -10,7 +10,7 @@ url=https://localai.io/
 license=(MIT)
 makedepends=(cmake git go go.rice abseil-cpp grpc protobuf protoc-gen-go protoc-gen-go-grpc
              blas-openblas blas64-openblas npm nodejs-lts-jod vulkan-headers spirv-headers
-             vulkan-icd-loader shaderc nlohmann-json)
+             vulkan-icd-loader shaderc nlohmann-json openssl)
 source=("git+https://github.com/mudler/LocalAI.git#tag=v$pkgver"
         "git+https://github.com/ggerganov/llama.cpp.git#commit=73618f27a801c0b8614ceaf3547d3c2a99baae14"
         "local-ai.service")
@@ -124,7 +124,8 @@ package_local-ai() {
 package_local-ai-backend-llama-cpp() {
     pkgdesc+=" (llama-cpp backend)"
     provides=(local-ai-backend)
-    depends+=(abseil-cpp glibc grpc libgcc libgomp libstdc++ openblas protobuf vulkan-icd-loader bash)
+    depends+=(abseil-cpp glibc grpc libgcc libgomp libstdc++ openblas protobuf vulkan-icd-loader
+              openssl bash)
 
     install -Dvm755 -t "$pkgdir/usr/lib/$pkgbase/backends/llama-cpp/" \
         "$srcdir/LocalAI/backend/cpp/llama-cpp/run.sh"
