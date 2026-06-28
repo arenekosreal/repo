@@ -1,0 +1,28 @@
+[Unit]
+Description=LLaMA.cpp HTTP Server
+Documentation=https://github.com/ggml-org/llama.cpp/tree/master/tools/server
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/llama-server
+# Security
+NoNewPrivileges=yes
+# Sandboxing
+ProtectSystem=strict
+ProtectHome=tmpfs
+RuntimeDirectory=llama/server
+ConfigurationDirectory=llama/server
+CacheDirectory=huggingface/hub
+CacheDirectory=mesa_shader_cache
+PrivateTmp=yes
+PrivateUsers=self
+ProtectClock=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=strict
+RestrictRealtime=yes
+EnvironmentFile=-%E/llama/server/environment.conf
+
+[Install]
+WantedBy=default.target

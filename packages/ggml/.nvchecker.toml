@@ -1,0 +1,5 @@
+[ggml]
+source = "github"
+github = "ggml-org/ggml"
+prefix = "v"
+use_latest_release = true

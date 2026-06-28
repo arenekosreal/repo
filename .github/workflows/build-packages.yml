@@ -156,6 +156,8 @@ jobs:
             devel: true
           - type: aur
             pkgbase: fvs2
+          - type: local
+            pkgbase: ggml
           - type: aur
             pkgbase: go.rice
           - type: aur
@@ -487,6 +489,10 @@ jobs:
             pkgbase: libblkmaker
             depends:
               - libbase58
+          - type: local
+            pkgbase: llama-cpp
+            depends:
+              - ggml
           - type: aur
             pkgbase: patool
             depends:

@@ -1,0 +1,40 @@
+pkgname=ggml
+pkgver=0.15.3
+pkgrel=1
+pkgdesc="Tensor library for machine learning."
+arch=(x86_64)
+url=https://github.com/ggml-org/ggml
+license=(MIT)
+depends=(glibc libgcc libstdc++ libgomp)
+makedepends=(git cmake blas-openblas blas64-openblas vulkan-headers spirv-headers shaderc vulkan-icd-loader
+             opencl-headers ocl-icd)
+optdepends=('openblas: Use the OpenBLAS backend.'
+            'vulkan-icd-loader: Use the Vulkan backend.'
+            'ocl-icd: Use the OpenCL backend.')
+source=("git+https://github.com/ggml-org/ggml.git#tag=v$pkgver")
+sha256sums=('00a8da378caba37a818dac3414c28843d5bfbb449502ac984864feacd32ee823')
+
+build() {
+    cmake -B build -S "$srcdir/ggml" \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DGGML_BACKEND_DL=ON \
+        -DGGML_NATIVE=OFF \
+        -DGGML_LTO=ON \
+        -DGGML_CPU_ALL_VARIANTS=ON \
+        -DGGML_BLAS=ON \
+        -DGGML_BLAS_VENDOR=OpenBLAS \
+        -DGGML_VULKAN=ON \
+        -DGGML_OPENCL=ON \
+        -DGGML_RPC=ON \
+        -DGGML_BUILD_TESTS=OFF \
+        -DGGML_BUILD_EXAMPLES=OFF \
+        -DGGML_BACKEND_DIR=/usr/lib
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dvm644 -t "$pkgdir/usr/share/licenses/$pkgname/" \
+        "$srcdir/ggml/LICENSE"
+}
