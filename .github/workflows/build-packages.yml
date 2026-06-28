@@ -159,8 +159,6 @@ jobs:
           - type: local
             pkgbase: ggml
           - type: aur
-            pkgbase: go.rice
-          - type: aur
             pkgbase: godot-mono-export-templates-linux
           - type: aur
             pkgbase: gpt4all-chat
@@ -241,8 +239,6 @@ jobs:
           - type: aur
             pkgbase: plasma6-wallpapers-wallpaper-engine-git
             devel: true
-          - type: aur
-            pkgbase: protoc-gen-go
           - type: aur
             pkgbase: python-fvs
           - type: aur
@@ -498,10 +494,6 @@ jobs:
             depends:
               - python-setuptools-reproducible
           - type: aur
-            pkgbase: protoc-gen-go-grpc
-            depends:
-              - protoc-gen-go
-          - type: aur
             pkgbase: qcm
             depends:
               - cubeb
@@ -542,12 +534,6 @@ jobs:
               - libbase58
               - libblkmaker
             devel: true
-          - type: local
-            pkgbase: local-ai
-            depends:
-              - go.rice
-              - protoc-gen-go
-              - protoc-gen-go-grpc
           - type: aur
             pkgbase: bottles
             depends:

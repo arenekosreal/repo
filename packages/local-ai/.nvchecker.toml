@@ -1,5 +1,0 @@
-[local-ai]
-prefix = "v"
-source = "github"
-github = "mudler/LocalAI"
-use_latest_release = true
