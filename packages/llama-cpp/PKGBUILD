@@ -13,7 +13,6 @@ source=("git+https://github.com/ggml-org/llama.cpp.git#tag=$pkgver"
 sha256sums=('30ddb242ec312bbd15c5fb1af6a64327ed3aa3291bb3a478656fb618ac0a4d3c'
             '3f5a9fea92bd6699db9f421d499ac2999447e677a03cfe1f8c68c5197a0c3f70'
             '5d6bb8510211aae4a5a0ad3237e7e7eba5f2d8910c778bb6934bc68df37c638d')
-options=(!strip)
 
 prepare() {
     cd "$srcdir/llama.cpp/tools/ui"
