@@ -1,13 +1,11 @@
 diff --git a/PKGBUILD b/PKGBUILD
-index 9fe5b18..4beb845 100644
+index e5c43d0..ead2e01 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
-@@ -25,6 +25,6 @@ package() {
-     cd "${pkgname}-${pkgver}"
+@@ -26,5 +26,5 @@ package() {
      install -Dm644 "LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
  
--    cd ".output/public"
--    find . -type f -exec install -Dm644 {} "${pkgdir}/usr/share/${pkgname}/{}" \;
-+    mkdir -p "${pkgdir}/usr/share/webapps/"
-+    cp -a --no-preserve=ownership ".output/public" "${pkgdir}/usr/share/webapps/${pkgname}"
+     cd "packages/ui/.output/public"
+-    find . -type f -exec install -Dm644 {} "${pkgdir}/usr/share/${pkgname}/"{} \;
++    find . -type f -exec install -Dm644 {} "${pkgdir}/usr/share/webapps/${pkgname}/"{} \;
  }
