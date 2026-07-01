@@ -41,7 +41,7 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
       - name: Checkout
         if: steps.check-tag.outputs.tag
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -63,7 +63,7 @@ jobs:
           git clone ssh://aur@aur.archlinux.org/ruffle-nightly.git
       - name: Checkout ruffle
         if: steps.check-tag.outputs.tag
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ruffle-rs/ruffle
           path: ruffle
