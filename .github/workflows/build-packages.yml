@@ -64,7 +64,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build makepkg
         id: build
@@ -322,7 +322,7 @@ jobs:
     name: Build ${{ matrix.package.pkgbase }}
     steps: &steps
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Get target arch
         id: target-arch
@@ -569,7 +569,7 @@ jobs:
     name: Download prebuilt ${{ matrix.package.pkgbase }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Get target arch
         id: target-arch
@@ -650,7 +650,7 @@ jobs:
     name: Generate and release repository
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Get target arch
         id: target-arch
