@@ -11,7 +11,7 @@ makedepends=(imagemagick)
 provides=(osu-lazer)
 conflicts=(osu-lazer)
 source=("osu-lazer-$pkgver.AppImage::https://github.com/ppy/osu/releases/download/$pkgver-lazer/osu.AppImage"
-        "osu-lazer-LICENSE::https://github.com/ppy/osu/raw/refs/tags/$pkgver-lazer/LICENCE"
+        "osu-lazer-$pkgver-LICENSE::https://github.com/ppy/osu/raw/refs/tags/$pkgver-lazer/LICENCE"
         # Basically stolen from aur/osu-mime, but changed icon name to osu to use icon in this package.
         "osu!"
         "osu!.xml")
@@ -28,7 +28,7 @@ package() {
     depends=(libgcc libstdc++ glibc hicolor-icon-theme libz.so bash)
     if $_system_libs
     then
-        depends+=(ffmpeg4.4 sdl2 sdl3)
+        depends+=(ffmpeg sdl3)
     fi
     mkdir -p "$pkgdir/usr/lib"
     cp -a --no-preserve=ownership squashfs-root/usr/bin "$pkgdir/usr/lib/osu-lazer"
@@ -56,7 +56,7 @@ package() {
     install -Dm755 osu! "$pkgdir/usr/bin/osu!"
     install -Dm644 squashfs-root/osu!.desktop "$pkgdir/usr/share/applications/osu!.desktop"
     install -Dm644 osu!.xml "$pkgdir/usr/share/mime/packages/osu!.xml"
-    install -Dm644 osu-lazer-LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm644 osu-lazer-$pkgver-LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
     if $_system_libs
     then
         rm "$pkgdir/usr/lib/osu-lazer/libavcodec.so.58" "$pkgdir/usr/lib/osu-lazer/libavformat.so.58" \
