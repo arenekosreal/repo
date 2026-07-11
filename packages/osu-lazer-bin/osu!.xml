@@ -4,39 +4,39 @@
     <glob pattern="*.osu"/>
     <sub-class-of type="text/plain"/>
     <magic priority="60">
-        <match type="string" offset="0" value="osu file format v"/>
+      <match type="string" offset="0" value="osu file format v"/>
     </magic>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! beatmap</comment>
   </mime-type>
   <mime-type type="application/x-osu-storyboard">
     <glob pattern="*.osb"/>
     <sub-class-of type="text/plain"/>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! storyboard</comment>
   </mime-type>
   <mime-type type="application/x-osu-skin-archive">
     <glob pattern="*.osk"/>
     <sub-class-of type="application/zip"/>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! skin archive</comment>
   </mime-type>
   <mime-type type="application/x-osu-replay">
     <glob pattern="*.osr"/>
     <sub-class-of type="application/octet-stream"/>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! replay</comment>
   </mime-type>
   <mime-type type="application/x-osu-beatmap-archive">
     <glob pattern="*.osz"/>
     <sub-class-of type="application/zip"/>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! beatmap archive</comment>
   </mime-type>
   <mime-type type="application/x-osu-beatmap-archive">
     <glob pattern="*.osz2"/>
     <sub-class-of type="application/zip"/>
-    <icon name="osu"/>
+    <icon name="osu-beatmap"/>
     <comment>osu! beatmap archive</comment>
   </mime-type>
 </mime-info>
