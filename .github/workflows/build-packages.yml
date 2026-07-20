@@ -377,6 +377,7 @@ jobs:
           MAKEPKG_SPOTUBE_LASTFM_API_KEY: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_KEY }}
           MAKEPKG_SPOTUBE_LASTFM_API_SECRET: ${{ secrets.MAKEPKG_SPOTUBE_LASTFM_API_SECRET }}
           MAKEPKG_THRIVE_SYSTEM_GODOT: 'true'
+          NUGET_CERT_REVOCATION_MODE: offline
         uses: ./.github/actions/execute-makepkg
         with:
           where: packages/${{ matrix.package.pkgbase }}
@@ -505,6 +506,7 @@ jobs:
             depends:
               - dotnet-install
             devel: true
+            preserve-env: NUGET_CERT_REVOCATION_MODE
           - type: aur
             pkgbase: waywallen
             depends:
