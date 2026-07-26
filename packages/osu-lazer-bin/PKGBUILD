@@ -1,7 +1,7 @@
 _system_libs=true
 
 pkgname=osu-lazer-bin
-pkgver=2026.711.0
+pkgver=2026.726.0
 pkgrel=1
 pkgdesc="rhythm is just a *click* away!"
 arch=(x86_64)
@@ -15,7 +15,7 @@ source=("osu-lazer-$pkgver.AppImage::https://github.com/ppy/osu/releases/downloa
         # Basically stolen from aur/osu-mime, but changed icon name to osu to use icon in this package.
         "osu!"
         "osu!.xml")
-sha256sums=('2b2039502bdbf5ea64ee346d746e709742f329cebf0f6ae4c3910943121a8a1c'
+sha256sums=('3d3028609543dffd037b00652603f75928515100b6245bc929a9dc46fd3b29a0'
             '2e73c7c4295cc3da18697ac982f64a4ec449e0781e8f4c59318216e13998864a'
             'a7451bab08bc49114e22f1fcbbdd80459ae12f9739a26eb24d14ba149f95f098'
             '98b8d4d5cbcccf313dcceff85cc2c8dd91a3ecfd95865aad18ede3b62a87429e')
@@ -29,24 +29,27 @@ package() {
     if $_system_libs
     then
         depends+=(ffmpeg sdl3)
+        optdepends+=('ffmpeg4.4: Play BGA in maps.')
     fi
+
+    local -r _id=sh.ppy.osu
     mkdir -p "$pkgdir/usr/lib"
     cp -a --no-preserve=ownership squashfs-root/usr/bin "$pkgdir/usr/lib/osu-lazer"
     while read -r -a parsed
     do
         echo "Extracting ${parsed[0]} (${parsed[1]}) in beatmap.ico..."
         mkdir -p "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/mimetypes"
-        magick "squashfs-root/usr/bin/beatmap.ico[${parsed[0]}]" "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/mimetypes/osu-beatmap.png"
+        magick "squashfs-root/usr/bin/beatmap.ico[${parsed[0]}]" "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/mimetypes/$_id.beatmap.png"
     done < <(magick identify -ping -format "%[p] %[w]x%[h]\n" squashfs-root/usr/bin/beatmap.ico)
     while read -r -a parsed
     do
         echo "Extracting ${parsed[0]} (${parsed[1]}) in lazer.ico..."
         mkdir -p "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/apps"
-        magick "squashfs-root/usr/bin/lazer.ico[${parsed[0]}]" "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/apps/osu.png"
+        magick "squashfs-root/usr/bin/lazer.ico[${parsed[0]}]" "$pkgdir/usr/share/icons/hicolor/${parsed[1]}/apps/$_id.png"
     done < <(magick identify -ping -format "%[p] %[w]x%[h]\n" squashfs-root/usr/bin/lazer.ico)
     for img in squashfs-root/usr/share/icons/hicolor/*x*/apps/osu.png
     do
-        target="/usr/share/icons/hicolor/$(cut -d / -f 6 <<< "$img")/apps/osu.png"
+        target="/usr/share/icons/hicolor/$(cut -d / -f 6 <<< "$img")/apps/$_id.png"
         if [[ ! -e "$pkgdir$target" ]]
         then
             echo "Installing $target from icon in appimage..."
@@ -54,8 +57,8 @@ package() {
         fi
     done
     install -Dm755 osu! "$pkgdir/usr/bin/osu!"
-    install -Dm644 squashfs-root/osu!.desktop "$pkgdir/usr/share/applications/osu!.desktop"
-    install -Dm644 osu!.xml "$pkgdir/usr/share/mime/packages/osu!.xml"
+    install -Dm644 squashfs-root/osu!.desktop "$pkgdir/usr/share/applications/$_id.desktop"
+    install -Dm644 osu!.xml "$pkgdir/usr/share/mime/packages/$_id.xml"
     install -Dm644 osu-lazer-$pkgver-LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
     if $_system_libs
     then
@@ -63,5 +66,7 @@ package() {
            "$pkgdir/usr/lib/osu-lazer/libavutil.so.56" "$pkgdir/usr/lib/osu-lazer/libswscale.so.5" \
            "$pkgdir/usr/lib/osu-lazer/libSDL2.so" "$pkgdir/usr/lib/osu-lazer/libSDL3.so"
     fi
-    sed -i '/X-AppImage-Version/ d' "$pkgdir/usr/share/applications/osu!.desktop"
+    sed -i '/X-AppImage-Version/ d' "$pkgdir/usr/share/applications/$_id.desktop"
+    sed -i "s/Icon=osu/Icon=$_id/" "$pkgdir/usr/share/applications/$_id.desktop"
+    sed -i "/<icon/  s/osu-beatmap/$_id.beatmap/g" "$pkgdir/usr/share/mime/packages/$_id.xml"
 }
