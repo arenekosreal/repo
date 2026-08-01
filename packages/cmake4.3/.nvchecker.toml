@@ -1,0 +1,8 @@
+["cmake4.3"]
+source = 'gitlab'
+gitlab = 'cmake/cmake'
+host = 'gitlab.kitware.com'
+use_max_tag = true
+prefix = 'v'
+exclude_regex = '.*rc.*'
+include_regex = '4.3.\d+'

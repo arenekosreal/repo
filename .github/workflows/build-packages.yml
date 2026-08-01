@@ -121,6 +121,8 @@ jobs:
             pkgbase: cleanmedia
           - type: aur
             pkgbase: cloudflarespeedtest
+          - type: local
+            pkgbase: cmake4.3
           - type: aur
             pkgbase: csharp-ls
           - type: aur
@@ -548,6 +550,7 @@ jobs:
               - vulkan-memory-allocator
               - waywallen
               - waywallen-display
+              - cmake4.3
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
