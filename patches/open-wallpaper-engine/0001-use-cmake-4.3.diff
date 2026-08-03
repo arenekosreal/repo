@@ -1,0 +1,13 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index c2a8cd6..40416a2 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -13,7 +13,7 @@ url=https://github.com/waywallen/open-wallpaper-engine
+ license=(GPL-2.0-only)
+ depends=(libgcc libstdc++ glibc lz4 freetype2 ffmpeg vulkan-icd-loader libglvnd
+          "waywallen>=0.2.6" cef glslang fontconfig quickjs-ng glfw wayland)
+-makedepends=(cmake ninja git "clang>=21" lld eigen vulkan-headers waywallen-display
++makedepends=('cmake<4.4' ninja git "clang>=21" lld eigen vulkan-headers waywallen-display
+              vulkan-memory-allocator)
+ source=("git+https://github.com/waywallen/open-wallpaper-engine.git#tag=v$pkgver-fix"
+         "git+https://github.com/KhronosGroup/SPIRV-Reflect.git#tag=$_spirv_reflect_tag"
