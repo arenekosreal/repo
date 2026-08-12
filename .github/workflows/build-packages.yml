@@ -271,12 +271,6 @@ jobs:
           - type: aur
             pkgbase: ruffle
           - type: aur
-            pkgbase: sing-box
-          - type: local
-            pkgbase: sing-geoip
-          - type: local
-            pkgbase: sing-geosite
-          - type: aur
             pkgbase: spicetify-cli
           - type: aur
             pkgbase: spicetify-extensions-rxri-git
