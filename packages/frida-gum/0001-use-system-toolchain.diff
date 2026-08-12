@@ -1,0 +1,23 @@
+diff --git a/meson_configure.py b/meson_configure.py
+index 126da10..5b687da 100644
+--- a/meson_configure.py
++++ b/meson_configure.py
+@@ -184,7 +184,8 @@ def configure(sourcedir: Path,
+             raise_toolchain_not_found(e)
+     else:
+         if project_depends_on_vala_compiler(sourcedir):
+-            toolchain_prefix = deps.query_toolchain_prefix(build_machine, deps_dir)
++            #toolchain_prefix = deps.query_toolchain_prefix(build_machine, deps_dir)
++            toolchain_prefix = Path("/usr")
+             vala_compiler = env.detect_toolchain_vala_compiler(toolchain_prefix, build_machine)
+             if vala_compiler is None:
+                 build_vala_compiler(toolchain_prefix, deps_dir, call_selected_meson)
+@@ -197,7 +198,7 @@ def configure(sourcedir: Path,
+     required = {"sdk:build"}
+     if not is_cross_build:
+         required.add("sdk:host")
+-    if allowed_prebuilds.issuperset(required):
++    if False and allowed_prebuilds.issuperset(required):
+         try:
+             build_sdk_prefix, _ = deps.ensure_sdk(build_machine, deps_dir, on_progress=on_progress)
+         except deps.BundleNotFoundError as e:

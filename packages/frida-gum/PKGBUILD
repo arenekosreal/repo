@@ -1,0 +1,57 @@
+pkgname=frida-gum
+pkgver=17.17.0
+pkgrel=1
+pkgdesc="Cross-platform instrumentation and introspection library written in C."
+arch=(x86_64)
+url=https://frida.re/
+license=('LGPL-2.0-only WITH WxWindows-exception-3.1')
+depends=(glibc libgcc capstone glib2 json-glib libdwarf libffi libsoup3 libunwind xz)
+makedepends=(git meson gobject-introspection glib2-devel openssl)
+source=("git+https://github.com/frida/frida-gum.git#tag=$pkgver"
+        "git+https://github.com/frida/releng.git"
+        "git+https://github.com/frida/meson.git"
+        "git+https://github.com/python-poetry/tomlkit.git"
+        "0001-use-system-toolchain.diff")
+sha256sums=('bee39a3ebf3f06cacb112d65968ec6d161a184a11f6e61841ba5b19345b9ce31'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            '2d2d282a9964d74c76949e5474ec9c15bfb3c3cb3772c64e5f337d8462ef299a')
+
+prepare() {
+    git -C "$srcdir/frida-gum" submodule init
+    git -C "$srcdir/frida-gum" config submodule."releng".url "$srcdir/releng"
+    git -C "$srcdir/frida-gum" -c protocol.file.allow=always submodule update
+
+    git -C "$srcdir/frida-gum/releng" submodule init
+    git -C "$srcdir/frida-gum/releng" config submodule."meson".url "$srcdir/meson"
+    git -C "$srcdir/frida-gum/releng" config submodule."tomlkit".url "$srcdir/tomlkit"
+    git -C "$srcdir/frida-gum/releng" -c protocol.file.allow=always submodule update
+
+    "$srcdir/frida-gum/releng/meson/meson.py" subprojects download --sourcedir=frida-gum \
+        glib-networking quickjs tinycc
+    patch -Np1 -i "$srcdir/0001-use-system-toolchain.diff" -d frida-gum/releng
+}
+
+build() {
+    mkdir build
+    cd build
+    ../frida-gum/configure \
+        --prefix=/usr \
+        --enable-symbols \
+        --enable-shared \
+        --without-prebuilds=toolchain,sdk \
+        --with-meson=system \
+        --with-frida-version="$pkgver" \
+        --enable-gumpp \
+        --enable-gumjs \
+        --disable-tests
+    make
+}
+
+package() {
+    make -C build install DESTDIR="$pkgdir"
+    install -Dm644 frida-gum/COPYING -t "$pkgdir/usr/share/licenses/$pkgname/"
+    # They are statically linked and their .pc files are not provided here.
+    sed -i 's/quickjs, libtcc, //' "$pkgdir/usr/lib/pkgconfig/frida-gumjs-1.0.pc"
+}

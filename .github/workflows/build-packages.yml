@@ -156,6 +156,8 @@ jobs:
           - type: local
             pkgbase: flatpak-builder-tools-git
             devel: true
+          - type: local
+            pkgbase: frida-gum
           - type: aur
             pkgbase: fvs2
           - type: aur

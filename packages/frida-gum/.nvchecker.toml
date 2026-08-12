@@ -1,0 +1,4 @@
+[frida-gum]
+source = "github"
+github = "frida/frida"
+use_latest_release = true
