@@ -121,8 +121,6 @@ jobs:
             pkgbase: cleanmedia
           - type: aur
             pkgbase: cloudflarespeedtest
-          - type: local
-            pkgbase: cmake4.3
           - type: aur
             pkgbase: csharp-ls
           - type: aur
@@ -183,6 +181,8 @@ jobs:
           - type: aur
             pkgbase: linux-pf
             clean-runner: true
+          - type: aur
+            pkgbase: lito
           - type: aur
             pkgbase: localizationmanager
           - type: aur
@@ -546,7 +546,7 @@ jobs:
               - vulkan-memory-allocator
               - waywallen
               - waywallen-display
-              - cmake4.3
+              - lito
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
