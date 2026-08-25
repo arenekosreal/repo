@@ -239,9 +239,6 @@ jobs:
             pkgbase: plasma6-applets-caraoke-git
             devel: true
           - type: aur
-            pkgbase: plasma6-wallpapers-wallpaper-engine-git
-            devel: true
-          - type: aur
             pkgbase: python-fvs
           - type: aur
             pkgbase: python-pathvalidate
