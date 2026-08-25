@@ -511,6 +511,7 @@ jobs:
             pkgbase: waywallen
             depends:
               - vulkan-memory-allocator
+              - lito
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
