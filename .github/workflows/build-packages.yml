@@ -509,6 +509,7 @@ jobs:
             depends:
               - vulkan-memory-allocator
               - lito
+              - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
