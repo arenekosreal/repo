@@ -103,6 +103,8 @@ jobs:
           - type: aur
             pkgbase: basedpyright
           - type: aur
+            pkgbase: bashd-ls
+          - type: aur
             pkgbase: binder_linux-dkms
           - type: local
             pkgbase: caddy-cloudflare
@@ -259,6 +261,8 @@ jobs:
             devel: true
           - type: aur
             pkgbase: realitlscanner
+          - type: aur
+            pkgbase: rlsp-yaml
           - type: aur
             pkgbase: roslyn-ls
           - type: aur
