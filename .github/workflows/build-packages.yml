@@ -542,6 +542,7 @@ jobs:
               - waywallen
               - waywallen-display
               - lito
+              - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
