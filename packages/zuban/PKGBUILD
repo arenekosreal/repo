@@ -33,7 +33,7 @@ build() {
     export CARGO_TARGET_DIR=target
     # deploy/pypi/zuban/pre-maturin-build.sh
     cargo about generate -o licenses.html about.hbs --fail --manifest-path ../../../Cargo.toml
-    maturin build --frozen --release --all-features --out dist --ignore-rust-version
+    maturin build --frozen --release --out dist --ignore-rust-version
 }
 
 package() {
