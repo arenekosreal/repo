@@ -1,17 +1,17 @@
 diff --git a/PKGBUILD b/PKGBUILD
-index 35dc9ac..d63b018 100644
+index 5acd3ba..8bff060 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
-@@ -57,7 +57,7 @@ _package() {
+@@ -56,7 +56,7 @@ _package() {
+ 				'linux-firmware: firmware images needed for some devices'
  				'scx-scheds: to use sched-ext schedulers'
- 				'v4l2loopback-utils: utilities to control v4l2loopback devices'
  				'wireless-regdb: to set the correct wireless channels of your country')
--	provides=(linux-pf KSMBD-MODULE NTSYNC-MODULE V4L2LOOPBACK-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
-+	provides=(KSMBD-MODULE NTSYNC-MODULE V4L2LOOPBACK-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
+-	provides=(linux-pf KSMBD-MODULE NTSYNC-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
++	provides=(KSMBD-MODULE NTSYNC-MODULE VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
  	replaces=(virtualbox-guest-modules-arch wireguard-arch)
  
  	cd linux
-@@ -82,7 +82,7 @@ _package() {
+@@ -81,7 +81,7 @@ _package() {
  _package-headers() {
  	pkgdesc="Headers and scripts for building modules for the ${pkgdesc}"
  	depends=(binutils glibc libelf libgcc openssl pahole xxhash zlib zstd)
