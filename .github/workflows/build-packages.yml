@@ -252,9 +252,6 @@ jobs:
             pkgbase: qcm-ncm-plugin-git
             devel: true
           - type: aur
-            pkgbase: qcmbackend-git
-            devel: true
-          - type: aur
             pkgbase: qmlmaterial
           - type: aur
             pkgbase: rclone-aliyundrive-git
@@ -490,8 +487,8 @@ jobs:
             depends:
               - cubeb
               - ctre
-              - qcmbackend-git
               - qmlmaterial
+              - lito
           - type: aur
             pkgbase: thrive
             depends:
