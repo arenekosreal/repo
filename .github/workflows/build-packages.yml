@@ -489,6 +489,7 @@ jobs:
               - ctre
               - qmlmaterial
               - lito
+              - vulkan-memory-allocator
           - type: aur
             pkgbase: thrive
             depends:
