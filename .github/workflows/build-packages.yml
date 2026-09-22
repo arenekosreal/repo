@@ -505,7 +505,6 @@ jobs:
           - type: aur
             pkgbase: waywallen
             depends:
-              - vulkan-memory-allocator
               - lito
               - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
