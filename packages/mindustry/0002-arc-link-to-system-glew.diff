@@ -1,0 +1,16 @@
+diff --git a/backends/backend-sdl/build.gradle b/backends/backend-sdl/build.gradle
+index 2deda3b..b4bdd17 100644
+--- a/backends/backend-sdl/build.gradle
++++ b/backends/backend-sdl/build.gradle
+@@ -93,9 +93,9 @@ jnigen{
+     }
+ 
+     addLinux(x64, x86){
+-        cppFlags += execCmd("sdl2-config --cflags").split(" ")
++        cppFlags += (execCmd("sdl2-config --cflags") + execCmd("pkg-config glew --cflags")).split(" ")
+         cFlags = cppFlags
+-        libraries = (execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL").split(" ")
++        libraries = (execCmd("sdl2-config --libs") + " -Wl,-Bdynamic -lGL" + " " + execCmd("pkg-config glew --libs")).split(" ")
+         linkerFlags = "-shared -m64".split(" ")
+     }
+ 

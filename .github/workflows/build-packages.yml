@@ -187,6 +187,8 @@ jobs:
             pkgbase: lyrica
           - type: aur
             pkgbase: metacubexd
+          - type: local
+            pkgbase: mindustry
           - type: aur
             pkgbase: mpv-memo-git
             devel: true

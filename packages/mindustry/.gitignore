@@ -1,0 +1,7 @@
+*
+!PKGBUILD
+!com.github.Anuken.Mindustry.desktop
+!0001-arc-use-system-freetype2.diff
+!0002-arc-link-to-system-glew.diff
+!.nvchecker.toml
+!.gitignore

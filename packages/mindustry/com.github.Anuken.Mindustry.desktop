@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Mindustry
+Comment=The automation tower defense RTS.
+Exec=mindustry
+Icon=com.github.Anuken.Mindustry
+Categories=Game;Java

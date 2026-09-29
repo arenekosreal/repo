@@ -1,0 +1,85 @@
+diff --git a/extensions/freetype/build.gradle b/extensions/freetype/build.gradle
+index c5d91d9..60c3e9e 100644
+--- a/extensions/freetype/build.gradle
++++ b/extensions/freetype/build.gradle
+@@ -2,13 +2,18 @@ plugins{
+     id "com.badlogicgames.jnigen.jnigen-gradle"
+ }
+ 
++def callPkgConfig(String packageName, String... args) {
++    def command = ["pkg-config"] + (args as List) + [packageName]
++    return command.execute().text.trim()
++}
++
+ jnigen{
+     def fdir = "build/jnigen/sources/freetype-2.14.3"
+ 
+     sharedLibName = "arc-freetype"
+     libsDir = "build/natives"
+ 
+-    all{
++    def sourceBuilds = {
+         headerDirs = ["$fdir/include", "$fdir/include/freetype", "$fdir/include/freetype/config", "$fdir/include/freetype/internal", "$fdir/include/freetype/internal/services"]
+         cIncludes = [
+             //BASE
+@@ -31,13 +36,37 @@ jnigen{
+         cFlags += "-DFT2_BUILD_LIBRARY"
+         cppFlags += "-DFT2_BUILD_LIBRARY"
+     }
+-    addWindows(x64, x86)
+-    addLinux(x64, x86)
+-    addLinux(x64, ARM)
+-    addMac(x64, x86)
+-    addMac(x64, ARM)
+-    addAndroid()
+-    addIOS()
++
++    def installedLibraries = {
++        def cflagsPkgConfig = callPkgConfig("freetype2", "--cflags")
++        if (cflagsPkgConfig) {
++            def cflagsItems = cflagsPkgConfig.split("\\s+")
++            int i = 0
++            while (i < cflagsItems.length) {
++                def item = cflagsItems[i]
++                if (item == "-I" && i + 1 < cflagsItems.length) {
++                    headerDirs += [cflagsItems[++i]]
++                } else if (item.startsWith("-I")) {
++                    headerDirs += [item.substring(2)]
++                } else if (!item.isEmpty()) {
++                    cFlags += " " + item
++                    cppFlags += " " + item
++                }
++                i++
++            }
++        }
++        def libsPkgConfig = callPkgConfig("freetype2", "--libs")
++        if (libsPkgConfig) {
++            linkerFlags += libsPkgConfig.split("\\s+").toList()
++        }
++    }
++    addWindows(x64, x86, sourceBuilds)
++    addLinux(x64, x86, installedLibraries)
++    addLinux(x64, ARM, installedLibraries)
++    addMac(x64, x86, sourceBuilds)
++    addMac(x64, ARM, sourceBuilds)
++    addAndroid(sourceBuilds)
++    addIOS(sourceBuilds)
+ }
+ 
+ tasks.register('preJni'){
+@@ -49,7 +78,7 @@ tasks.register('preJni'){
+             include "**"
+         }
+ 
+-        if(!file("build/jnigen/sources/freetype-2.14.3").exists()){
++        if(!file("build/jnigen/sources/freetype-2.14.3").exists() && !org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.isLinux()){
+             println "Fetching freetype source..."
+ 
+             def root = "$projectDir/build/jnigen/sources"
+@@ -78,4 +107,4 @@ preJni.dependsOn "compileJava"
+ 
+ getTasksByName("jnigen", true).each{
+     it.dependsOn preJni
+-}
+\ No newline at end of file
++}

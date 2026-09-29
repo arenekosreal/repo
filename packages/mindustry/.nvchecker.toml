@@ -1,0 +1,5 @@
+[mindustry]
+source = "github"
+github = "Anuken/Mindustry"
+prefix = "v"
+use_latest_release = true
