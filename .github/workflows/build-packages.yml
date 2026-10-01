@@ -126,10 +126,6 @@ jobs:
           - type: aur
             pkgbase: csharp-ls
           - type: aur
-            pkgbase: ctre
-          - type: aur
-            pkgbase: cubeb
-          - type: aur
             pkgbase: dendrite
           - type: aur
             pkgbase: docker-language-server
@@ -487,9 +483,6 @@ jobs:
           - type: aur
             pkgbase: qcm
             depends:
-              - cubeb
-              - ctre
-              - qmlmaterial
               - lito
               - vulkan-memory-allocator
           - type: aur
