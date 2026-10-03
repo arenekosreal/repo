@@ -1,5 +1,5 @@
 pkgname=caddy-cloudflare
-pkgver=2.11.6
+pkgver=2.11.7
 pkgrel=1
 pkgdesc="Fast and extensible multi-platform HTTP/1-2-3 web server with automatic HTTPS."
 url=https://caddyserver.com/
@@ -16,7 +16,7 @@ source=("caddy-$pkgver.tar.gz::https://github.com/caddyserver/caddy/archive/refs
 		"https://raw.githubusercontent.com/caddyserver/dist/v$pkgver/config/Caddyfile"
 		"https://raw.githubusercontent.com/caddyserver/dist/v$pkgver/welcome/index.html"
 		use-data-dir-for-autosave.patch)
-sha256sums=('cb65c6d2081e2700f44e03d808a0330344b483688934c87e53ba7b5728a3a04b'
+sha256sums=('86e39de5fa0bc433a9cd574a00e7751059903401f3389c61f8937fd0ad0180f5'
             '6c271e030644bd36a0c8956885934f16c928f88202bc126f12cde519ef9693ff'
             'a794bbf7d890eb9e1231bbad251890f87870815a96e3820b28a71819ba9f9c14'
             '66177d46fa761acb07208065db9b0274cb1b12c02ac43b9bfc9857b698b1ccfe'
