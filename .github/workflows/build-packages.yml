@@ -134,6 +134,8 @@ jobs:
           - type: aur
             pkgbase: downgrade
           - type: aur
+            pkgbase: dxvk
+          - type: aur
             pkgbase: fcitx5-pinyin-custom-pinyin-dictionary
           - type: aur
             pkgbase: fcitx5-pinyin-moegirl
