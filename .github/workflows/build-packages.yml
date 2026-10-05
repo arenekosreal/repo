@@ -196,6 +196,10 @@ jobs:
           - type: aur
             pkgbase: mpv-uosc
           - type: aur
+            pkgbase: nagram-desktop
+            clean-runner: true
+            set-swap: 32G
+          - type: aur
             pkgbase: needrestart
           - type: local
             pkgbase: neocmakelsp
