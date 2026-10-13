@@ -4,7 +4,7 @@ _jdk_ver=25 # The newer cannot run gradle jar
 _soloud_ver=2026.09.04
 
 pkgname=mindustry
-pkgver=160.5
+pkgver=160.7
 pkgrel=1
 pkgdesc="The automation tower defense RTS"
 arch=(any)
@@ -21,8 +21,8 @@ source=("Mindustry-$pkgver.tar.gz::https://github.com/Anuken/Mindustry/archive/r
         "$_id.desktop"
         "0001-arc-use-system-freetype2.diff"
         "0002-arc-link-to-system-glew.diff")
-sha256sums=('bab4d829613d0ee64283fc51aecd12ec49ac48943c0c32cbc0027487d7aadf48'
-            '9228bda3cfdec72ccd300e852e52d0bda5f37270478d3f7b386d643e868c074e'
+sha256sums=('f86e7af47073a63e338ba53f8aaed1c2431b1e324f6f32c3da2c6e9bb8c03a9e'
+            '483888f05cc8bb2790d14029dd77854ee73a5d1636b773f299df8d7754207a07'
             'c1bc9c9015d926bd1da5826e7922a00d7d9c540c4c0ca7b5c7c36506a04d6290'
             '594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3'
             '2310804fba853c04ebe87228299dd18ae1219e7261b8230b8e39041cfce16436'
@@ -75,8 +75,8 @@ package() {
     install -Dm644 -t "$pkgdir/usr/share/java/$pkgname" \
         "Mindustry/desktop/build/libs/Mindustry.jar" \
         "Mindustry/server/build/libs/server-release.jar"
-    install -Dm644 "Mindustry/core/assets/icons/icon_64.png" \
-        "$pkgdir/usr/share/icons/hicolor/64x64/apps/$_id.png"
+    install -Dm644 "Mindustry/core/assets/icons/icon.png" \
+        "$pkgdir/usr/share/icons/hicolor/256x256/apps/$_id.png"
     install -Dm644 "$_id.desktop" \
         "$pkgdir/usr/share/applications/$_id.desktop"
     install -Dm755 /dev/stdin "$pkgdir/usr/bin/$pkgname" <<EOF
