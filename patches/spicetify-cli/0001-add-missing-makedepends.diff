@@ -1,14 +1,8 @@
 diff --git a/PKGBUILD b/PKGBUILD
-index e2bd1e3..b007e51 100644
+index ae3aa92..003ce04 100644
 --- a/PKGBUILD
 +++ b/PKGBUILD
-@@ -1,12 +1,12 @@
- ## Maintainer: khanhas <xuankhanh963@gmail.com>, itsmeow <itsmeow@itsmeow.dev>
- pkgname=spicetify-cli
- pkgver=2.46.2
--pkgrel=1
-+pkgrel=2
- pkgdesc='Command-line tool to customize Spotify client'
+@@ -6,7 +6,7 @@ pkgdesc='Command-line tool to customize Spotify client'
  arch=('x86_64' 'i686')
  url='https://github.com/spicetify/cli'
  license=('LGPL-2.1-only')
