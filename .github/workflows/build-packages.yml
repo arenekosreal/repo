@@ -244,8 +244,6 @@ jobs:
           - type: aur
             pkgbase: python-fvs
           - type: aur
-            pkgbase: python-pathvalidate
-          - type: aur
             pkgbase: python-pyclip
           - type: aur
             pkgbase: python-setuptools-reproducible
@@ -537,7 +535,6 @@ jobs:
               - python-setuptools-reproducible
               - patool
               - python-fvs
-              - python-pathvalidate
               - python-steamgriddb
               - vkbasalt-cli
           - type: aur
