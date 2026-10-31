@@ -670,6 +670,7 @@ jobs:
           where: ${{ github.workspace }}/${{ github.repository_owner }}
           gpg-fingerprint: ${{ steps.import-gpg.outputs.fingerprint }}
           gpg-password: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
+          remove-size: +2G # GitHub Release does not like files larger than 2GiB
 
       - name: Generate notes
         run: |
