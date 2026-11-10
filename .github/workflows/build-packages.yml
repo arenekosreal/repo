@@ -119,7 +119,6 @@ jobs:
             pkgbase: chromium-extension-web-store
           - type: aur
             pkgbase: cinny
-            preserve-env: cinnyBase
           - type: aur
             pkgbase: cleanmedia
           - type: aur
@@ -367,7 +366,6 @@ jobs:
         id: srcinfo
         env: &env
           PACKAGER: ${{ vars.PACKAGER }}
-          cinnyBase: ${{ vars.CINNYBASE }}
           MAKEPKG_THRIVE_SYSTEM_GODOT: 'true'
         uses: ./.github/actions/execute-makepkg
         with:
