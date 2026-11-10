@@ -29,11 +29,9 @@ This repository requires those secrets:
 
 1. `GPG_PRIVATE_KEY`: The private GnuPG key for signing packages and repository.
 2. `GPG_PRIVATE_KEY_PASSWORD`: The password for `GPG_PRIVATE_KEY`
-3. `MAKEPKG_SPOTUBE_LASTFM_API_KEY`: The api key of last.fm for building [spotube](https://aur.archlinux.org/packages/spotube)
-4. `MAKEPKG_SPOTUBE_LASTFM_API_SECRET`: The api secret of last.fm for building [spotube](https://aur.archlinux.org/packages/spotube)
-5. `OBS_PASSWORD`: The password of [Open Build Service](https://build.opensuse.org) to download packages built on it.
-6. `OBS_USERNAME`: The username of [Open Build Service](https://build.opensuse.org) to download packages built on it.
-7. `AUR_SSH_PRIVATE_KEY`: The private ssh key for [bump-aur-pkgver.yml](./.github/workflows/bump-aur-pkgver.yml) only.
+3. `OBS_PASSWORD`: The password of [Open Build Service](https://build.opensuse.org) to download packages built on it.
+4. `OBS_USERNAME`: The username of [Open Build Service](https://build.opensuse.org) to download packages built on it.
+5. `AUR_SSH_PRIVATE_KEY`: The private ssh key for [bump-aur-pkgver.yml](./.github/workflows/bump-aur-pkgver.yml) only.
 
 If you want to [build locally](#build-locally), you need to create a `.secrets` file in the repository and use `KEY=VALUE` format. Or you can pass them manually to act.
 
