@@ -166,6 +166,8 @@ jobs:
           - type: aur
             pkgbase: icecream
           - type: aur
+            pkgbase: jdk25-graalvm-ce-bin
+          - type: aur
             pkgbase: kde-thumbnailer-apk
           - type: aur
             pkgbase: ksmbd-tools
@@ -275,8 +277,6 @@ jobs:
           - type: aur
             pkgbase: spicetify-themes-git
             devel: true
-          - type: aur
-            pkgbase: spotube
           - type: aur
             pkgbase: systemd-boot-pacman-hook
           - type: aur
@@ -483,6 +483,10 @@ jobs:
             depends:
               - lito
               - vulkan-memory-allocator
+          - type: aur
+            pkgbase: spotube
+            depends:
+              - jdk25-graalvm-ce-bin
           - type: aur
             pkgbase: thrive
             depends:
