@@ -130,8 +130,6 @@ jobs:
           - type: aur
             pkgbase: docker-language-server
           - type: aur
-            pkgbase: dotnet-install
-          - type: aur
             pkgbase: downgrade
           - type: aur
             pkgbase: dxvk
@@ -254,8 +252,6 @@ jobs:
             pkgbase: qcm-ncm-plugin-git
             devel: true
           - type: aur
-            pkgbase: qmlmaterial
-          - type: aur
             pkgbase: rclone-aliyundrive-git
             devel: true
           - type: aur
@@ -293,10 +289,6 @@ jobs:
             pkgbase: vkbasalt-cli
           - type: aur
             pkgbase: vnt
-          - type: aur
-            pkgbase: vulkan-memory-allocator
-          - type: aur
-            pkgbase: watt-toolkit-bin
           - type: aur
             pkgbase: waylyrics
           - type: aur
@@ -482,7 +474,6 @@ jobs:
             pkgbase: qcm
             depends:
               - lito
-              - vulkan-memory-allocator
           - type: aur
             pkgbase: spotube
             depends:
@@ -492,18 +483,10 @@ jobs:
             depends:
               - godot-mono-export-templates-linux
             preserve-env: MAKEPKG_THRIVE_SYSTEM_GODOT
-            clean-runner: true
-          - type: aur
-            pkgbase: watt-toolkit-git
-            depends:
-              - dotnet-install
-            devel: true
-            preserve-env: NUGET_CERT_REVOCATION_MODE
           - type: aur
             pkgbase: waywallen
             depends:
               - lito
-              - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
@@ -536,11 +519,9 @@ jobs:
           - type: aur
             pkgbase: open-wallpaper-engine
             depends:
-              - vulkan-memory-allocator
               - waywallen
               - waywallen-display
               - lito
-              - qmlmaterial
     runs-on: ${{ matrix.runs-on }}
     name: Build ${{ matrix.package.pkgbase }}
     steps: *steps
