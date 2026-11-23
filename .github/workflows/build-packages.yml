@@ -427,6 +427,9 @@ jobs:
           sudo chmod 600 /mnt/swapfile
           sudo mkswap /mnt/swapfile
           sudo swapon /mnt/swapfile
+          echo "Enabling zswap..."
+          echo 1 | sudo tee /sys/module/zswap/parameters/enabled
+          echo zstd | sudo tee /sys/module/zswap/parameters/compressor
 
           swapon --show
 
