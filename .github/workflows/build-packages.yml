@@ -100,7 +100,7 @@ jobs:
           - type: aur
             pkgbase: ayugram-desktop
             clean-runner: true
-            set-swap: 48G
+            set-swap: 64G
           - type: aur
             pkgbase: basedpyright
           - type: aur
@@ -198,7 +198,7 @@ jobs:
           - type: aur
             pkgbase: nagram-desktop
             clean-runner: true
-            set-swap: 48G
+            set-swap: 64G
           - type: aur
             pkgbase: needrestart
           - type: local
