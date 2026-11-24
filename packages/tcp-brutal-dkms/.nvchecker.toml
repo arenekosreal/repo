@@ -1,0 +1,5 @@
+[tcp-brutal-dkms]
+source = "github"
+github = "HyNetworks/tcp-brutal"
+prefix = "v"
+use_latest_release = true

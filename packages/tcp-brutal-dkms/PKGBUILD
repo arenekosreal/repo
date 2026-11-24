@@ -1,0 +1,41 @@
+pkgname=(tcp-brutal-dkms tcp-brutal-tools)
+pkgver=2.0.1
+pkgrel=1
+pkgdesc="Hysteria's congestion control algorithm ported to TCP."
+arch=(x86_64)
+url=https://github.com/HyNetworks/tcp-brutal
+license=(GPL-3.0-only)
+source=("tcp-brutal-$pkgver.tar.gz::https://github.com/HyNetworks/tcp-brutal/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('55889848e85463a4547c2691e6cf7bd1b140305b808aa4004b8c2a19d1f44efd')
+
+prepare() {
+    cd "tcp-brutal-$pkgver"
+    # https://github.com/HyNetworks/tcp-brutal/issues/38#issuecomment-7124566746
+    sed -i 's/unsigned int/(unsigned int|u32)/' Makefile
+}
+
+build() {
+    cd "tcp-brutal-$pkgver"
+    make dkms.conf
+    make -C tools brutalctl CFLAGS="$CFLAGS $LDFLAGS"
+}
+
+package_tcp-brutal-dkms() {
+    pkgdesc+=" (Kernel Module Source in DKMS format)"
+    arch=(any)
+    depends+=(dkms)
+    provides=(TCP-BRUTAL-MODULE=$pkgver)
+    conflicts=(TCP-BRUTAL-MODULE)
+    cd "tcp-brutal-$pkgver"
+    install -Dm644 -t "$pkgdir/usr/src/tcp-brutal-$pkgver" \
+        dkms.conf \
+        Makefile \
+        brutal.h brutal_cc.c brutal_sockopt.c brutal_rules.c
+}
+
+package_tcp-brutal-tools() {
+    pkgdesc+=" (Userspace Tools)"
+    depends+=(TCP-BRUTAL-MODULE=$pkgver glibc)
+    cd "tcp-brutal-$pkgver"
+    install -Dm755 tools/brutalctl "$pkgdir/usr/bin/brutalctl"
+}

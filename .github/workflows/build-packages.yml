@@ -277,7 +277,7 @@ jobs:
             pkgbase: systemd-boot-pacman-hook
           - type: aur
             pkgbase: systemd-cron
-          - type: aur
+          - type: local
             pkgbase: tcp-brutal-dkms
           - type: aur
             pkgbase: unblockneteasemusic-golang-git
@@ -481,6 +481,10 @@ jobs:
             pkgbase: spotube
             depends:
               - jdk25-graalvm-ce-bin
+          - type: local
+            pkgbase: tcp-brutal
+            depends:
+              - tcp-brutal-dkms
           - type: aur
             pkgbase: thrive
             depends:
