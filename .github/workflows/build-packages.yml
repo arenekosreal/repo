@@ -439,6 +439,11 @@ jobs:
           echo "Enabling zswap..."
           echo 1 | sudo tee /sys/module/zswap/parameters/enabled
           echo zstd | sudo tee /sys/module/zswap/parameters/compressor
+          sudo sysctl \
+            vm.swappiness=60 \
+            vm.watermark_boost_factor=15000 \
+            vm.watermark_scale_factor=10 \
+            vm.page-cluster=3
 
           swapon --show
 
