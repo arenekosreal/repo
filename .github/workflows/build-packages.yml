@@ -88,14 +88,9 @@ jobs:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
           - type: aur
-            pkgbase: ares-decrypt
-          - type: aur
             pkgbase: aria2cd
           - type: aur
             pkgbase: ariang-git
-            devel: true
-          - type: aur
-            pkgbase: ariang-native-git
             devel: true
           - type: aur
             pkgbase: ayugram-desktop
@@ -159,9 +154,6 @@ jobs:
           - type: aur
             pkgbase: hath-rust
           - type: aur
-            pkgbase: icalingua++-git
-            devel: true
-          - type: aur
             pkgbase: icecream
           - type: aur
             pkgbase: jdk25-graalvm-ce-bin
@@ -170,19 +162,10 @@ jobs:
           - type: aur
             pkgbase: ksmbd-tools
           - type: aur
-            pkgbase: libbase58
-          - type: aur
-            pkgbase: libvgm-git
-            devel: true
-          - type: aur
             pkgbase: linux-pf
             clean-runner: true
           - type: aur
             pkgbase: lito
-          - type: aur
-            pkgbase: localizationmanager
-          - type: aur
-            pkgbase: lyrica
           - type: aur
             pkgbase: metacubexd
           - type: local
@@ -247,17 +230,10 @@ jobs:
           - type: aur
             pkgbase: python-steamgriddb
           - type: aur
-            pkgbase: q4wine
-          - type: aur
             pkgbase: qcm-ncm-plugin-git
             devel: true
           - type: aur
-            pkgbase: rclone-aliyundrive-git
-            devel: true
-          - type: aur
             pkgbase: realitlscanner
-          - type: aur
-            pkgbase: rlsp-yaml
           - type: aur
             pkgbase: roslyn-ls
           - type: aur
@@ -279,9 +255,6 @@ jobs:
             pkgbase: systemd-cron
           - type: local
             pkgbase: tcp-brutal-dkms
-          - type: aur
-            pkgbase: unblockneteasemusic-golang-git
-            devel: true
           - type: aur
             pkgbase: usbguard-notifier-git
             devel: true
@@ -480,10 +453,6 @@ jobs:
             depends:
               - web-ext
           - type: aur
-            pkgbase: libblkmaker
-            depends:
-              - libbase58
-          - type: aur
             pkgbase: patool
             depends:
               - python-setuptools-reproducible
@@ -522,12 +491,6 @@ jobs:
       matrix:
         runs-on: ${{ fromJSON(needs.prepare.outputs.runs-on) }}
         package:
-          - type: aur
-            pkgbase: bfgminer-git
-            depends:
-              - libbase58
-              - libblkmaker
-            devel: true
           - type: aur
             pkgbase: bottles
             depends:
