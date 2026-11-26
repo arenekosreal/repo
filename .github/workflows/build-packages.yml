@@ -423,9 +423,18 @@ jobs:
             sudo swapoff "$swap"
             sudo rm -f "$swap"
           done < <(swapon --noheadings --show=name)
-          sudo fallocate --length '${{ matrix.package.set-swap }}' /mnt/swapfile
-          sudo chmod 600 /mnt/swapfile
-          sudo mkswap /mnt/swapfile
+          case "$(df -T /mnt | tail -1 | cut -d " " -f 2)" in
+            btrfs)
+              echo "/mnt is btrfs, using btrfs-progs to create swap file..."
+              sudo btrfs filesystem mkswapfile --size '${{ matrix.packge.set-swap }}' /mnt/swapfile
+              ;;
+            *)
+              echo "Using default method to create swap file..."
+              sudo fallocate --length '${{ matrix.package.set-swap }}' /mnt/swapfile
+              sudo chmod 600 /mnt/swapfile
+              sudo mkswap /mnt/swapfile
+              ;;
+          esac
           sudo swapon /mnt/swapfile
           echo "Enabling zswap..."
           echo 1 | sudo tee /sys/module/zswap/parameters/enabled
