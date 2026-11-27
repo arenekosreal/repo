@@ -1,5 +1,5 @@
 pkgname=zuban
-pkgver=0.10.2
+pkgver=0.11.0
 pkgrel=1
 pkgdesc="Python Type Checker / Language Server"
 arch=(x86_64)
@@ -11,7 +11,7 @@ source=("git+https://github.com/zubanls/zuban.git#tag=v$pkgver"
         "git+https://github.com/python/typeshed.git"
         "git+https://github.com/typeddjango/django-stubs.git"
         "git+https://github.com/davidhalter/mypy.git")
-sha256sums=('0edd45047842df0842b98807d20c41367dd45ac6176cc9b59b0f6c71a63c6a5f'
+sha256sums=('780c9f2e5c90c71e7151ae145f2b1d616257f15e7661a2010ab89b59bf61f2d9'
             'SKIP'
             'SKIP'
             'SKIP')
