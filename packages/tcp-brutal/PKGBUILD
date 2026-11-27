@@ -1,6 +1,6 @@
 pkgname=tcp-brutal
 pkgver=2.0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Hysteria's congestion control algorithm ported to TCP."
 arch=(x86_64)
 url=https://github.com/HyNetworks/tcp-brutal
